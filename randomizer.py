@@ -2,8 +2,7 @@ import math
 import random
 import sys
 
-#def randomizedominion
-#Initialize
+
 Events = ['(Empires Event): Triumph', '(Empires Event): Annex',
         '(Empires Event): Donate', '(Empires Event): Advance',
         '(Adventures Event): Alms', '(Adventures Event): Borrow',
@@ -98,7 +97,7 @@ Prosperity = ['Prosperity: Loan', 'Prosperity: Trade Route',
 
 PlatinumLove = Prosperity + ['Hinterlands: Fools Gold', 'Guilds: Masterpiece',
         'Alchemy: Philosopher Stone', 'Hinterlands: Cache',
-        'Dark Ages: Counterfeit', 'Adventures: Treasure Trove', 
+        'Dark Ages: Counterfeit', 'Adventures: Treasure Trove',
         'Empires: Encampment/Plunder', 'Empires: Capital', 'Empires: Crown',
         'Empires: Gladiator/Fortune', 'Cornucopia: Tournament',
         'Nocturne: Secret Cave + Magic Lamp (Heirloom)',
@@ -337,147 +336,153 @@ completeList = Events + Landmarks + Projects + Base + Intrigue + Seaside + Alche
         Prosperity + Cornucopia + Hinterlands + DarkAges + Guilds + Adventures + \
         Empires + Antiquities + Nocturne + Renaissance
 
-#Check 10% of all cards for Events
-random.shuffle(completeList)
-tempList = completeList[:int(math.ceil(len(completeList)/10))]
-eventList = []
-for t in tempList:
-    if t in Events:
-        eventList = eventList + [t]
-eventList = eventList[:len(eventList)%2]
 
-#Check 10% of all cards for Landmarks
-random.shuffle(completeList)
-tempList = completeList[:int(math.ceil(len(completeList)/10))]
-landmarkList = []
-for t in tempList:
-    if t in Landmarks:
-        landmarkList = landmarkList + [t]
-landmarkList = landmarkList[:len(landmarkList)%2]
+def RandomizeDominion():
+    #Check 10% of all cards for Events
+    random.shuffle(completeList)
+    tempList = completeList[:int(math.ceil(len(completeList)/10))]
+    eventList = []
+    for t in tempList:
+        if t in Events:
+            eventList = eventList + [t]
+    eventList = eventList[:len(eventList)%2]
 
-#Check 10% of all cards for Projects
-random.shuffle(completeList)
-tempList = completeList[:int(math.ceil(len(completeList)/10))]
-projectList = []
-for t in tempList:
-    if t in Projects:
-        projectList = projectList + [t]
-projectList = projectList[:len(projectList)%2]
+    #Check 10% of all cards for Landmarks
+    random.shuffle(completeList)
+    tempList = completeList[:int(math.ceil(len(completeList)/10))]
+    landmarkList = []
+    for t in tempList:
+        if t in Landmarks:
+            landmarkList = landmarkList + [t]
+    landmarkList = landmarkList[:len(landmarkList)%2]
 
-#Pull cards
-pullList = Base + Intrigue + Seaside + Alchemy + Prosperity + Cornucopia + \
-        Hinterlands + DarkAges + Guilds + Adventures + Empires + Antiquities + \
-        Nocturne + Renaissance
-random.shuffle(pullList)
-resultList = pullList[:10]
+    #Check 10% of all cards for Projects
+    random.shuffle(completeList)
+    tempList = completeList[:int(math.ceil(len(completeList)/10))]
+    projectList = []
+    for t in tempList:
+        if t in Projects:
+            projectList = projectList + [t]
+    projectList = projectList[:len(projectList)%2]
 
-#enforce Alchemy rule
-alcCount = 0
-for r in resultList:
-    if r in Alchemy:
-        alcCount = alcCount + 1
-#if there's only 1 alchemy card, remove alchemy from the options and redraw Kingdom cards
-if alcCount == 1:
-    pullList = list(set(pullList) - set(Alchemy))
+    #Pull cards
+    pullList = Base + Intrigue + Seaside + Alchemy + Prosperity + Cornucopia + \
+            Hinterlands + DarkAges + Guilds + Adventures + Empires + Antiquities + \
+            Nocturne + Renaissance
     random.shuffle(pullList)
     resultList = pullList[:10]
-#if there's only alchemy cards, pull 3 alchemy cards, and then randomize the rest from not alchemy
-if alcCount == 2:
-    random.shuffle(Alchemy)
-    alcList = Alchemy[:3]
-    pullList = list(set(pullList) - set(alcList))
-    resultList = alcList + pullList[:7]
-#if there are 3 or more alchemy cards, let it lie.
 
-#Check for Potions
-includePotions = set(resultList) & set(PotionCards)
+    #enforce Alchemy rule
+    alcCount = 0
+    for r in resultList:
+        if r in Alchemy:
+            alcCount = alcCount + 1
+    #if there's only 1 alchemy card, remove alchemy from the options and redraw Kingdom cards
+    if alcCount == 1:
+        pullList = list(set(pullList) - set(Alchemy))
+        random.shuffle(pullList)
+        resultList = pullList[:10]
+    #if there's only alchemy cards, pull 3 alchemy cards, and then randomize the rest from not alchemy
+    if alcCount == 2:
+        random.shuffle(Alchemy)
+        alcList = Alchemy[:3]
+        pullList = list(set(pullList) - set(alcList))
+        resultList = alcList + pullList[:7]
+    #if there are 3 or more alchemy cards, let it lie.
 
-#Check for Shelters
-random.shuffle(resultList)
-includeShelters = set(resultList[:2]) & set(ShelterLove)
+    #Check for Potions
+    includePotions = set(resultList) & set(PotionCards)
 
-#Check for Looters
-includeLooters = set(resultList) & set(LooterCards)
+    #Check for Shelters
+    random.shuffle(resultList)
+    includeShelters = set(resultList[:2]) & set(ShelterLove)
 
-#Check for Colonies and Platinums
-random.shuffle(resultList)
-includeColPlat = set(resultList[:2]) & set(PlatinumLove)
+    #Check for Looters
+    includeLooters = set(resultList) & set(LooterCards)
 
-#Check for Boulder traps
-random.shuffle(resultList)
-includeBTraps = set(resultList[:1]) & set(TrapLove)
+    #Check for Colonies and Platinums
+    random.shuffle(resultList)
+    includeColPlat = set(resultList[:2]) & set(PlatinumLove)
 
-#Check for Madman
-includeMadman = 'Dark Ages: Hermit' in resultList
-#Check for Mercenary
-includeMercenary = 'Dark Ages: Urchin' in resultList
-#Check for Spoils
-includeSpoils = set(SpoilsCards) & set(resultList)
+    #Check for Boulder traps
+    random.shuffle(resultList)
+    includeBTraps = set(resultList[:1]) & set(TrapLove)
 
-# add Prizes
-includePrizes = 'Cornucopia: Tournament' in resultList
+    #Check for Madman
+    includeMadman = 'Dark Ages: Hermit' in resultList
+    #Check for Mercenary
+    includeMercenary = 'Dark Ages: Urchin' in resultList
+    #Check for Spoils
+    includeSpoils = set(SpoilsCards) & set(resultList)
 
-includeGhost = set(['Nocturne: Cemetary + Haunted Mirror (Heirloom)',
-        'Nocturne: Exorcist']) & set(resultList)
+    # add Prizes
+    includePrizes = 'Cornucopia: Tournament' in resultList
 
-includeBoons = set(resultList) & set(BoonCards)
-includeHex = set(resultList) & set(HexCards)
+    includeGhost = set(['Nocturne: Cemetary + Haunted Mirror (Heirloom)',
+            'Nocturne: Exorcist']) & set(resultList)
 
-includeWisp = includeBoons or ('Nocturne: Exorcist' in resultList)
+    includeBoons = set(resultList) & set(BoonCards)
+    includeHex = set(resultList) & set(HexCards)
 
-includeBat = 'Nocturne: Vampire' in resultList
+    includeWisp = includeBoons or ('Nocturne: Exorcist' in resultList)
 
-includeImp = set(['Nocturne: Devils Workshop', 'Nocturne: Exorcist',
-        'Nocturne: Tormentor']) & set(resultList)
+    includeBat = 'Nocturne: Vampire' in resultList
 
-includeWish = set(['Nocturne: Leprechaun',
-        'Nocturne: Secret Cave + Magic Lamp (Heirloom)']) & set(resultList)
+    includeImp = set(['Nocturne: Devils Workshop', 'Nocturne: Exorcist',
+            'Nocturne: Tormentor']) & set(resultList)
 
-# create final list
-additionalCards = []
+    includeWish = set(['Nocturne: Leprechaun',
+            'Nocturne: Secret Cave + Magic Lamp (Heirloom)']) & set(resultList)
 
-if includePotions:
-    additionalCards = additionalCards + ['Alchemy: Potions']
-if includeShelters:
-    additionalCards = additionalCards + ['Dark Ages: Shelters']
-if includeLooters:
-    additionalCards = additionalCards + ['Dark Ages: Ruins']
-if includeColPlat:
-    additionalCards = additionalCards + ['Prosperity: Colony',
-            'Prosperity: Platinum']
-if includeBTraps:
-    additionalCards = additionalCards + ['Antiquities: Boulder Traps']
-if includeMadman:
-    additionalCards = additionalCards + ['Dark Ages: Madman']
-if includeMercenary:
-    additionalCards = additionalCards + ['Dark Ages: Mercenary']
-if includeSpoils:
-    additionalCards = additionalCards + ['Dark Ages: Spoils']
-if includeGhost:
-    additionalCards = additionalCards + ['Nocturne: Ghost']
-if includeBoons:
-    additionalCards = additionalCards + ['Nocturne: Boons Deck']
-if includeHex:
-    additionalCards = additionalCards + ['Nocturne: Hexes Deck']
-if includeWisp:
-    additionalCards = additionalCards + ['Nocturne: Will-o-wisp']
-if includeBat:
-    additionalCards = additionalCards + ['Nocturne: Bat']
-if includeImp:
-    additionalCards = additionalCards + ['Nocturne: Imp']
-if includeWish:
-    additionalCards = additionalCards + ['Nocturne: Wish']
+    # create final list
+    additionalCards = []
 
-finalResult = list(sorted(resultList + additionalCards))
+    if includePotions:
+        additionalCards = additionalCards + ['Alchemy: Potions']
+    if includeShelters:
+        additionalCards = additionalCards + ['Dark Ages: Shelters']
+    if includeLooters:
+        additionalCards = additionalCards + ['Dark Ages: Ruins']
+    if includeColPlat:
+        additionalCards = additionalCards + ['Prosperity: Colony',
+                'Prosperity: Platinum']
+    if includeBTraps:
+        additionalCards = additionalCards + ['Antiquities: Boulder Traps']
+    if includeMadman:
+        additionalCards = additionalCards + ['Dark Ages: Madman']
+    if includeMercenary:
+        additionalCards = additionalCards + ['Dark Ages: Mercenary']
+    if includeSpoils:
+        additionalCards = additionalCards + ['Dark Ages: Spoils']
+    if includeGhost:
+        additionalCards = additionalCards + ['Nocturne: Ghost']
+    if includeBoons:
+        additionalCards = additionalCards + ['Nocturne: Boons Deck']
+    if includeHex:
+        additionalCards = additionalCards + ['Nocturne: Hexes Deck']
+    if includeWisp:
+        additionalCards = additionalCards + ['Nocturne: Will-o-wisp']
+    if includeBat:
+        additionalCards = additionalCards + ['Nocturne: Bat']
+    if includeImp:
+        additionalCards = additionalCards + ['Nocturne: Imp']
+    if includeWish:
+        additionalCards = additionalCards + ['Nocturne: Wish']
 
-#Young Witch Support
-includeBane = 'Cornucopia: Young Witch' in resultList
-if includeBane:
-    eligibleBanes = list(set(BaneCards) - set(resultList))
-    random.shuffle(eligibleBanes)
-    baneCard = ['Bane is ' + eligibleBanes[0]]
-    finalResult = finalResult + baneCard
+    finalResult = list(sorted(resultList + additionalCards))
 
-finalResult = finalResult + list(sorted(eventList + landmarkList + projectList))
+    #Young Witch Support
+    includeBane = 'Cornucopia: Young Witch' in resultList
+    if includeBane:
+        eligibleBanes = list(set(BaneCards) - set(resultList))
+        random.shuffle(eligibleBanes)
+        baneCard = ['Bane is ' + eligibleBanes[0]]
+        finalResult = finalResult + baneCard
 
-print ('\n'.join(finalResult))
+    finalResult = finalResult + list(sorted(eventList + landmarkList + projectList))
+
+    return '\n'.join(finalResult)
+
+
+if __name__ == '__main__':
+    print(RandomizeDominion())
