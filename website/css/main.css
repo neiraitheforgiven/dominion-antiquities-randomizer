@@ -63,6 +63,16 @@ html, body {
     align-items: center;
 }
 
+#sets {
+    margin-bottom: 16px;
+}
+
+#sets > span {
+    display: inline-block;
+    margin-right: 16px;
+    margin-bottom: 8px;
+}
+
 #randomize {
     font-family: inherit;
     font-size: 40px;
