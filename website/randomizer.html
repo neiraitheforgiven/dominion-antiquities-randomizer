@@ -10,25 +10,67 @@
 </head>
 <body>
     <div class="wrapper">
-        <form>
-            <div id="sets">
-                <span><input type="checkbox" name="Base" id="Base" checked><label for="Base">Base</label></span>
-                <span><input type="checkbox" name="Intrigue" id="Intrigue" checked><label for="Intrigue">Intrigue</label></span>
-                <span><input type="checkbox" name="Seaside" id="Seaside" checked><label for="Seaside">Seaside</label></span>
-                <span><input type="checkbox" name="Alchemy" id="Alchemy" checked><label for="Alchemy">Alchemy</label></span>
-                <span><input type="checkbox" name="Prosperity" id="Prosperity" checked><label for="Prosperity">Prosperity</label></span>
-                <span><input type="checkbox" name="Cornucopia" id="Cornucopia" checked><label for="Cornucopia">Cornucopia</label></span>
-                <span><input type="checkbox" name="Hinterlands" id="Hinterlands" checked><label for="Hinterlands">Hinterlands</label></span>
-                <span><input type="checkbox" name="DarkAges" id="DarkAges" checked><label for="DarkAges">Dark Ages</label></span>
-                <span><input type="checkbox" name="Guilds" id="Guilds" checked><label for="Guilds">Guilds</label></span>
-                <span><input type="checkbox" name="Adventures" id="Adventures" checked><label for="Adventures">Adventures</label></span>
-                <span><input type="checkbox" name="Empires" id="Empires" checked><label for="Empires">Empires</label></span>
-                <span><input type="checkbox" name="Nocturne" id="Nocturne" checked><label for="Nocturne">Nocturne</label></span>
-                <span><input type="checkbox" name="Renaissance" id="Renaissance" checked><label for="Renaissance">Renaissance</label></span>
-                <span><input type="checkbox" name="Antiquities" id="Antiquities" checked><label for="Antiquities">Antiquities</label></span>
-            </div>
+        <form id="options">
+            <fieldset id="sets">
+                <span>
+                    <input type="checkbox" name="Base" id="Base" value="Base" checked>
+                    <label for="Base">Base</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Intrigue" id="Intrigue" value="Intrigue" checked>
+                    <label for="Intrigue">Intrigue</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Seaside" id="Seaside" value="Seaside" checked>
+                    <label for="Seaside">Seaside</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Alchemy" id="Alchemy" value="Alchemy" checked>
+                    <label for="Alchemy">Alchemy</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Prosperity" id="Prosperity" value="Prosperity" checked>
+                    <label for="Prosperity">Prosperity</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Cornucopia" id="Cornucopia" value="Cornucopia" checked>
+                    <label for="Cornucopia">Cornucopia</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Hinterlands" id="Hinterlands" value="Hinterlands" checked>
+                    <label for="Hinterlands">Hinterlands</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="DarkAges" id="DarkAges" value="Dark Ages" checked>
+                    <label for="DarkAges">Dark Ages</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Guilds" id="Guilds" value="Guilds" checked>
+                    <label for="Guilds">Guilds</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Adventures" id="Adventures" value="Adventures" checked>
+                    <label for="Adventures">Adventures</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Empires" id="Empires" value="Empires" checked>
+                    <label for="Empires">Empires</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Nocturne" id="Nocturne" value="Nocturne" checked>
+                    <label for="Nocturne">Nocturne</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Renaissance" id="Renaissance" value="Renaissance" checked>
+                    <label for="Renaissance">Renaissance</label>
+                </span>
+                <span>
+                    <input type="checkbox" name="Antiquities" id="Antiquities" value="Antiquities" checked>
+                    <label for="Antiquities">Antiquities</label>
+                </span>
+            </fieldset>
+            <input type="submit" id="randomize" value="Randomize">
         </form>
-        <button id="randomize">Randomize</button>
         <div id="cards"></div>
     </div>
 </body>

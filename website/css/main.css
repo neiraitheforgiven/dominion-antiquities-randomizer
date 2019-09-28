@@ -63,6 +63,12 @@ html, body {
     align-items: center;
 }
 
+#options {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
 #sets {
     margin-bottom: 16px;
 }
