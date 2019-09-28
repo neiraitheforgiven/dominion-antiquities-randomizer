@@ -675,8 +675,8 @@ def RandomizeDominion(setNames=None):
 
     finalResult = finalResult + sorted(eventList + landmarkList + projectList)
 
-    return '\n'.join(str(card) for card in finalResult)
+    return [str(card) for card in finalResult]
 
 
 if __name__ == '__main__':
-    print(RandomizeDominion())
+    print('\n'.join(RandomizeDominion()))
