@@ -621,54 +621,53 @@ def RandomizeDominion(setNames=None):
         'Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)')
 
     # create final list
-    additionalCards = []
+    additionalCards = set()
 
     if includePotions:
-        additionalCards = additionalCards + ['Alchemy: Potions']
+        additionalCards.add('Alchemy: Potions')
     if includeShelters:
-        additionalCards = additionalCards + ['Dark Ages: Shelters']
+        additionalCards.add('Dark Ages: Shelters')
     if includeLooters:
-        additionalCards = additionalCards + ['Dark Ages: Ruins']
+        additionalCards.add('Dark Ages: Ruins')
     if includeColPlat:
-        additionalCards = additionalCards + [
-            'Prosperity: Colony', 'Prosperity: Platinum']
+        additionalCards.update(('Prosperity: Colony', 'Prosperity: Platinum'))
     if includeBTraps:
-        additionalCards = additionalCards + ['Antiquities: Boulder Traps']
+        additionalCards.add('Antiquities: Boulder Traps')
     if includeMadman:
-        additionalCards = additionalCards + ['Dark Ages: Madman']
+        additionalCards.add('Dark Ages: Madman')
     if includeMercenary:
-        additionalCards = additionalCards + ['Dark Ages: Mercenary']
+        additionalCards.add('Dark Ages: Mercenary')
     if includeSpoils:
-        additionalCards = additionalCards + ['Dark Ages: Spoils']
+        additionalCards.add('Dark Ages: Spoils')
     if includePrizes:
-        additionalCards = additionalCards + [
+        additionalCards.update((
             'Cornucopia: Bag of Gold',
             'Cornucopia: Diadem',
             'Cornucopia: Followers',
             'Cornucopia: Princess',
             'Cornucopia: Trusty Steed'
-        ]
+        ))
     if includeGhost:
-        additionalCards = additionalCards + ['Nocturne: Ghost']
+        additionalCards.add('Nocturne: Ghost')
     if includeBoons:
-        additionalCards = additionalCards + ['Nocturne: Boons Deck']
+        additionalCards.add('Nocturne: Boons Deck')
     if includeHex:
-        additionalCards = additionalCards + ['Nocturne: Hexes Deck']
+        additionalCards.add('Nocturne: Hexes Deck')
     if includeWisp:
-        additionalCards = additionalCards + ['Nocturne: Will-o-wisp']
+        additionalCards.add('Nocturne: Will-o-wisp')
     if includeBat:
-        additionalCards = additionalCards + ['Nocturne: Bat']
+        additionalCards.add('Nocturne: Bat')
     if includeImp:
-        additionalCards = additionalCards + ['Nocturne: Imp']
+        additionalCards.add('Nocturne: Imp')
     if includeWish:
-        additionalCards = additionalCards + ['Nocturne: Wish']
+        additionalCards.add('Nocturne: Wish')
 
-    finalResult = sorted(resultList + additionalCards)
+    finalResult = sorted(resultSet | additionalCards)
 
     # Young Witch Support
     includeBane = resultSet & Cornucopia.cards('Young Witch')
     if includeBane:
-        eligibleBanes = list(BaneCards - resultSet)
+        eligibleBanes = list((pullSet & BaneCards) - resultSet)
         random.shuffle(eligibleBanes)
         baneCard = ['Bane is {}'.format(eligibleBanes[0])]
         finalResult = finalResult + baneCard
