@@ -668,7 +668,7 @@ def RandomizeDominion(setNames=None):
     # Young Witch Support
     includeBane = resultSet & Cornucopia.cards('Young Witch')
     if includeBane:
-        eligibleBanes = list(BaneCards - resultSet)
+        eligibleBanes = list((pullSet & BaneCards) - resultSet)
         random.shuffle(eligibleBanes)
         baneCard = ['Bane is {}'.format(eligibleBanes[0])]
         finalResult = finalResult + baneCard
