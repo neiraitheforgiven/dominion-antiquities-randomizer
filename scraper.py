@@ -33,7 +33,7 @@ def GetCards():
 
     # Process rows
     for row in rows[1:]:
-        columns = re.split(r' *\|\| *', row)
+        columns = re.split(r' *\|\| *', row[1:])
         if len(columns) < len(header):
             for x in range(len(header) - len(columns)):
                 columns.append('')
