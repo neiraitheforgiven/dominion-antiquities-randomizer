@@ -57,6 +57,8 @@ class Card(object):
             formatStr = '({} Landmark): {}'
         elif Project in self.types:
             formatStr = '({} Project): {}'
+        elif Way in self.types:
+            formatStr = '({} Way): {}'
         else:
             formatStr = '{}: {}'
         return formatStr.format(self.set.name, self.name)
@@ -67,11 +69,14 @@ class Set(object):
         global AllSets
         self.name = name
         self._cards = CardList()
+        self._firstEdition = None
+        self._secondEdition = None
 
         self._events = None
         self._landmarks = None
         self._projects = None
         self._potionCards = None
+        self._ways = None
 
         AllSets[self.name] = self
 
@@ -81,63 +86,110 @@ class Set(object):
     def __repr__(self):
         return '<randomizer.Set: {}>'.format(self.name)
 
-    def AddCards(self, cards):
+    def _AddCards(self, cardList, cards):
         for cardData in cards:
-            if isinstance(cardData, dict):
+            if isinstance(cardData, Card):
+                cardList.add(cardData)
+            elif isinstance(cardData, dict):
                 card = Card(**cardData)
                 card.set = self
-                self.cards.add(card)
+                cardList.add(card)
             else:
                 # Assume card data is name for now
-                self.cards.add(Card(cardData, cardSet=self))
+                cardList.add(Card(cardData, cardSet=self))
+
+    def AddCards(self, cards):
+        self._AddCards(self._cards, cards)
+
+    def RemoveCards(self, cards):
+        self._cards -= cards
 
     @property
     def cards(self):
         return self._cards
 
     @property
+    def firstEdition(self):
+        return self._firstEdition
+
+    @firstEdition.setter
+    def firstEdition(self, cards):
+        if self._firstEdition is None:
+            self._firstEdition = CardList()
+        self._AddCards(self._firstEdition, cards)
+
+    @property
+    def secondEdition(self):
+        return self._secondEdition
+
+    @secondEdition.setter
+    def secondEdition(self, cards):
+        if self._secondEdition is None:
+            self._secondEdition = CardList()
+        self._AddCards(self._secondEdition, cards)
+
+    @property
     def events(self):
         if self._events is None:
             self._events = CardList(
-                card for card in self._cards if card.types & {Event})
+                card for card in self._cards if card.types & {Event}
+            )
         return self._events
 
     @property
     def landmarks(self):
         if self._landmarks is None:
             self._landmarks = CardList(
-                card for card in self._cards if card.types & {Landmark})
+                card for card in self._cards if card.types & {Landmark}
+            )
         return self._landmarks
 
     @property
     def projects(self):
         if self._projects is None:
             self._projects = CardList(
-                card for card in self._cards if card.types & {Project})
+                card for card in self._cards if card.types & {Project}
+            )
         return self._projects
+
+    @property
+    def ways(self):
+        if self._ways is None:
+            self._ways = CardList(
+                card for card in self._cards if card.types & {Way}
+            )
+        return self._ways
 
     @property
     def potionCards(self):
         if self._potionCards is None:
             self._potionCards = CardList(
-                card for card in self._cards if card.types & {Potion})
+                card for card in self._cards if card.types & {Potion}
+            )
         return self._potionCards
 
 
+# Define card types
 Event = CardType('Event')
 Landmark = CardType('Landmark')
 Project = CardType('Project')
+Way = CardType('Way')
 Potion = CardType('Potion')
 
-
+# Define sets
 Base = Set('Base')
 Base.AddCards([
     'Cellar', 'Chapel', 'Moat', 'Harbinger', 'Merchant', 'Village', 'Workshop',
     'Vassal', 'Bureaucrat', 'Gardens', 'Militia', 'Moneylender', 'Poacher',
-    'Remodel', 'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room',
-    'Festival', 'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch',
-    'Artisan'
+    'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room', 'Festival',
+    'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch', 'Artisan'
 ])
+Base.firstEdition = [
+    'Adventurer', 'Chancellor', 'Feast', 'Spy', 'Thief', 'Woodcutter'
+]
+Base.secondEdition = Base.cards(
+    'Artisan', 'Bandit', 'Harbinger', 'Merchant', 'Poacher', 'Sentry', 'Vassal'
+)
 
 Intrigue = Set('Intrigue')
 Intrigue.AddCards([
@@ -147,6 +199,14 @@ Intrigue.AddCards([
     'Duke', 'Minion', 'Patrol', 'Replace', 'Torturer', 'Trading Post',
     'Upgrade', 'Harem', 'Nobles'
 ])
+Intrigue.firstEdition = [
+    'Coppersmith', 'Great Hall', 'Saboteur', 'Scout', 'Secret Chamber',
+    'Tribute'
+]
+Intrigue.secondEdition = Intrigue.cards(
+    'Courtier', 'Diplomat', 'Lurker', 'Mill', 'Patrol', 'Replace',
+    'Secret Passage'
+)
 
 Seaside = Set('Seaside')
 Seaside.AddCards([
@@ -332,6 +392,56 @@ Renaissance.AddCards([
     {'name': 'Citadel', 'types': {Project}},
 ])
 
+Menagerie = Set('Menagerie')
+Menagerie.AddCards([
+    'Animal Fair', 'Barge', 'Black Cat', 'Bounty Hunter', 'Camel Train',
+    'Cardinal', 'Cavalry', 'Coven', 'Destrier', 'Displace', 'Falconer',
+    'Fisherman', 'Gatekeeper', 'Goatherd', 'Groom', 'Hostelry',
+    'Hunting Lodge', 'Kiln', 'Livery', 'Mastermind', 'Paddock', 'Sanctuary',
+    'Scrap', 'Sheepdog', 'Sleigh', 'Snowy Village', 'Stockpile', 'Supplies',
+    'Village Green', 'Wayfarer',
+    {'name': 'Alliance', 'types': {Event}},
+    {'name': 'Banish', 'types': {Event}},
+    {'name': 'Bargain', 'types': {Event}},
+    {'name': 'Commerce', 'types': {Event}},
+    {'name': 'Delay', 'types': {Event}},
+    {'name': 'Demand', 'types': {Event}},
+    {'name': 'Desperation', 'types': {Event}},
+    {'name': 'Enclave', 'types': {Event}},
+    {'name': 'Enhance', 'types': {Event}},
+    {'name': 'Gamble', 'types': {Event}},
+    {'name': 'Invest', 'types': {Event}},
+    {'name': 'March', 'types': {Event}},
+    {'name': 'Populate', 'types': {Event}},
+    {'name': 'Pursue', 'types': {Event}},
+    {'name': 'Reap', 'types': {Event}},
+    {'name': 'Ride', 'types': {Event}},
+    {'name': 'Seize the Day', 'types': {Event}},
+    {'name': 'Stampede', 'types': {Event}},
+    {'name': 'Toil', 'types': {Event}},
+    {'name': 'Transport', 'types': {Event}},
+    {'name': 'Way of the Butterfly', 'types': {Way}},
+    {'name': 'Way of the Camel', 'types': {Way}},
+    {'name': 'Way of the Chameleon', 'types': {Way}},
+    {'name': 'Way of the Frog', 'types': {Way}},
+    {'name': 'Way of the Goat', 'types': {Way}},
+    {'name': 'Way of the Horse', 'types': {Way}},
+    {'name': 'Way of the Mole', 'types': {Way}},
+    {'name': 'Way of the Monkey', 'types': {Way}},
+    {'name': 'Way of the Mouse', 'types': {Way}},
+    {'name': 'Way of the Mule', 'types': {Way}},
+    {'name': 'Way of the Otter', 'types': {Way}},
+    {'name': 'Way of the Owl', 'types': {Way}},
+    {'name': 'Way of the Ox', 'types': {Way}},
+    {'name': 'Way of the Pig', 'types': {Way}},
+    {'name': 'Way of the Rat', 'types': {Way}},
+    {'name': 'Way of the Seal', 'types': {Way}},
+    {'name': 'Way of the Sheep', 'types': {Way}},
+    {'name': 'Way of the Squirrel', 'types': {Way}},
+    {'name': 'Way of the Turtle', 'types': {Way}},
+    {'name': 'Way of the Worm', 'types': {Way}}
+])
+
 Antiquities = Set('Antiquities')
 Antiquities.AddCards([
     'Inscription', 'Agora', 'Discovery', 'Aquifer', 'Tomb Raider', 'Curio',
@@ -341,14 +451,17 @@ Antiquities.AddCards([
     'Collector', 'Pharaoh', 'Grave Watcher', 'Stronghold', 'Snake Charmer'
 ])
 
-Events = Adventures.events | Empires.events
-
+# Define Landscape cards
+Events = Adventures.events | Empires.events | Menagerie.events
 Landmarks = Empires.landmarks
-
 Projects = Renaissance.projects
+Ways = Menagerie.ways
+LandscapeCards = Events | Landmarks | Projects | Ways
 
+# Define cards requiring potions
 PotionCards = Alchemy.potionCards
 
+# Define randomizer rules
 PlatinumLove = Prosperity.cards.union(
     Base.cards('Artisan', 'Council Room', 'Merchant', 'Mine'),
     Intrigue.cards('Harem', 'Nobles'),
@@ -486,6 +599,10 @@ BaneCards = set().union(
         'Courtyard', 'Lurker', 'Masquerade', 'Pawn', 'Shanty Town', 'Steward',
         'Swindler', 'Wishing Well'
     ),
+    Menagerie.cards(
+        'Black Cat', 'Camel Train', 'Goatherd', 'Scrap', 'Sheepdog', 'Sleigh',
+        'Snowy Village', 'Stockpile', 'Supplies'
+    ),
     Nocturne.cards(
         'Changeling', 'Druid', 'Faithful Hound',
         'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)',
@@ -505,7 +622,7 @@ BaneCards = set().union(
 )
 
 
-def RandomizeDominion(setNames=None):
+def RandomizeDominion(setNames=None, options=None):
     # Make full list + Events + Landmarks to determine landmarks
     sets = set()
     if setNames is None:
@@ -515,8 +632,25 @@ def RandomizeDominion(setNames=None):
             if setName in AllSets:
                 sets.add(AllSets[setName])
 
+    if options:
+        if Base in sets:
+            if options.get("base-first-edition"):
+                Base.AddCards(Base.firstEdition)
+
+            if not options.get("base-second-edition", True):
+                Base.RemoveCards(Base.secondEdition)
+
+        if Intrigue in sets:
+            if options.get("intrigue-first-edition"):
+                Intrigue.AddCards(Intrigue.firstEdition)
+
+            if not options.get("intrigue-second-edition", True):
+                Intrigue.RemoveCards(Intrigue.secondEdition)
+
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
     completeList = list(completeSet)
+
+    landscapeSet = set()
 
     # Check 10% of all cards for Events
     random.shuffle(completeList)
@@ -525,7 +659,7 @@ def RandomizeDominion(setNames=None):
     for t in tempList:
         if t in Events:
             eventList = eventList + [t]
-    eventList = eventList[:len(eventList) % 2]
+    landscapeSet.update(eventList[:len(eventList) % 2])
 
     # Check 10% of all cards for Landmarks
     random.shuffle(completeList)
@@ -534,7 +668,7 @@ def RandomizeDominion(setNames=None):
     for t in tempList:
         if t in Landmarks:
             landmarkList = landmarkList + [t]
-    landmarkList = landmarkList[:len(landmarkList) % 2]
+    landscapeSet.update(landmarkList[:len(landmarkList) % 2])
 
     # Check 10% of all cards for Projects
     random.shuffle(completeList)
@@ -543,10 +677,22 @@ def RandomizeDominion(setNames=None):
     for t in tempList:
         if t in Projects:
             projectList = projectList + [t]
-    projectList = projectList[:len(projectList) % 2]
+    landscapeSet.update(projectList[:len(projectList) % 2])
+
+    # Check 10% of all cards for Ways
+    random.shuffle(completeList)
+    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
+    wayList = []
+    for t in tempList:
+        if t.types & {Way}:
+            wayList.append(t)
+    landscapeSet.update(wayList[:len(wayList) % 2])
+
+    # Ensure no more than two landscape cards
+    landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
 
     # Pull cards
-    pullSet = completeSet - (Events | Landmarks | Projects)
+    pullSet = completeSet - LandscapeCards
     pullList = list(pullSet)
     random.shuffle(pullList)
     resultList = pullList[:10]
@@ -605,7 +751,8 @@ def RandomizeDominion(setNames=None):
     includePrizes = Cornucopia.cards('Tournament') & resultSet
 
     includeGhost = resultSet & Nocturne.cards(
-        'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist')
+        'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist'
+    )
 
     includeBoons = resultSet & BoonCards
     includeHex = resultSet & HexCards
@@ -615,10 +762,28 @@ def RandomizeDominion(setNames=None):
     includeBat = Nocturne.cards('Vampire') & resultSet
 
     includeImp = resultSet & Nocturne.cards(
-        'Devils Workshop', 'Exorcist', 'Tormentor')
+        'Devils Workshop', 'Exorcist', 'Tormentor'
+    )
 
     includeWish = resultSet & Nocturne.cards(
-        'Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)')
+        'Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)'
+    )
+
+    includeHorse = resultSet.union(landscapeList) & Menagerie.cards(
+        'Cavalry',
+        'Groom',
+        'Hostelry',
+        'Livery',
+        'Paddock',
+        'Scrap',
+        'Sleigh',
+        'Supplies',
+        # Events
+        'Bargain',
+        'Demand',
+        'Ride',
+        'Stampede',
+    )
 
     # create final list
     additionalCards = set()
@@ -661,6 +826,8 @@ def RandomizeDominion(setNames=None):
         additionalCards.add('Nocturne: Imp')
     if includeWish:
         additionalCards.add('Nocturne: Wish')
+    if includeHorse:
+        additionalCards.add('Menagerie: Horse')
 
     finalResult = sorted(resultSet | additionalCards)
 
@@ -672,7 +839,7 @@ def RandomizeDominion(setNames=None):
         baneCard = ['Bane is {}'.format(eligibleBanes[0])]
         finalResult = finalResult + baneCard
 
-    finalResult = finalResult + sorted(eventList + landmarkList + projectList)
+    finalResult = finalResult + sorted(landscapeList)
 
     return [str(card) for card in finalResult]
 
