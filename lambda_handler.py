@@ -14,11 +14,11 @@ def lambda_handler(event, context):
     }
 
     if event['requestContext']['httpMethod'] == 'POST':
-        body = json.loads(event['body'] or '')
-        if 'sets' in body:
-            data = RandomizeDominion(body['sets'])
-        else:
-            data = RandomizeDominion()
+        body = json.loads(event['body'] or '{}')
+        sets = body.get('sets') or None
+        options = body.get('options')
+
+        data = RandomizeDominion(sets, options)
         response['body'] = json.dumps(data)
 
     return response

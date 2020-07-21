@@ -69,6 +69,8 @@ class Set(object):
         global AllSets
         self.name = name
         self._cards = CardList()
+        self._firstEdition = None
+        self._secondEdition = None
 
         self._events = None
         self._landmarks = None
@@ -84,19 +86,47 @@ class Set(object):
     def __repr__(self):
         return '<randomizer.Set: {}>'.format(self.name)
 
-    def AddCards(self, cards):
+    def _AddCards(self, cardList, cards):
         for cardData in cards:
-            if isinstance(cardData, dict):
+            if isinstance(cardData, Card):
+                cardList.add(cardData)
+            elif isinstance(cardData, dict):
                 card = Card(**cardData)
                 card.set = self
-                self.cards.add(card)
+                cardList.add(card)
             else:
                 # Assume card data is name for now
-                self.cards.add(Card(cardData, cardSet=self))
+                cardList.add(Card(cardData, cardSet=self))
+
+    def AddCards(self, cards):
+        self._AddCards(self._cards, cards)
+
+    def RemoveCards(self, cards):
+        self._cards -= cards
 
     @property
     def cards(self):
         return self._cards
+
+    @property
+    def firstEdition(self):
+        return self._firstEdition
+
+    @firstEdition.setter
+    def firstEdition(self, cards):
+        if self._firstEdition is None:
+            self._firstEdition = CardList()
+        self._AddCards(self._firstEdition, cards)
+
+    @property
+    def secondEdition(self):
+        return self._secondEdition
+
+    @secondEdition.setter
+    def secondEdition(self, cards):
+        if self._secondEdition is None:
+            self._secondEdition = CardList()
+        self._AddCards(self._secondEdition, cards)
 
     @property
     def events(self):
@@ -154,6 +184,12 @@ Base.AddCards([
     'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room', 'Festival',
     'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch', 'Artisan'
 ])
+Base.firstEdition = [
+    'Adventurer', 'Chancellor', 'Feast', 'Spy', 'Thief', 'Woodcutter'
+]
+Base.secondEdition = Base.cards(
+    'Artisan', 'Bandit', 'Harbinger', 'Merchant', 'Poacher', 'Sentry', 'Vassal'
+)
 
 Intrigue = Set('Intrigue')
 Intrigue.AddCards([
@@ -163,6 +199,14 @@ Intrigue.AddCards([
     'Duke', 'Minion', 'Patrol', 'Replace', 'Torturer', 'Trading Post',
     'Upgrade', 'Harem', 'Nobles'
 ])
+Intrigue.firstEdition = [
+    'Coppersmith', 'Great Hall', 'Saboteur', 'Scout', 'Secret Chamber',
+    'Tribute'
+]
+Intrigue.secondEdition = Intrigue.cards(
+    'Courtier', 'Diplomat', 'Lurker', 'Mill', 'Patrol', 'Replace',
+    'Secret Passage'
+)
 
 Seaside = Set('Seaside')
 Seaside.AddCards([
@@ -578,7 +622,7 @@ BaneCards = set().union(
 )
 
 
-def RandomizeDominion(setNames=None):
+def RandomizeDominion(setNames=None, options=None):
     # Make full list + Events + Landmarks to determine landmarks
     sets = set()
     if setNames is None:
@@ -587,6 +631,21 @@ def RandomizeDominion(setNames=None):
         for setName in setNames:
             if setName in AllSets:
                 sets.add(AllSets[setName])
+
+    if options:
+        if Base in sets:
+            if options.get("base-first-edition"):
+                Base.AddCards(Base.firstEdition)
+
+            if not options.get("base-second-edition", True):
+                Base.RemoveCards(Base.secondEdition)
+
+        if Intrigue in sets:
+            if options.get("intrigue-first-edition"):
+                Intrigue.AddCards(Intrigue.firstEdition)
+
+            if not options.get("intrigue-second-edition", True):
+                Intrigue.RemoveCards(Intrigue.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
     completeList = list(completeSet)
