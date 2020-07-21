@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 data.sets.push(checkbox.value);
             }
             else {
-                data.options[checkbox.value] = checkbox.checked;
+                data.options[checkbox.name] = checkbox.checked;
             }
         }
 
