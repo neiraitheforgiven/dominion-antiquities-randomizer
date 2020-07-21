@@ -648,95 +648,71 @@ def RandomizeDominion(setNames=None, options=None):
                 Intrigue.RemoveCards(Intrigue.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
-    completeList = list(completeSet)
 
+    # Randomize landscape cards
     landscapeSet = set()
+    oneTenth = math.ceil(len(completeSet) / 10)
 
     # Check 10% of all cards for Events
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    eventList = []
-    for t in tempList:
-        if t in Events:
-            eventList = eventList + [t]
-    landscapeSet.update(eventList[:len(eventList) % 2])
+    eventList = Events.intersection(random.sample(completeSet, oneTenth))
+    random.shuffle(eventList)
+    landscapeSet.update(eventList[:len(eventList % 2)])
 
     # Check 10% of all cards for Landmarks
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    landmarkList = []
-    for t in tempList:
-        if t in Landmarks:
-            landmarkList = landmarkList + [t]
-    landscapeSet.update(landmarkList[:len(landmarkList) % 2])
+    landmarkList = Landmarks.intersection(random.sample(completeSet, oneTenth))
+    random.shuffle(landmarkList)
+    landscapeSet.update(landmarkList[:len(landmarkList % 2)])
 
     # Check 10% of all cards for Projects
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    projectList = []
-    for t in tempList:
-        if t in Projects:
-            projectList = projectList + [t]
-    landscapeSet.update(projectList[:len(projectList) % 2])
+    projectList = Projects.intersection(random.sample(completeSet, oneTenth))
+    random.shuffle(projectList)
+    landscapeSet.update(projectList[:len(projectList % 2)])
 
     # Check 10% of all cards for Ways
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    wayList = []
-    for t in tempList:
-        if t.types & {Way}:
-            wayList.append(t)
-    landscapeSet.update(wayList[:len(wayList) % 2])
+    wayList = Ways.intersection(random.sample(completeSet, oneTenth))
+    random.shuffle(wayList)
+    landscapeSet.update(wayList[:len(wayList % 2)])
 
     # Ensure no more than two landscape cards
     landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
 
     # Pull cards
     pullSet = completeSet - LandscapeCards
-    pullList = list(pullSet)
-    random.shuffle(pullList)
-    resultList = pullList[:10]
+    resultSet = set(random.sample(pullSet, 10))
 
-    # enforce Alchemy rule
-    alcCount = 0
-    for r in resultList:
-        if r in Alchemy.cards:
-            alcCount = alcCount + 1
-    # if there's only 1 alchemy card, remove alchemy from the options and
-    # redraw Kingdom cards
-    if alcCount == 1:
+    # Enforce Alchemy rule
+    alchemyCount = len(Alchemy & resultSet)
+    if alchemyCount == 1:
+        # If there's only 1 Alchemy card, remove Alchemy from the options and
+        # redraw Kingdom cards
         pullSet -= Alchemy.cards
-        pullList = list(pullSet)
-        random.shuffle(pullList)
-        resultList = pullList[:10]
-    # if there's only alchemy cards, pull 3 alchemy cards, and then randomize
-    # the rest from not alchemy
-    if alcCount == 2:
-        alcList = list(Alchemy.cards)
-        random.shuffle(alcList)
-        alcList = alcList[:3]
-        pullSet -= set(alcList)
-        pullList = list(pullSet)
-        random.shuffle(pullList)
-        resultList = alcList + pullList[:7]
-    # if there are 3 or more alchemy cards, let it lie.
-
-    # Check for Potions
-    includePotions = set(resultList) & Alchemy.potionCards
+        resultSet = set(random.sample(pullSet, 10))
+    elif alchemyCount == 2:
+        # If there are only 2 Alchemy cards, pull 3 Alchemy cards and then
+        # randomize the rest from not Alchemy
+        alchemyList = random.sample(Alchemy.cards, 3)
+        pullSet -= Alchemy.cards
+        resultSet = set(alchemyList + random.sample(pullSet, 7))
+    # If there are 3 or more Alchemy cards, let it lie.
 
     # Check for Shelters
-    random.shuffle(resultList)
-    includeShelters = DarkAges in sets and set(resultList[:2]) & ShelterLove
+    includeShelters = DarkAges in sets and ShelterLove.intersection(
+        random.sample(resultSet, 2)
+    )
 
     # Check for Colonies and Platinums
-    random.shuffle(resultList)
-    includeColPlat = Prosperity in sets and set(resultList[:2]) & PlatinumLove
+    includeColoniesAndPlatinum = (
+        Prosperity in sets
+        and PlatinumLove.intersection(random.sample(resultSet, 2))
+    )
 
     # Check for Boulder traps
-    random.shuffle(resultList)
-    includeBTraps = Antiquities in sets and set(resultList[:1]) & TrapLove
+    includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
+        random.sample(resultSet, 1)
+    )
 
-    resultSet = set(resultList)
+    # Check for Potions
+    includePotions = Alchemy.potionCards & resultSet
 
     # Check for Looters
     includeLooters = LooterCards & resultSet
@@ -794,9 +770,9 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add('Dark Ages: Shelters')
     if includeLooters:
         additionalCards.add('Dark Ages: Ruins')
-    if includeColPlat:
+    if includeColoniesAndPlatinum:
         additionalCards.update(('Prosperity: Colony', 'Prosperity: Platinum'))
-    if includeBTraps:
+    if includeBoulderTraps:
         additionalCards.add('Antiquities: Boulder Traps')
     if includeMadman:
         additionalCards.add('Dark Ages: Madman')
