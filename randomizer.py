@@ -745,7 +745,7 @@ def RandomizeDominion(setNames=None, options=None):
     )
 
     includeBoons = resultSet & BoonCards
-    includeHex = resultSet & HexCards
+    includeHexes = resultSet & HexCards
 
     includeWisp = includeBoons or (Nocturne.cards('Exorcist') & resultSet)
 
@@ -808,7 +808,7 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add('Nocturne: Ghost')
     if includeBoons:
         landscapeList.append('(Nocturne: Boons Deck)')
-    if includeHex:
+    if includeHexes:
         landscapeList.append('(Nocturne: Hexes Deck)')
     if includeWisp:
         additionalCards.add('Nocturne: Will-o-wisp')
