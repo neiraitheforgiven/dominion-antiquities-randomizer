@@ -676,7 +676,7 @@ def RandomizeDominion(setNames=None, options=None):
     # Ensure no more than two landscape cards
     landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
 
-    # Pull cards
+    # Pull Kingdom cards
     pullSet = completeSet - LandscapeCards
     resultSet = set(random.sample(pullSet, 10))
 
@@ -773,7 +773,9 @@ def RandomizeDominion(setNames=None, options=None):
     if includeColoniesAndPlatinum:
         additionalCards.update(('Prosperity: Colony', 'Prosperity: Platinum'))
     if includeBoulderTraps:
-        additionalCards.add('Antiquities: Boulder Traps')
+        # Technically this is not a landscape card, but it is set up
+        # differently than other Kingdom cards
+        landscapeList.append('(Antiquities Trap): Boulder Traps')
     if includeMadman:
         additionalCards.add('Dark Ages: Madman')
     if includeMercenary:
@@ -791,9 +793,9 @@ def RandomizeDominion(setNames=None, options=None):
     if includeGhost:
         additionalCards.add('Nocturne: Ghost')
     if includeBoons:
-        additionalCards.add('Nocturne: Boons Deck')
+        landscapeList.append('(Nocturne: Boons Deck)')
     if includeHex:
-        additionalCards.add('Nocturne: Hexes Deck')
+        landscapeList.append('(Nocturne: Hexes Deck)')
     if includeWisp:
         additionalCards.add('Nocturne: Will-o-wisp')
     if includeBat:
@@ -812,8 +814,8 @@ def RandomizeDominion(setNames=None, options=None):
     if includeBane:
         eligibleBanes = (pullSet & BaneCards) - resultSet
         if not eligibleBanes:
-            # All eligible bane cards are already part of the randomized set!
-            # Add a new card to the set and pull a bane from the randomized
+            # All eligible Bane cards are already part of the randomized set!
+            # Add a new card to the set and pull a Bane from the randomized
             # cards.
             resultSet.update(random.sample(pullSet - resultSet, 1))
             baneCard = random.sample(resultSet & BaneCards, 1)[0]
