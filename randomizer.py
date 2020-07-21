@@ -653,29 +653,25 @@ def RandomizeDominion(setNames=None, options=None):
     landscapeSet = set()
     oneTenth = math.ceil(len(completeSet) / 10)
 
-    # Check 10% of all cards for Events
-    eventList = list(Events.intersection(random.sample(completeSet, oneTenth)))
-    random.shuffle(eventList)
-    landscapeSet.update(eventList[:len(eventList) % 2])
+    # Check 10% of all cards for Events, add one if an odd number is found
+    eventSet = Events.intersection(random.sample(completeSet, oneTenth))
+    if len(eventSet) % 2:
+        landscapeSet.update(random.sample(eventSet, 1))
 
-    # Check 10% of all cards for Landmarks
-    landmarkList = list(
-        Landmarks.intersection(random.sample(completeSet, oneTenth))
-    )
-    random.shuffle(landmarkList)
-    landscapeSet.update(landmarkList[:len(landmarkList) % 2])
+    # Check 10% of all cards for Landmarks, add one if an odd number is found
+    landmarkSet = Landmarks.intersection(random.sample(completeSet, oneTenth))
+    if len(landmarkSet) % 2:
+        landscapeSet.update(random.sample(landmarkSet, 1))
 
-    # Check 10% of all cards for Projects
-    projectList = list(
-        Projects.intersection(random.sample(completeSet, oneTenth))
-    )
-    random.shuffle(projectList)
-    landscapeSet.update(projectList[:len(projectList) % 2])
+    # Check 10% of all cards for Projects, add one if an odd number is found
+    projectSet = Projects.intersection(random.sample(completeSet, oneTenth))
+    if len(projectSet) % 2:
+        landscapeSet.update(random.sample(projectSet, 1))
 
-    # Check 10% of all cards for Ways
-    wayList = list(Ways.intersection(random.sample(completeSet, oneTenth)))
-    random.shuffle(wayList)
-    landscapeSet.update(wayList[:len(wayList) % 2])
+    # Check 10% of all cards for Ways, add one if an odd number is found
+    waySet = Ways.intersection(random.sample(completeSet, oneTenth))
+    if len(waySet) % 2:
+        landscapeSet.update(random.sample(waySet, 1))
 
     # Ensure no more than two landscape cards
     landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
