@@ -654,24 +654,28 @@ def RandomizeDominion(setNames=None, options=None):
     oneTenth = math.ceil(len(completeSet) / 10)
 
     # Check 10% of all cards for Events
-    eventList = Events.intersection(random.sample(completeSet, oneTenth))
+    eventList = list(Events.intersection(random.sample(completeSet, oneTenth)))
     random.shuffle(eventList)
-    landscapeSet.update(eventList[:len(eventList % 2)])
+    landscapeSet.update(eventList[:len(eventList) % 2])
 
     # Check 10% of all cards for Landmarks
-    landmarkList = Landmarks.intersection(random.sample(completeSet, oneTenth))
+    landmarkList = list(
+        Landmarks.intersection(random.sample(completeSet, oneTenth))
+    )
     random.shuffle(landmarkList)
-    landscapeSet.update(landmarkList[:len(landmarkList % 2)])
+    landscapeSet.update(landmarkList[:len(landmarkList) % 2])
 
     # Check 10% of all cards for Projects
-    projectList = Projects.intersection(random.sample(completeSet, oneTenth))
+    projectList = list(
+        Projects.intersection(random.sample(completeSet, oneTenth))
+    )
     random.shuffle(projectList)
-    landscapeSet.update(projectList[:len(projectList % 2)])
+    landscapeSet.update(projectList[:len(projectList) % 2])
 
     # Check 10% of all cards for Ways
-    wayList = Ways.intersection(random.sample(completeSet, oneTenth))
+    wayList = list(Ways.intersection(random.sample(completeSet, oneTenth)))
     random.shuffle(wayList)
-    landscapeSet.update(wayList[:len(wayList % 2)])
+    landscapeSet.update(wayList[:len(wayList) % 2])
 
     # Ensure no more than two landscape cards
     landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
@@ -681,7 +685,7 @@ def RandomizeDominion(setNames=None, options=None):
     resultSet = set(random.sample(pullSet, 10))
 
     # Enforce Alchemy rule
-    alchemyCount = len(Alchemy & resultSet)
+    alchemyCount = len(Alchemy.cards & resultSet)
     if alchemyCount == 1:
         # If there's only 1 Alchemy card, remove Alchemy from the options and
         # redraw Kingdom cards
