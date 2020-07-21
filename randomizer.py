@@ -695,6 +695,20 @@ def RandomizeDominion(setNames=None, options=None):
         resultSet = set(alchemyList + random.sample(pullSet, 7))
     # If there are 3 or more Alchemy cards, let it lie.
 
+    # Young Witch support
+    includeBane = resultSet & Cornucopia.cards('Young Witch')
+    if includeBane:
+        eligibleBanes = (pullSet & BaneCards) - resultSet
+        if not eligibleBanes:
+            # All eligible Bane cards are already part of the randomized set!
+            # Add a new card to the set and pull a Bane from the randomized
+            # cards.
+            resultSet.update(random.sample(pullSet - resultSet, 1))
+            baneCard = random.sample(resultSet & BaneCards, 1)[0]
+        else:
+            baneCard = random.sample(eligibleBanes, 1)[0]
+            resultSet.add(baneCard)
+
     # Check for Shelters
     includeShelters = DarkAges in sets and ShelterLove.intersection(
         random.sample(resultSet, 2)
@@ -807,26 +821,17 @@ def RandomizeDominion(setNames=None, options=None):
     if includeHorse:
         additionalCards.add('Menagerie: Horse')
 
-    finalResult = sorted(resultSet | additionalCards)
-
-    # Young Witch Support
-    includeBane = resultSet & Cornucopia.cards('Young Witch')
+    # Create final card list
     if includeBane:
-        eligibleBanes = (pullSet & BaneCards) - resultSet
-        if not eligibleBanes:
-            # All eligible Bane cards are already part of the randomized set!
-            # Add a new card to the set and pull a Bane from the randomized
-            # cards.
-            resultSet.update(random.sample(pullSet - resultSet, 1))
-            baneCard = random.sample(resultSet & BaneCards, 1)[0]
-            resultSet.remove(baneCard)
-            finalResult = sorted(resultSet | additionalCards)
-        else:
-            baneCard = random.sample(eligibleBanes, 1)[0]
-
+        # Append Bane Card to end of list
+        resultSet.remove(baneCard)
+        finalResult = sorted(resultSet | additionalCards)
         finalResult.append('Bane is {}'.format(baneCard))
+    else:
+        finalResult = sorted(resultSet | additionalCards)
 
-    finalResult = finalResult + sorted(landscapeList)
+    # Add non-kingdom cards
+    finalResult.extend(sorted(landscapeList))
 
     return [str(card) for card in finalResult]
 
