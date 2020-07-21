@@ -123,20 +123,20 @@ class Set(object):
         return self._projects
 
     @property
-    def potionCards(self):
-        if self._potionCards is None:
-            self._potionCards = CardList(
-                card for card in self._cards if card.types & {Potion}
-            )
-        return self._potionCards
-
-    @property
     def ways(self):
         if self._ways is None:
             self._ways = CardList(
                 card for card in self._cards if card.types & {Way}
             )
         return self._ways
+
+    @property
+    def potionCards(self):
+        if self._potionCards is None:
+            self._potionCards = CardList(
+                card for card in self._cards if card.types & {Potion}
+            )
+        return self._potionCards
 
 
 # Define card types
