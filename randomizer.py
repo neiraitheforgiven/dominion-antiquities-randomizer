@@ -630,6 +630,9 @@ def RandomizeDominion(setNames=None):
             wayList.append(t)
     landscapeSet.update(wayList[:len(wayList) % 2])
 
+    # Ensure no more than two landscape cards
+    landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
+
     # Pull cards
     pullSet = completeSet - LandscapeCards
     pullList = list(pullSet)
@@ -778,7 +781,7 @@ def RandomizeDominion(setNames=None):
         baneCard = ['Bane is {}'.format(eligibleBanes[0])]
         finalResult = finalResult + baneCard
 
-    finalResult = finalResult + sorted(landscapeSet)
+    finalResult = finalResult + sorted(landscapeList)
 
     return [str(card) for card in finalResult]
 
