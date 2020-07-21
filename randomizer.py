@@ -814,10 +814,19 @@ def RandomizeDominion(setNames=None, options=None):
     # Young Witch Support
     includeBane = resultSet & Cornucopia.cards('Young Witch')
     if includeBane:
-        eligibleBanes = list((pullSet & BaneCards) - resultSet)
-        random.shuffle(eligibleBanes)
-        baneCard = ['Bane is {}'.format(eligibleBanes[0])]
-        finalResult = finalResult + baneCard
+        eligibleBanes = (pullSet & BaneCards) - resultSet
+        if not eligibleBanes:
+            # All eligible bane cards are already part of the randomized set!
+            # Add a new card to the set and pull a bane from the randomized
+            # cards.
+            resultSet.update(random.sample(pullSet - resultSet, 1))
+            baneCard = random.sample(resultSet & BaneCards, 1)[0]
+            resultSet.remove(baneCard)
+            finalResult = sorted(resultSet | additionalCards)
+        else:
+            baneCard = random.sample(eligibleBanes, 1)[0]
+
+        finalResult.append('Bane is {}'.format(baneCard))
 
     finalResult = finalResult + sorted(landscapeList)
 
