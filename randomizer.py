@@ -151,9 +151,8 @@ Base = Set('Base')
 Base.AddCards([
     'Cellar', 'Chapel', 'Moat', 'Harbinger', 'Merchant', 'Village', 'Workshop',
     'Vassal', 'Bureaucrat', 'Gardens', 'Militia', 'Moneylender', 'Poacher',
-    'Remodel', 'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room',
-    'Festival', 'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch',
-    'Artisan'
+    'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room', 'Festival',
+    'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch', 'Artisan'
 ])
 
 Intrigue = Set('Intrigue')
