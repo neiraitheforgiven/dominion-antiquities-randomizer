@@ -761,6 +761,31 @@ def RandomizeDominion(setNames=None, options=None):
             baneCard = random.sample(eligibleBanes, 1)[0]
             resultSet.add(baneCard)
 
+    # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
+    # select a card from the Bane Cards. The card chosen for Way of the Mouse
+    # should not be used when determining most additional card rules.
+    includeMouse = Menagerie.cards('Way of the Mouse').intersection(
+        landscapeList
+    )
+    mouseSet = set()
+    if includeMouse:
+        eligibleMice = (kingdomSet & BaneCards) - resultSet
+        if not eligibleMice:
+            # All eligible Mouse cards are already part of the randomized set!
+            # (This is nearly impossible.) Get a Mouse from the randomized
+            # cards, add a new card to the set, and remove the mouse from the
+            # set.
+            eligibleMice = resultSet & BaneCards
+            if includeBane:
+                eligibleMice.remove(baneCard)
+
+            mouseCard = random.sample(eligibleMice, 1)[0]
+            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+            resultSet.remove(mouseCard)
+        else:
+            mouseCard = random.sample(eligibleMice, 1)[0]
+        mouseSet.add(mouseCard)
+
     fullResults = resultSet.union(landscapeList)
 
     # Check for Colonies and Platinums
@@ -793,9 +818,9 @@ def RandomizeDominion(setNames=None, options=None):
         'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist'
     )
 
-    includeBoons = resultSet & BoonCards
+    includeBoons = BoonCards & (resultSet | mouseSet)
 
-    includeHexes = resultSet & HexCards
+    includeHexes = HexCards & (resultSet | mouseSet)
 
     includeWisp = includeBoons or (Nocturne.cards('Exorcist') & resultSet)
 
@@ -810,7 +835,7 @@ def RandomizeDominion(setNames=None, options=None):
     )
 
     # Check for Horses
-    includeHorse = resultSet.union(landscapeList) & HorseCards
+    includeHorse = HorseCards & (fullResults | mouseSet)
 
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
@@ -874,6 +899,8 @@ def RandomizeDominion(setNames=None, options=None):
 
     # Add non-kingdom cards
     finalResult.extend(sorted(landscapeList))
+    if includeMouse:
+        finalResult.append('Mouse is {}'.format(mouseCard))
 
     return [str(card) for card in finalResult]
 
