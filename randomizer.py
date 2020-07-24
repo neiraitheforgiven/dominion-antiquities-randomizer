@@ -1,4 +1,3 @@
-import math
 import random
 
 
@@ -298,7 +297,7 @@ Alchemy.AddCards(
         {"name": "University", "types": {Potion}},
         {"name": "Alchemist", "types": {Potion}},
         {"name": "Familiar", "types": {Potion}},
-        {"name": "Philosopher Stone", "types": {Potion}},
+        {"name": "Philosopher's Stone", "types": {Potion}},
         {"name": "Golem", "types": {Potion}},
         {"name": "Possession", "types": {Potion}},
     ]
@@ -780,7 +779,7 @@ PlatinumLove = Prosperity.cards.union(
     Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
     Intrigue.cards("Harem", "Nobles"),
     Seaside.cards("Explorer", "Treasure Map"),
-    Alchemy.cards("Philosopher Stone"),
+    Alchemy.cards("Philosopher's Stone"),
     Cornucopia.cards("Tournament"),
     Hinterlands.cards("Border Village", "Cache", "Duchess", "Embassy", "Fool's Gold"),
     DarkAges.cards("Altar", "Counterfeit", "Hunting Grounds", "Poor House"),
@@ -1352,7 +1351,7 @@ def RandomizeDominion(setNames=None, options=None):
     if includeHexes:
         landscapeList.append("(Nocturne: Hexes Deck)")
     if includeWisp:
-        additionalCards.add("Nocturne: Will-o-wisp")
+        additionalCards.add("Nocturne: Will-o'-wisp")
     if includeBat:
         additionalCards.add("Nocturne: Bat")
     if includeImp:
