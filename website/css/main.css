@@ -69,12 +69,12 @@ html, body {
     align-items: center;
 }
 
-#sets {
+form > fieldset {
     margin-bottom: 16px;
     width: 100%;
 }
 
-#sets > span {
+form > fieldset > span {
     display: block;
     padding: 0.4em;
 }

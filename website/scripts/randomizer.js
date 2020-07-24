@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
             }
         }
 
+        for (var i = 0; i < form.moreOptions.elements.length; i++) {
+            let checkbox = form.sets.elements[i];
+
+            data.options[checkbox.name] = checkbox.checked;
+        }
+
         fetch(url, {
             method: 'POST',
             mode: 'cors',

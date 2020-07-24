@@ -14,14 +14,14 @@
             <fieldset id="sets">
                 <span>
                     <input type="checkbox" class="set" name="Base" id="Base" value="Base" checked>
-                    <label for="Base">Base</label>
+                    <label for="Base">Dominion</label>
                     <fieldset class="set-options" id="base-options">
                         <span>
-                            <input type="checkbox" class="set-option" name="base-first-edition" id="base-first-edition" value="first-edition">
+                            <input type="checkbox" class="set-option" name="base-first-edition" id="base-first-edition" value="base-first-edition">
                             <label for="base-first-edition">Include first edition cards</label>
                         </span>
                         <span>
-                            <input type="checkbox" class="set-option" name="base-second-edition" id="base-second-edition" value="second-edition" checked>
+                            <input type="checkbox" class="set-option" name="base-second-edition" id="base-second-edition" value="base-second-edition" checked>
                             <label for="base-second-edition">Include second edition cards</label>
                         </span>
                     </fieldset>
@@ -31,11 +31,11 @@
                     <label for="Intrigue">Intrigue</label>
                     <fieldset class="set-options" id="intrigue-options">
                         <span>
-                            <input type="checkbox" class="set-option" name="intrigue-first-edition" id="intrigue-first-edition" value="first-edition">
+                            <input type="checkbox" class="set-option" name="intrigue-first-edition" id="intrigue-first-edition" value="intrigue-first-edition">
                             <label for="intrigue-first-edition">Include first edition cards</label>
                         </span>
                         <span>
-                            <input type="checkbox" class="set-option" name="intrigue-second-edition" id="intrigue-second-edition" value="second-edition" checked>
+                            <input type="checkbox" class="set-option" name="intrigue-second-edition" id="intrigue-second-edition" value="intrigue-second-edition" checked>
                             <label for="intrigue-second-edition">Include second edition cards</label>
                         </span>
                     </fieldset>
@@ -91,6 +91,12 @@
                 <span>
                     <input type="checkbox" class="set" name="Antiquities" id="Antiquities" value="Antiquities" checked>
                     <label for="Antiquities">Antiquities</label>
+                </span>
+            </fieldset>
+            <fieldset id="moreOptions">
+                <span>
+                    <input type="checkbox" name="limit-landscapes" id="limit-landscapes" value="limit-landscapes">
+                    <label for="limit-landscapes">Maximum 2 landscape cards</label>
                 </span>
             </fieldset>
             <input type="submit" id="randomize" value="Randomize">

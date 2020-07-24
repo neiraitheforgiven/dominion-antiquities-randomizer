@@ -716,8 +716,16 @@ def RandomizeDominion(setNames=None, options=None):
             counter += 1
 
         # Get final list of landscape cards
-        landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
-        landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+        if options and options.get('limit-landscapes'):
+            landscapeList = random.sample(waySet, len(waySet))[:1]
+            landscapeList.extend(
+                random.sample(
+                    landscapeSet, len(landscapeSet)
+                )[: 2 - len(landscapeList)]
+            )
+        else:
+            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+            landscapeList.extend(random.sample(waySet, len(waySet))[:1])
     else:
         kingdomSet = completeSet
         landscapeList = []
