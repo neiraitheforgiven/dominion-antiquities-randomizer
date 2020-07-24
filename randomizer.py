@@ -733,18 +733,19 @@ def RandomizeDominion(setNames=None, options=None):
         resultSet = set(random.sample(kingdomSet, 10))
 
     # Enforce Alchemy rule
-    alchemyCards = Alchemy.cards & resultSet
-    if len(alchemyCards) == 1:
-        # If there's only 1 Alchemy card, remove Alchemy from the options and
-        # draw an addtional Kingdom card
-        resultSet -= alchemyCards
-        resultSet.update(random.sample(kingdomSet - resultSet, 1))
-    elif len(alchemyCards) == 2:
-        # If there are only 2 Alchemy cards, pull an additional Alchemy card
-        # and randomly remove one non-Alchemy card
-        alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
-        resultSet = alchemyCards.union(random.sample(resultSet, 7))
-    # If there are 3 or more Alchemy cards, let it lie.
+    if (options or {}).get('enforce-alchemy-rule', True):
+        alchemyCards = Alchemy.cards & resultSet
+        if len(alchemyCards) == 1:
+            # If there's only 1 Alchemy card, remove Alchemy from the options
+            # and draw an addtional Kingdom card
+            resultSet -= alchemyCards
+            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+        elif len(alchemyCards) == 2:
+            # If there are only 2 Alchemy cards, pull an additional Alchemy
+            # card and randomly remove one non-Alchemy card
+            alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
+            resultSet = alchemyCards.union(random.sample(resultSet, 7))
+        # If there are 3 or more Alchemy cards, let it lie.
 
     # Young Witch support
     includeBane = resultSet & Cornucopia.cards('Young Witch')
