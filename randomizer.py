@@ -42,7 +42,7 @@ class Card(object):
         return hash(str(self))
 
     def __repr__(self):
-        return '<randomizer.Card: {}>'.format(self)
+        return "<randomizer.Card: {}>".format(self)
 
     def __gt__(self, other):
         return str(self) > str(other)
@@ -52,15 +52,15 @@ class Card(object):
 
     def __str__(self):
         if Event in self.types:
-            formatStr = '({} Event): {}'
+            formatStr = "({} Event): {}"
         elif Landmark in self.types:
-            formatStr = '({} Landmark): {}'
+            formatStr = "({} Landmark): {}"
         elif Project in self.types:
-            formatStr = '({} Project): {}'
+            formatStr = "({} Project): {}"
         elif Way in self.types:
-            formatStr = '({} Way): {}'
+            formatStr = "({} Way): {}"
         else:
-            formatStr = '{}: {}'
+            formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
 
 
@@ -84,7 +84,7 @@ class Set(object):
         return hash(self.name)
 
     def __repr__(self):
-        return '<randomizer.Set: {}>'.format(self.name)
+        return "<randomizer.Set: {}>".format(self.name)
 
     def _AddCards(self, cardList, cards):
         for cardData in cards:
@@ -155,9 +155,7 @@ class Set(object):
     @property
     def ways(self):
         if self._ways is None:
-            self._ways = CardList(
-                card for card in self._cards if card.types & {Way}
-            )
+            self._ways = CardList(card for card in self._cards if card.types & {Way})
         return self._ways
 
     @property
@@ -170,286 +168,602 @@ class Set(object):
 
 
 # Define card types
-Event = CardType('Event')
-Landmark = CardType('Landmark')
-Project = CardType('Project')
-Way = CardType('Way')
-Potion = CardType('Potion')
+Event = CardType("Event")
+Landmark = CardType("Landmark")
+Project = CardType("Project")
+Way = CardType("Way")
+Potion = CardType("Potion")
 
 # Define sets
-Base = Set('Base')
-Base.AddCards([
-    'Cellar', 'Chapel', 'Moat', 'Harbinger', 'Merchant', 'Village', 'Workshop',
-    'Vassal', 'Bureaucrat', 'Gardens', 'Militia', 'Moneylender', 'Poacher',
-    'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room', 'Festival',
-    'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch', 'Artisan'
-])
-Base.firstEdition = [
-    'Adventurer', 'Chancellor', 'Feast', 'Spy', 'Thief', 'Woodcutter'
-]
+Base = Set("Base")
+Base.AddCards(
+    [
+        "Cellar",
+        "Chapel",
+        "Moat",
+        "Harbinger",
+        "Merchant",
+        "Village",
+        "Workshop",
+        "Vassal",
+        "Bureaucrat",
+        "Gardens",
+        "Militia",
+        "Moneylender",
+        "Poacher",
+        "Remodel",
+        "Smithy",
+        "Throne Room",
+        "Bandit",
+        "Council Room",
+        "Festival",
+        "Laboratory",
+        "Library",
+        "Market",
+        "Mine",
+        "Sentry",
+        "Witch",
+        "Artisan",
+    ]
+)
+Base.firstEdition = ["Adventurer", "Chancellor", "Feast", "Spy", "Thief", "Woodcutter"]
 Base.secondEdition = Base.cards(
-    'Artisan', 'Bandit', 'Harbinger', 'Merchant', 'Poacher', 'Sentry', 'Vassal'
+    "Artisan", "Bandit", "Harbinger", "Merchant", "Poacher", "Sentry", "Vassal"
 )
 
-Intrigue = Set('Intrigue')
-Intrigue.AddCards([
-    'Courtyard', 'Lurker', 'Pawn', 'Masquerade', 'Shanty Town', 'Steward',
-    'Swindler', 'Wishing Well', 'Baron', 'Bridge', 'Conspirator', 'Diplomat',
-    'Ironworks', 'Mill', 'Mining Village', 'Secret Passage', 'Courtier',
-    'Duke', 'Minion', 'Patrol', 'Replace', 'Torturer', 'Trading Post',
-    'Upgrade', 'Harem', 'Nobles'
-])
+Intrigue = Set("Intrigue")
+Intrigue.AddCards(
+    [
+        "Courtyard",
+        "Lurker",
+        "Pawn",
+        "Masquerade",
+        "Shanty Town",
+        "Steward",
+        "Swindler",
+        "Wishing Well",
+        "Baron",
+        "Bridge",
+        "Conspirator",
+        "Diplomat",
+        "Ironworks",
+        "Mill",
+        "Mining Village",
+        "Secret Passage",
+        "Courtier",
+        "Duke",
+        "Minion",
+        "Patrol",
+        "Replace",
+        "Torturer",
+        "Trading Post",
+        "Upgrade",
+        "Harem",
+        "Nobles",
+    ]
+)
 Intrigue.firstEdition = [
-    'Coppersmith', 'Great Hall', 'Saboteur', 'Scout', 'Secret Chamber',
-    'Tribute'
+    "Coppersmith",
+    "Great Hall",
+    "Saboteur",
+    "Scout",
+    "Secret Chamber",
+    "Tribute",
 ]
 Intrigue.secondEdition = Intrigue.cards(
-    'Courtier', 'Diplomat', 'Lurker', 'Mill', 'Patrol', 'Replace',
-    'Secret Passage'
+    "Courtier", "Diplomat", "Lurker", "Mill", "Patrol", "Replace", "Secret Passage"
 )
 
-Seaside = Set('Seaside')
-Seaside.AddCards([
-    'Embargo', 'Haven', 'Lighthouse', 'Native Village', 'Pearl Diver',
-    'Ambassador', 'Fishing Village', 'Lookout', 'Smugglers', 'Warehouse',
-    'Caravan', 'Cutpurse', 'Island', 'Navigator', 'Pirate Ship', 'Salvager',
-    'Sea Hag', 'Treasure Map', 'Bazaar', 'Explorer', 'Ghost Ship',
-    'Merchant Ship', 'Outpost', 'Tactician', 'Treasury', 'Wharf'
-])
+Seaside = Set("Seaside")
+Seaside.AddCards(
+    [
+        "Embargo",
+        "Haven",
+        "Lighthouse",
+        "Native Village",
+        "Pearl Diver",
+        "Ambassador",
+        "Fishing Village",
+        "Lookout",
+        "Smugglers",
+        "Warehouse",
+        "Caravan",
+        "Cutpurse",
+        "Island",
+        "Navigator",
+        "Pirate Ship",
+        "Salvager",
+        "Sea Hag",
+        "Treasure Map",
+        "Bazaar",
+        "Explorer",
+        "Ghost Ship",
+        "Merchant Ship",
+        "Outpost",
+        "Tactician",
+        "Treasury",
+        "Wharf",
+    ]
+)
 
-Alchemy = Set('Alchemy')
-Alchemy.AddCards([
-    'Herbalist', 'Apprentice',
-    {'name': 'Transmute', 'types': {Potion}},
-    {'name': 'Vineyard', 'types': {Potion}},
-    {'name': 'Apothecary', 'types': {Potion}},
-    {'name': 'Scrying Pool', 'types': {Potion}},
-    {'name': 'University', 'types': {Potion}},
-    {'name': 'Alchemist', 'types': {Potion}},
-    {'name': 'Familiar', 'types': {Potion}},
-    {'name': 'Philosopher Stone', 'types': {Potion}},
-    {'name': 'Golem', 'types': {Potion}},
-    {'name': 'Possession', 'types': {Potion}}
-])
+Alchemy = Set("Alchemy")
+Alchemy.AddCards(
+    [
+        "Herbalist",
+        "Apprentice",
+        {"name": "Transmute", "types": {Potion}},
+        {"name": "Vineyard", "types": {Potion}},
+        {"name": "Apothecary", "types": {Potion}},
+        {"name": "Scrying Pool", "types": {Potion}},
+        {"name": "University", "types": {Potion}},
+        {"name": "Alchemist", "types": {Potion}},
+        {"name": "Familiar", "types": {Potion}},
+        {"name": "Philosopher Stone", "types": {Potion}},
+        {"name": "Golem", "types": {Potion}},
+        {"name": "Possession", "types": {Potion}},
+    ]
+)
 
-Prosperity = Set('Prosperity')
-Prosperity.AddCards([
-    'Loan', 'Trade Route', 'Watchtower', 'Bishop', 'Monument', 'Quarry',
-    'Talisman', 'Worker Village', 'City', 'Contraband', 'Counting House',
-    'Mint', 'Mountebank', 'Rabble', 'Royal Seal', 'Vault', 'Venture', 'Goons',
-    'Grand Market', 'Hoard', 'Bank', 'Expand', 'Forge', "King's Court",
-    'Peddler'
-])
+Prosperity = Set("Prosperity")
+Prosperity.AddCards(
+    [
+        "Loan",
+        "Trade Route",
+        "Watchtower",
+        "Bishop",
+        "Monument",
+        "Quarry",
+        "Talisman",
+        "Worker Village",
+        "City",
+        "Contraband",
+        "Counting House",
+        "Mint",
+        "Mountebank",
+        "Rabble",
+        "Royal Seal",
+        "Vault",
+        "Venture",
+        "Goons",
+        "Grand Market",
+        "Hoard",
+        "Bank",
+        "Expand",
+        "Forge",
+        "King's Court",
+        "Peddler",
+    ]
+)
 
-Cornucopia = Set('Cornucopia')
-Cornucopia.AddCards([
-    'Hamlet', 'Fortune Teller', 'Menagerie', 'Farming Village',
-    'Horse Traders', 'Remake', 'Tournament', 'Young Witch', 'Harvest',
-    'Horn of Plenty', 'Hunting Party', 'Jester', 'Fairgrounds'
-])
+Cornucopia = Set("Cornucopia")
+Cornucopia.AddCards(
+    [
+        "Hamlet",
+        "Fortune Teller",
+        "Menagerie",
+        "Farming Village",
+        "Horse Traders",
+        "Remake",
+        "Tournament",
+        "Young Witch",
+        "Harvest",
+        "Horn of Plenty",
+        "Hunting Party",
+        "Jester",
+        "Fairgrounds",
+    ]
+)
 
-Hinterlands = Set('Hinterlands')
-Hinterlands.AddCards([
-    'Crossroads', 'Duchess', "Fool's Gold", 'Develop', 'Oasis', 'Oracle',
-    'Scheme', 'Tunnel', 'Jack of All Trades', 'Noble Brigand', 'Nomad Camp',
-    'Silk Road', 'Spice Merchant', 'Trader', 'Cache', 'Cartographer',
-    'Embassy', 'Haggler', 'Highway', 'Ill-gotten Gains', 'Inn', 'Mandarin',
-    'Margrave', 'Stables', 'Border Village', 'Farmland'
-])
+Hinterlands = Set("Hinterlands")
+Hinterlands.AddCards(
+    [
+        "Crossroads",
+        "Duchess",
+        "Fool's Gold",
+        "Develop",
+        "Oasis",
+        "Oracle",
+        "Scheme",
+        "Tunnel",
+        "Jack of All Trades",
+        "Noble Brigand",
+        "Nomad Camp",
+        "Silk Road",
+        "Spice Merchant",
+        "Trader",
+        "Cache",
+        "Cartographer",
+        "Embassy",
+        "Haggler",
+        "Highway",
+        "Ill-gotten Gains",
+        "Inn",
+        "Mandarin",
+        "Margrave",
+        "Stables",
+        "Border Village",
+        "Farmland",
+    ]
+)
 
-DarkAges = Set('Dark Ages')
-DarkAges.AddCards([
-    'Poor House', 'Beggar', 'Squire', 'Vagrant', 'Forager', 'Hermit',
-    'Market Square', 'Sage', 'Storeroom', 'Urchin', 'Armory', 'Death Cart',
-    'Feodum', 'Fortress', 'Ironmonger', 'Marauder', 'Procession', 'Rats',
-    'Scavenger', 'Wandering Minstrel', 'Band of Misfits', 'Bandit Camp',
-    'Catacombs', 'Count', 'Counterfeit', 'Cultist', 'Graverobber',
-    'Junk Dealer', 'Knights', 'Mystic', 'Pillage', 'Rebuild', 'Rogue', 'Altar',
-    'Hunting Grounds'
-])
+DarkAges = Set("Dark Ages")
+DarkAges.AddCards(
+    [
+        "Poor House",
+        "Beggar",
+        "Squire",
+        "Vagrant",
+        "Forager",
+        "Hermit",
+        "Market Square",
+        "Sage",
+        "Storeroom",
+        "Urchin",
+        "Armory",
+        "Death Cart",
+        "Feodum",
+        "Fortress",
+        "Ironmonger",
+        "Marauder",
+        "Procession",
+        "Rats",
+        "Scavenger",
+        "Wandering Minstrel",
+        "Band of Misfits",
+        "Bandit Camp",
+        "Catacombs",
+        "Count",
+        "Counterfeit",
+        "Cultist",
+        "Graverobber",
+        "Junk Dealer",
+        "Knights",
+        "Mystic",
+        "Pillage",
+        "Rebuild",
+        "Rogue",
+        "Altar",
+        "Hunting Grounds",
+    ]
+)
 
-Guilds = Set('Guilds')
-Guilds.AddCards([
-    'Candlestick Maker', 'Stonemason', 'Doctor', 'Masterpiece', 'Advisor',
-    'Plaza', 'Taxman', 'Herald', 'Baker', 'Butcher', 'Journeyman',
-    'Merchant Guild', 'Soothsayer'
-])
+Guilds = Set("Guilds")
+Guilds.AddCards(
+    [
+        "Candlestick Maker",
+        "Stonemason",
+        "Doctor",
+        "Masterpiece",
+        "Advisor",
+        "Plaza",
+        "Taxman",
+        "Herald",
+        "Baker",
+        "Butcher",
+        "Journeyman",
+        "Merchant Guild",
+        "Soothsayer",
+    ]
+)
 
-Adventures = Set('Adventures')
-Adventures.AddCards([
-    'Coin of the Realm', 'Page', 'Peasant', 'Ratcatcher', 'Raze', 'Amulet',
-    'Caravan Guard', 'Dungeon', 'Gear', 'Guide', 'Duplicate', 'Magpie',
-    'Messenger', 'Miser', 'Port', 'Ranger', 'Transmogrify', 'Artificer',
-    'Bridge Troll', 'Distant Lands', 'Giant', 'Haunted Woods', 'Lost City',
-    'Relic', 'Royal Carriage', 'Storyteller', 'Swamp Hag', 'Treasure Trove',
-    'Wine Merchant', 'Hireling',
-    {'name': 'Alms', 'types': {Event}},
-    {'name': 'Borrow', 'types': {Event}},
-    {'name': 'Quest', 'types': {Event}},
-    {'name': 'Save', 'types': {Event}},
-    {'name': 'Scouting Party', 'types': {Event}},
-    {'name': 'Travelling Fair', 'types': {Event}},
-    {'name': 'Bonfire', 'types': {Event}},
-    {'name': 'Expedition', 'types': {Event}},
-    {'name': 'Ferry', 'types': {Event}},
-    {'name': 'Plan', 'types': {Event}},
-    {'name': 'Mission', 'types': {Event}},
-    {'name': 'Pilgrimage', 'types': {Event}},
-    {'name': 'Ball', 'types': {Event}},
-    {'name': 'Raid', 'types': {Event}},
-    {'name': 'Seaway', 'types': {Event}},
-    {'name': 'Lost Arts', 'types': {Event}},
-    {'name': 'Training', 'types': {Event}},
-    {'name': 'Inheritance', 'types': {Event}},
-    {'name': 'Pathfinding', 'types': {Event}}
-])
+Adventures = Set("Adventures")
+Adventures.AddCards(
+    [
+        "Coin of the Realm",
+        "Page",
+        "Peasant",
+        "Ratcatcher",
+        "Raze",
+        "Amulet",
+        "Caravan Guard",
+        "Dungeon",
+        "Gear",
+        "Guide",
+        "Duplicate",
+        "Magpie",
+        "Messenger",
+        "Miser",
+        "Port",
+        "Ranger",
+        "Transmogrify",
+        "Artificer",
+        "Bridge Troll",
+        "Distant Lands",
+        "Giant",
+        "Haunted Woods",
+        "Lost City",
+        "Relic",
+        "Royal Carriage",
+        "Storyteller",
+        "Swamp Hag",
+        "Treasure Trove",
+        "Wine Merchant",
+        "Hireling",
+        {"name": "Alms", "types": {Event}},
+        {"name": "Borrow", "types": {Event}},
+        {"name": "Quest", "types": {Event}},
+        {"name": "Save", "types": {Event}},
+        {"name": "Scouting Party", "types": {Event}},
+        {"name": "Travelling Fair", "types": {Event}},
+        {"name": "Bonfire", "types": {Event}},
+        {"name": "Expedition", "types": {Event}},
+        {"name": "Ferry", "types": {Event}},
+        {"name": "Plan", "types": {Event}},
+        {"name": "Mission", "types": {Event}},
+        {"name": "Pilgrimage", "types": {Event}},
+        {"name": "Ball", "types": {Event}},
+        {"name": "Raid", "types": {Event}},
+        {"name": "Seaway", "types": {Event}},
+        {"name": "Lost Arts", "types": {Event}},
+        {"name": "Training", "types": {Event}},
+        {"name": "Inheritance", "types": {Event}},
+        {"name": "Pathfinding", "types": {Event}},
+    ]
+)
 
-Empires = Set('Empires')
-Empires.AddCards([
-    'Engineer', 'City Quarter', 'Overlord', 'Royal Blacksmith',
-    'Encampment/Plunder', 'Patrician/Emporium', 'Settlers/Bustling Village',
-    'Castles', 'Catapult/Rocks', 'Chariot Race', 'Enchantress',
-    "Farmers' Market", 'Gladiator/Fortune', 'Sacrifice', 'Temple', 'Villa',
-    'Archive', 'Capital', 'Charm', 'Crown', 'Forum', 'Groundskeeper',
-    'Legionary', 'Wild Hunt',
-    {'name': 'Advance', 'types': {Event}},
-    {'name': 'Annex', 'types': {Event}},
-    {'name': 'Banquet', 'types': {Event}},
-    {'name': 'Conquest', 'types': {Event}},
-    {'name': 'Delve', 'types': {Event}},
-    {'name': 'Dominate', 'types': {Event}},
-    {'name': 'Donate', 'types': {Event}},
-    {'name': 'Salt the Earth', 'types': {Event}},
-    {'name': 'Ritual', 'types': {Event}},
-    {'name': 'Tax', 'types': {Event}},
-    {'name': 'Trade', 'types': {Event}},
-    {'name': 'Triumph', 'types': {Event}},
-    {'name': 'Wedding', 'types': {Event}},
-    {'name': 'Windfall', 'types': {Event}},
-    {'name': 'Aqueduct', 'types': {Landmark}},
-    {'name': 'Arena', 'types': {Landmark}},
-    {'name': 'Bandit Fort', 'types': {Landmark}},
-    {'name': 'Basilica', 'types': {Landmark}},
-    {'name': 'Baths', 'types': {Landmark}},
-    {'name': 'Battlefield', 'types': {Landmark}},
-    {'name': 'Colonnade', 'types': {Landmark}},
-    {'name': 'Defiled Shrine', 'types': {Landmark}},
-    {'name': 'Fountain', 'types': {Landmark}},
-    {'name': 'Keep', 'types': {Landmark}},
-    {'name': 'Labyrinth', 'types': {Landmark}},
-    {'name': 'Mountain Pass', 'types': {Landmark}},
-    {'name': 'Museum', 'types': {Landmark}},
-    {'name': 'Obelisk', 'types': {Landmark}},
-    {'name': 'Orchard', 'types': {Landmark}},
-    {'name': 'Palace', 'types': {Landmark}},
-    {'name': 'Tomb', 'types': {Landmark}},
-    {'name': 'Tower', 'types': {Landmark}},
-    {'name': 'Triumphal Arch', 'types': {Landmark}},
-    {'name': 'Wall', 'types': {Landmark}},
-    {'name': 'Wolf Den', 'types': {Landmark}},
-])
+Empires = Set("Empires")
+Empires.AddCards(
+    [
+        "Engineer",
+        "City Quarter",
+        "Overlord",
+        "Royal Blacksmith",
+        "Encampment/Plunder",
+        "Patrician/Emporium",
+        "Settlers/Bustling Village",
+        "Castles",
+        "Catapult/Rocks",
+        "Chariot Race",
+        "Enchantress",
+        "Farmers' Market",
+        "Gladiator/Fortune",
+        "Sacrifice",
+        "Temple",
+        "Villa",
+        "Archive",
+        "Capital",
+        "Charm",
+        "Crown",
+        "Forum",
+        "Groundskeeper",
+        "Legionary",
+        "Wild Hunt",
+        {"name": "Advance", "types": {Event}},
+        {"name": "Annex", "types": {Event}},
+        {"name": "Banquet", "types": {Event}},
+        {"name": "Conquest", "types": {Event}},
+        {"name": "Delve", "types": {Event}},
+        {"name": "Dominate", "types": {Event}},
+        {"name": "Donate", "types": {Event}},
+        {"name": "Salt the Earth", "types": {Event}},
+        {"name": "Ritual", "types": {Event}},
+        {"name": "Tax", "types": {Event}},
+        {"name": "Trade", "types": {Event}},
+        {"name": "Triumph", "types": {Event}},
+        {"name": "Wedding", "types": {Event}},
+        {"name": "Windfall", "types": {Event}},
+        {"name": "Aqueduct", "types": {Landmark}},
+        {"name": "Arena", "types": {Landmark}},
+        {"name": "Bandit Fort", "types": {Landmark}},
+        {"name": "Basilica", "types": {Landmark}},
+        {"name": "Baths", "types": {Landmark}},
+        {"name": "Battlefield", "types": {Landmark}},
+        {"name": "Colonnade", "types": {Landmark}},
+        {"name": "Defiled Shrine", "types": {Landmark}},
+        {"name": "Fountain", "types": {Landmark}},
+        {"name": "Keep", "types": {Landmark}},
+        {"name": "Labyrinth", "types": {Landmark}},
+        {"name": "Mountain Pass", "types": {Landmark}},
+        {"name": "Museum", "types": {Landmark}},
+        {"name": "Obelisk", "types": {Landmark}},
+        {"name": "Orchard", "types": {Landmark}},
+        {"name": "Palace", "types": {Landmark}},
+        {"name": "Tomb", "types": {Landmark}},
+        {"name": "Tower", "types": {Landmark}},
+        {"name": "Triumphal Arch", "types": {Landmark}},
+        {"name": "Wall", "types": {Landmark}},
+        {"name": "Wolf Den", "types": {Landmark}},
+    ]
+)
 
-Nocturne = Set('Nocturne')
-Nocturne.AddCards([
-    'Bard', 'Blessed Village', 'Cemetary + Haunted Mirror (Heirloom)',
-    'Changeling', 'Cobbler', 'Conclave', 'Crypt', 'Cursed Village',
-    'Den of Sin', "Devil's Workshop", 'Druid', 'Exorcist', 'Faithful Hound',
-    'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)', 'Guardian',
-    'Ghost Town', 'Idol', 'Leprechaun', 'Monastery', 'Necromancer + Zombies',
-    'Night Watchman', 'Pixie + Goat (Heirloom)',
-    'Pooka + Cursed Gold (Heirloom)', 'Sacred Grove',
-    'Secret Cave + Magic Lamp (Heirloom)', 'Shepherd + Pasture (Heirloom)',
-    'Raider', 'Skulk', 'Tormentor', 'Tracker + Pouch (Heirloom)',
-    'Tragic Hero', 'Vampire', 'Werewolf'
-])
+Nocturne = Set("Nocturne")
+Nocturne.AddCards(
+    [
+        "Bard",
+        "Blessed Village",
+        "Cemetary + Haunted Mirror (Heirloom)",
+        "Changeling",
+        "Cobbler",
+        "Conclave",
+        "Crypt",
+        "Cursed Village",
+        "Den of Sin",
+        "Devil's Workshop",
+        "Druid",
+        "Exorcist",
+        "Faithful Hound",
+        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
+        "Guardian",
+        "Ghost Town",
+        "Idol",
+        "Leprechaun",
+        "Monastery",
+        "Necromancer + Zombies",
+        "Night Watchman",
+        "Pixie + Goat (Heirloom)",
+        "Pooka + Cursed Gold (Heirloom)",
+        "Sacred Grove",
+        "Secret Cave + Magic Lamp (Heirloom)",
+        "Shepherd + Pasture (Heirloom)",
+        "Raider",
+        "Skulk",
+        "Tormentor",
+        "Tracker + Pouch (Heirloom)",
+        "Tragic Hero",
+        "Vampire",
+        "Werewolf",
+    ]
+)
 
-Renaissance = Set('Renaissance')
-Renaissance.AddCards([
-    'Border Guard', 'Ducat', 'Lackeys', 'Acting Troupe', 'Cargo Ship',
-    'Experiment', 'Improve', 'Flag Bearer', 'Hideout', 'Inventor',
-    'Mountain Village', 'Patron', 'Priest', 'Research', 'Silk Merchant',
-    'Old Witch', 'Recruiter', 'Scepter', 'Scholar', 'Sculptor', 'Seer',
-    'Spices', 'Swashbuckler', 'Treasurer', 'Villain',
-    {'name': 'Cathedral', 'types': {Project}},
-    {'name': 'City Gate', 'types': {Project}},
-    {'name': 'Pageant', 'types': {Project}},
-    {'name': 'Sewers', 'types': {Project}},
-    {'name': 'Star Chart', 'types': {Project}},
-    {'name': 'Exploration', 'types': {Project}},
-    {'name': 'Fair', 'types': {Project}},
-    {'name': 'Silos', 'types': {Project}},
-    {'name': 'Sinister Plot', 'types': {Project}},
-    {'name': 'Academy', 'types': {Project}},
-    {'name': 'Capitalism', 'types': {Project}},
-    {'name': 'Fleet', 'types': {Project}},
-    {'name': 'Guildhall', 'types': {Project}},
-    {'name': 'Piazza', 'types': {Project}},
-    {'name': 'Road Network', 'types': {Project}},
-    {'name': 'Barracks', 'types': {Project}},
-    {'name': 'Crop Rotation', 'types': {Project}},
-    {'name': 'Innovation', 'types': {Project}},
-    {'name': 'Canal', 'types': {Project}},
-    {'name': 'Citadel', 'types': {Project}},
-])
+Renaissance = Set("Renaissance")
+Renaissance.AddCards(
+    [
+        "Border Guard",
+        "Ducat",
+        "Lackeys",
+        "Acting Troupe",
+        "Cargo Ship",
+        "Experiment",
+        "Improve",
+        "Flag Bearer",
+        "Hideout",
+        "Inventor",
+        "Mountain Village",
+        "Patron",
+        "Priest",
+        "Research",
+        "Silk Merchant",
+        "Old Witch",
+        "Recruiter",
+        "Scepter",
+        "Scholar",
+        "Sculptor",
+        "Seer",
+        "Spices",
+        "Swashbuckler",
+        "Treasurer",
+        "Villain",
+        {"name": "Cathedral", "types": {Project}},
+        {"name": "City Gate", "types": {Project}},
+        {"name": "Pageant", "types": {Project}},
+        {"name": "Sewers", "types": {Project}},
+        {"name": "Star Chart", "types": {Project}},
+        {"name": "Exploration", "types": {Project}},
+        {"name": "Fair", "types": {Project}},
+        {"name": "Silos", "types": {Project}},
+        {"name": "Sinister Plot", "types": {Project}},
+        {"name": "Academy", "types": {Project}},
+        {"name": "Capitalism", "types": {Project}},
+        {"name": "Fleet", "types": {Project}},
+        {"name": "Guildhall", "types": {Project}},
+        {"name": "Piazza", "types": {Project}},
+        {"name": "Road Network", "types": {Project}},
+        {"name": "Barracks", "types": {Project}},
+        {"name": "Crop Rotation", "types": {Project}},
+        {"name": "Innovation", "types": {Project}},
+        {"name": "Canal", "types": {Project}},
+        {"name": "Citadel", "types": {Project}},
+    ]
+)
 
-Menagerie = Set('Menagerie')
-Menagerie.AddCards([
-    'Animal Fair', 'Barge', 'Black Cat', 'Bounty Hunter', 'Camel Train',
-    'Cardinal', 'Cavalry', 'Coven', 'Destrier', 'Displace', 'Falconer',
-    'Fisherman', 'Gatekeeper', 'Goatherd', 'Groom', 'Hostelry',
-    'Hunting Lodge', 'Kiln', 'Livery', 'Mastermind', 'Paddock', 'Sanctuary',
-    'Scrap', 'Sheepdog', 'Sleigh', 'Snowy Village', 'Stockpile', 'Supplies',
-    'Village Green', 'Wayfarer',
-    {'name': 'Alliance', 'types': {Event}},
-    {'name': 'Banish', 'types': {Event}},
-    {'name': 'Bargain', 'types': {Event}},
-    {'name': 'Commerce', 'types': {Event}},
-    {'name': 'Delay', 'types': {Event}},
-    {'name': 'Demand', 'types': {Event}},
-    {'name': 'Desperation', 'types': {Event}},
-    {'name': 'Enclave', 'types': {Event}},
-    {'name': 'Enhance', 'types': {Event}},
-    {'name': 'Gamble', 'types': {Event}},
-    {'name': 'Invest', 'types': {Event}},
-    {'name': 'March', 'types': {Event}},
-    {'name': 'Populate', 'types': {Event}},
-    {'name': 'Pursue', 'types': {Event}},
-    {'name': 'Reap', 'types': {Event}},
-    {'name': 'Ride', 'types': {Event}},
-    {'name': 'Seize the Day', 'types': {Event}},
-    {'name': 'Stampede', 'types': {Event}},
-    {'name': 'Toil', 'types': {Event}},
-    {'name': 'Transport', 'types': {Event}},
-    {'name': 'Way of the Butterfly', 'types': {Way}},
-    {'name': 'Way of the Camel', 'types': {Way}},
-    {'name': 'Way of the Chameleon', 'types': {Way}},
-    {'name': 'Way of the Frog', 'types': {Way}},
-    {'name': 'Way of the Goat', 'types': {Way}},
-    {'name': 'Way of the Horse', 'types': {Way}},
-    {'name': 'Way of the Mole', 'types': {Way}},
-    {'name': 'Way of the Monkey', 'types': {Way}},
-    {'name': 'Way of the Mouse', 'types': {Way}},
-    {'name': 'Way of the Mule', 'types': {Way}},
-    {'name': 'Way of the Otter', 'types': {Way}},
-    {'name': 'Way of the Owl', 'types': {Way}},
-    {'name': 'Way of the Ox', 'types': {Way}},
-    {'name': 'Way of the Pig', 'types': {Way}},
-    {'name': 'Way of the Rat', 'types': {Way}},
-    {'name': 'Way of the Seal', 'types': {Way}},
-    {'name': 'Way of the Sheep', 'types': {Way}},
-    {'name': 'Way of the Squirrel', 'types': {Way}},
-    {'name': 'Way of the Turtle', 'types': {Way}},
-    {'name': 'Way of the Worm', 'types': {Way}}
-])
+Menagerie = Set("Menagerie")
+Menagerie.AddCards(
+    [
+        "Animal Fair",
+        "Barge",
+        "Black Cat",
+        "Bounty Hunter",
+        "Camel Train",
+        "Cardinal",
+        "Cavalry",
+        "Coven",
+        "Destrier",
+        "Displace",
+        "Falconer",
+        "Fisherman",
+        "Gatekeeper",
+        "Goatherd",
+        "Groom",
+        "Hostelry",
+        "Hunting Lodge",
+        "Kiln",
+        "Livery",
+        "Mastermind",
+        "Paddock",
+        "Sanctuary",
+        "Scrap",
+        "Sheepdog",
+        "Sleigh",
+        "Snowy Village",
+        "Stockpile",
+        "Supplies",
+        "Village Green",
+        "Wayfarer",
+        {"name": "Alliance", "types": {Event}},
+        {"name": "Banish", "types": {Event}},
+        {"name": "Bargain", "types": {Event}},
+        {"name": "Commerce", "types": {Event}},
+        {"name": "Delay", "types": {Event}},
+        {"name": "Demand", "types": {Event}},
+        {"name": "Desperation", "types": {Event}},
+        {"name": "Enclave", "types": {Event}},
+        {"name": "Enhance", "types": {Event}},
+        {"name": "Gamble", "types": {Event}},
+        {"name": "Invest", "types": {Event}},
+        {"name": "March", "types": {Event}},
+        {"name": "Populate", "types": {Event}},
+        {"name": "Pursue", "types": {Event}},
+        {"name": "Reap", "types": {Event}},
+        {"name": "Ride", "types": {Event}},
+        {"name": "Seize the Day", "types": {Event}},
+        {"name": "Stampede", "types": {Event}},
+        {"name": "Toil", "types": {Event}},
+        {"name": "Transport", "types": {Event}},
+        {"name": "Way of the Butterfly", "types": {Way}},
+        {"name": "Way of the Camel", "types": {Way}},
+        {"name": "Way of the Chameleon", "types": {Way}},
+        {"name": "Way of the Frog", "types": {Way}},
+        {"name": "Way of the Goat", "types": {Way}},
+        {"name": "Way of the Horse", "types": {Way}},
+        {"name": "Way of the Mole", "types": {Way}},
+        {"name": "Way of the Monkey", "types": {Way}},
+        {"name": "Way of the Mouse", "types": {Way}},
+        {"name": "Way of the Mule", "types": {Way}},
+        {"name": "Way of the Otter", "types": {Way}},
+        {"name": "Way of the Owl", "types": {Way}},
+        {"name": "Way of the Ox", "types": {Way}},
+        {"name": "Way of the Pig", "types": {Way}},
+        {"name": "Way of the Rat", "types": {Way}},
+        {"name": "Way of the Seal", "types": {Way}},
+        {"name": "Way of the Sheep", "types": {Way}},
+        {"name": "Way of the Squirrel", "types": {Way}},
+        {"name": "Way of the Turtle", "types": {Way}},
+        {"name": "Way of the Worm", "types": {Way}},
+    ]
+)
 
-Antiquities = Set('Antiquities')
-Antiquities.AddCards([
-    'Inscription', 'Agora', 'Discovery', 'Aquifer', 'Tomb Raider', 'Curio',
-    'Gamepiece', 'Dig', 'Moundbuilder Village', 'Encroach', 'Stoneworks',
-    'Graveyard', 'Inspector', 'Archaeologist', 'Mission House', 'Mendicant',
-    'Profiteer', 'Miner', 'Pyramid', 'Mastermind', 'Mausoleum', 'Shipwreck',
-    'Collector', 'Pharaoh', 'Grave Watcher', 'Stronghold', 'Snake Charmer'
-])
+Antiquities = Set("Antiquities")
+Antiquities.AddCards(
+    [
+        "Inscription",
+        "Agora",
+        "Discovery",
+        "Aquifer",
+        "Tomb Raider",
+        "Curio",
+        "Gamepiece",
+        "Dig",
+        "Moundbuilder Village",
+        "Encroach",
+        "Stoneworks",
+        "Graveyard",
+        "Inspector",
+        "Archaeologist",
+        "Mission House",
+        "Mendicant",
+        "Profiteer",
+        "Miner",
+        "Pyramid",
+        "Mastermind",
+        "Mausoleum",
+        "Shipwreck",
+        "Collector",
+        "Pharaoh",
+        "Grave Watcher",
+        "Stronghold",
+        "Snake Charmer",
+    ]
+)
 
 # Define Landscape cards
 Events = Adventures.events | Empires.events | Menagerie.events
@@ -463,204 +777,369 @@ PotionCards = Alchemy.potionCards
 
 # Define randomizer rules
 PlatinumLove = Prosperity.cards.union(
-    Base.cards('Artisan', 'Council Room', 'Merchant', 'Mine'),
-    Intrigue.cards('Harem', 'Nobles'),
-    Seaside.cards('Explorer', 'Treasure Map'),
-    Alchemy.cards('Philosopher Stone'),
-    Cornucopia.cards('Tournament'),
-    Hinterlands.cards(
-        'Border Village', 'Cache', 'Duchess', 'Embassy', "Fool's Gold"
-    ),
-    DarkAges.cards('Altar', 'Counterfeit', 'Hunting Grounds', 'Poor House'),
-    Guilds.cards('Masterpiece', 'Soothsayer'),
+    Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
+    Intrigue.cards("Harem", "Nobles"),
+    Seaside.cards("Explorer", "Treasure Map"),
+    Alchemy.cards("Philosopher Stone"),
+    Cornucopia.cards("Tournament"),
+    Hinterlands.cards("Border Village", "Cache", "Duchess", "Embassy", "Fool's Gold"),
+    DarkAges.cards("Altar", "Counterfeit", "Hunting Grounds", "Poor House"),
+    Guilds.cards("Masterpiece", "Soothsayer"),
     Adventures.cards(
-        'Hireling', 'Lost City', 'Page', 'Treasure Trove', 'Seaway', 'Training'
+        "Hireling", "Lost City", "Page", "Treasure Trove", "Seaway", "Training"
     ),
     Empires.cards(
-        'Capital', 'Castles', 'Chariot Race', 'Crown', 'Encampment/Plunder',
-        "Farmers' Market", 'Gladiator/Fortune', 'Groundskeeper', 'Legionary',
-        'Patrician/Emporium', 'Sacrifice', 'Temple', 'Wild Hunt', 'Triumph',
-        'Delve', 'Wedding', 'Conquest', 'Dominate', 'Basilica', 'Keep'
+        "Capital",
+        "Castles",
+        "Chariot Race",
+        "Crown",
+        "Encampment/Plunder",
+        "Farmers' Market",
+        "Gladiator/Fortune",
+        "Groundskeeper",
+        "Legionary",
+        "Patrician/Emporium",
+        "Sacrifice",
+        "Temple",
+        "Wild Hunt",
+        "Triumph",
+        "Delve",
+        "Wedding",
+        "Conquest",
+        "Dominate",
+        "Basilica",
+        "Keep",
     ),
     Nocturne.cards(
-        'Pooka + Cursed Gold (Heirloom)', 'Raider', 'Sacred Grove',
-        'Secret Cave + Magic Lamp (Heirloom)', 'Tragic Hero'
+        "Pooka + Cursed Gold (Heirloom)",
+        "Raider",
+        "Sacred Grove",
+        "Secret Cave + Magic Lamp (Heirloom)",
+        "Tragic Hero",
     ),
-    Renaissance.cards('Ducat', 'Scepter', 'Spices', 'Capitalism', 'Guildhall'),
+    Renaissance.cards("Ducat", "Scepter", "Spices", "Capitalism", "Guildhall"),
     Menagerie.cards(
-        'Supplies', 'Camel Train', 'Stockpile', 'Livery', 'Animal Fair',
-        'Commerce', 'Enclave', 'Way of the Chameleon'
+        "Supplies",
+        "Camel Train",
+        "Stockpile",
+        "Livery",
+        "Animal Fair",
+        "Commerce",
+        "Enclave",
+        "Way of the Chameleon",
     ),
     Antiquities.cards(
-        'Agora', 'Archaeologist', 'Curio', 'Discovery', 'Encroach',
-        'Gamepiece', 'Moundbuilder Village', 'Pharaoh', 'Pyramid',
-        'Snake Charmer', 'Stoneworks'
+        "Agora",
+        "Archaeologist",
+        "Curio",
+        "Discovery",
+        "Encroach",
+        "Gamepiece",
+        "Moundbuilder Village",
+        "Pharaoh",
+        "Pyramid",
+        "Snake Charmer",
+        "Stoneworks",
     ),
 )
 
 ShelterLove = DarkAges.cards.union(
-    Base.cards('Remodel', 'Mine'),
-    Intrigue.cards('Replace', 'Upgrade'),
-    Seaside.cards('Salvager'),
-    Alchemy.cards('Apprentice', 'Scrying Pool'),
-    Prosperity.cards('Bishop', 'Expand', 'Forge'),
-    Cornucopia.cards('Remake'),
-    Hinterlands.cards('Develop', 'Farmland', 'Trader'),
-    Adventures.cards('Raze', 'Transmogrify', 'Trade'),
+    Base.cards("Remodel", "Mine"),
+    Intrigue.cards("Replace", "Upgrade"),
+    Seaside.cards("Salvager"),
+    Alchemy.cards("Apprentice", "Scrying Pool"),
+    Prosperity.cards("Bishop", "Expand", "Forge"),
+    Cornucopia.cards("Remake"),
+    Hinterlands.cards("Develop", "Farmland", "Trader"),
+    Adventures.cards("Raze", "Transmogrify", "Trade"),
     Empires.cards(
-        'Catapult/Rocks', 'Sacrifice', 'Fountain', 'Labyrinth', 'Museum',
-        'Tomb'
+        "Catapult/Rocks", "Sacrifice", "Fountain", "Labyrinth", "Museum", "Tomb"
     ),
-    Guilds.cards('Butcher', 'Journeyman', 'Stonemason', 'Taxman'),
+    Guilds.cards("Butcher", "Journeyman", "Stonemason", "Taxman"),
     Nocturne.cards(
-        'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist',
-        'Necromancer + Zombies'
+        "Cemetary + Haunted Mirror (Heirloom)", "Exorcist", "Necromancer + Zombies"
     ),
-    Renaissance.cards('Priest', 'Pageant'),
+    Renaissance.cards("Priest", "Pageant"),
     Menagerie.cards(
-        'Camel Train', 'Scrap', 'Displace', 'Enhance', 'Way of the Butterfly'
+        "Camel Train", "Scrap", "Displace", "Enhance", "Way of the Butterfly"
     ),
     Antiquities.cards(
-        'Collector', 'Graveyard', 'Mendicant', 'Pharaoh', 'Profiteer',
-        'Shipwreck', 'Snake Charmer', 'Stoneworks'
+        "Collector",
+        "Graveyard",
+        "Mendicant",
+        "Pharaoh",
+        "Profiteer",
+        "Shipwreck",
+        "Snake Charmer",
+        "Stoneworks",
     ),
 )
 
-LooterCards = DarkAges.cards('Death Cart', 'Marauder', 'Cultist')
+LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
 
-SpoilsCards = DarkAges.cards('Bandit Camp', 'Marauder', 'Pillage')
+SpoilsCards = DarkAges.cards("Bandit Camp", "Marauder", "Pillage")
 
 BoonCards = Nocturne.cards(
-    'Bard', 'Blessed Village', 'Druid',
-    'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)', 'Idol',
-    'Pixie + Goat (Heirloom)', 'Sacred Grove', 'Tracker + Pouch (Heirloom)'
+    "Bard",
+    "Blessed Village",
+    "Druid",
+    "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
+    "Idol",
+    "Pixie + Goat (Heirloom)",
+    "Sacred Grove",
+    "Tracker + Pouch (Heirloom)",
 )
 
 HexCards = Nocturne.cards(
-    'Cursed Village', 'Leprechaun', 'Skulk', 'Tormentor', 'Vampire', 'Werewolf'
+    "Cursed Village", "Leprechaun", "Skulk", "Tormentor", "Vampire", "Werewolf"
 )
 
-WishCards = Nocturne.cards('Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)')
+WishCards = Nocturne.cards("Leprechaun", "Secret Cave + Magic Lamp (Heirloom)")
 
 HorseCards = Menagerie.cards(
-    'Cavalry',
-    'Groom',
-    'Hostelry',
-    'Livery',
-    'Paddock',
-    'Scrap',
-    'Sleigh',
-    'Supplies',
+    "Cavalry",
+    "Groom",
+    "Hostelry",
+    "Livery",
+    "Paddock",
+    "Scrap",
+    "Sleigh",
+    "Supplies",
     # Events
-    'Bargain',
-    'Demand',
-    'Ride',
-    'Stampede',
+    "Bargain",
+    "Demand",
+    "Ride",
+    "Stampede",
 )
 
 TrapLove = Antiquities.cards.union(
-    Base.cards('Vassal', 'Remodel', 'Workshop', 'Mine', 'Library', 'Artisan'),
+    Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
     Intrigue.cards(
-        'Courtyard', 'Lurker', 'Masquerade', 'Swindler', 'Ironworks',
-        'Minion', 'Replace', 'Upgrade'
+        "Courtyard",
+        "Lurker",
+        "Masquerade",
+        "Swindler",
+        "Ironworks",
+        "Minion",
+        "Replace",
+        "Upgrade",
     ),
-    Seaside.cards('Lookout', 'Warehouse', 'Navigator', 'Salvager'),
-    Alchemy.cards('University'),
+    Seaside.cards("Lookout", "Warehouse", "Navigator", "Salvager"),
+    Alchemy.cards("University"),
     Prosperity.cards(
-        'Loan', 'Watchtower', 'Bishop', 'Vault', 'Venture', 'Goons',
-        'Expand', 'Forge'
+        "Loan", "Watchtower", "Bishop", "Vault", "Venture", "Goons", "Expand", "Forge"
     ),
     Cornucopia.cards(
-        'Fortune Teller', 'Menagerie', 'Farming Village', 'Remake',
-        'Young Witch', 'Harvest', 'Hunting Party'
+        "Fortune Teller",
+        "Menagerie",
+        "Farming Village",
+        "Remake",
+        "Young Witch",
+        "Harvest",
+        "Hunting Party",
     ),
     Hinterlands.cards(
-        'Develop', 'Oracle', 'Trader', 'Cartographer', 'Embassy', 'Haggler',
-        'Margrave', 'Border Village', 'Farmland'
+        "Develop",
+        "Oracle",
+        "Trader",
+        "Cartographer",
+        "Embassy",
+        "Haggler",
+        "Margrave",
+        "Border Village",
+        "Farmland",
     ),
     DarkAges.cards(
-        'Hermit', 'Storeroom', 'Urchin', 'Feodum', 'Rats',
-        'Wandering Minstrel', 'Catacombs', 'Rebuild', 'Rogue'
+        "Hermit",
+        "Storeroom",
+        "Urchin",
+        "Feodum",
+        "Rats",
+        "Wandering Minstrel",
+        "Catacombs",
+        "Rebuild",
+        "Rogue",
     ),
-    Guilds.cards('Stonemason', 'Butcher'),
+    Guilds.cards("Stonemason", "Butcher"),
     Adventures.cards(
-        'Raze', 'Guide', 'Duplicate', 'Magpie', 'Messenger', 'Transmogrify',
-        'Scouting Party'
+        "Raze",
+        "Guide",
+        "Duplicate",
+        "Magpie",
+        "Messenger",
+        "Transmogrify",
+        "Scouting Party",
     ),
     Empires.cards(
-        'Engineer', "Farmers' Market", 'Catapult/Rocks', 'Gladiator', 'Temple',
-        'Forum', 'Legionary', 'Triumph', 'Ritual', 'Conquest', 'Labyrinth',
-        'Museum'
+        "Engineer",
+        "Farmers' Market",
+        "Catapult/Rocks",
+        "Gladiator",
+        "Temple",
+        "Forum",
+        "Legionary",
+        "Triumph",
+        "Ritual",
+        "Conquest",
+        "Labyrinth",
+        "Museum",
     ),
     Nocturne.cards(
-        'Monastery', 'Changeling', 'Secret Cave + Magic Lamp (Heirloom)',
-        "Devil's Workshop", 'Exorcist', 'Cobbler', 'Vampire',
-        'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)'
+        "Monastery",
+        "Changeling",
+        "Secret Cave + Magic Lamp (Heirloom)",
+        "Devil's Workshop",
+        "Exorcist",
+        "Cobbler",
+        "Vampire",
+        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
     ),
     Renaissance.cards(
-        'Experiment', 'Inventor', 'Research', 'Recruiter', 'Scholar',
-        'Sculptor', 'Villain'
+        "Experiment",
+        "Inventor",
+        "Research",
+        "Recruiter",
+        "Scholar",
+        "Sculptor",
+        "Villain",
     ),
     Menagerie.cards(
-        'Camel Train', 'Scrap', 'Bounty Hunter', 'Groom', 'Hunting Lodge',
-        'Displace', 'Kiln', 'Livery', 'Destrier', 'Enhance', 'Commerce',
-        'Populate', 'Way of the Mole'
-    )
+        "Camel Train",
+        "Scrap",
+        "Bounty Hunter",
+        "Groom",
+        "Hunting Lodge",
+        "Displace",
+        "Kiln",
+        "Livery",
+        "Destrier",
+        "Enhance",
+        "Commerce",
+        "Populate",
+        "Way of the Mole",
+    ),
 )
 
 BaneCards = set().union(
     Adventures.cards(
-        'Amulet', 'Caravan Guard', 'Coin of the Realm', 'Dungeon', 'Gear',
-        'Guide', 'Page', 'Peasant', 'Ratcatcher', 'Raze'
+        "Amulet",
+        "Caravan Guard",
+        "Coin of the Realm",
+        "Dungeon",
+        "Gear",
+        "Guide",
+        "Page",
+        "Peasant",
+        "Ratcatcher",
+        "Raze",
     ),
-    Alchemy.cards('Herbalist'),
+    Alchemy.cards("Herbalist"),
     Antiquities.cards(
-        'Discovery', 'Gamepiece', 'Grave Watcher', 'Inscription', 'Inspector',
-        'Profiteer', 'Shipwreck', 'Tomb Raider', 'Miner'
+        "Discovery",
+        "Gamepiece",
+        "Grave Watcher",
+        "Inscription",
+        "Inspector",
+        "Profiteer",
+        "Shipwreck",
+        "Tomb Raider",
+        "Miner",
     ),
     Base.cards(
-        'Cellar', 'Chapel', 'Harbinger', 'Merchant', 'Moat', 'Vassal',
-        'Village', 'Workshop'
+        "Cellar",
+        "Chapel",
+        "Harbinger",
+        "Merchant",
+        "Moat",
+        "Vassal",
+        "Village",
+        "Workshop",
     ),
-    Cornucopia.cards('Fortune Teller', 'Hamlet', 'Menagerie'),
+    Cornucopia.cards("Fortune Teller", "Hamlet", "Menagerie"),
     DarkAges.cards(
-        'Beggar', 'Forager', 'Hermit', 'Market Square', 'Sage', 'Squire',
-        'Storeroom', 'Urchin', 'Vagrant'
+        "Beggar",
+        "Forager",
+        "Hermit",
+        "Market Square",
+        "Sage",
+        "Squire",
+        "Storeroom",
+        "Urchin",
+        "Vagrant",
     ),
     Empires.cards(
-        'Castles', 'Catapult/Rocks', 'Chariot Race', 'Encampment/Plunder',
-        'Enchantress', "Farmers' Market", 'Gladiator', 'Gladiator/Forture',
-        'Patrician/Emporium', 'Settlers/Bustling Village'
+        "Castles",
+        "Catapult/Rocks",
+        "Chariot Race",
+        "Encampment/Plunder",
+        "Enchantress",
+        "Farmers' Market",
+        "Gladiator",
+        "Gladiator/Forture",
+        "Patrician/Emporium",
+        "Settlers/Bustling Village",
     ),
-    Guilds.cards('Candlestick Maker', 'Doctor', 'Masterpiece', 'Stonemason'),
+    Guilds.cards("Candlestick Maker", "Doctor", "Masterpiece", "Stonemason"),
     Hinterlands.cards(
-        'Crossroads', 'Develop', 'Duchess', "Fool's Gold", 'Oasis', 'Scheme',
-        'Tunnel'
+        "Crossroads", "Develop", "Duchess", "Fool's Gold", "Oasis", "Scheme", "Tunnel"
     ),
     Intrigue.cards(
-        'Courtyard', 'Lurker', 'Masquerade', 'Pawn', 'Shanty Town', 'Steward',
-        'Swindler', 'Wishing Well'
+        "Courtyard",
+        "Lurker",
+        "Masquerade",
+        "Pawn",
+        "Shanty Town",
+        "Steward",
+        "Swindler",
+        "Wishing Well",
     ),
     Menagerie.cards(
-        'Black Cat', 'Camel Train', 'Goatherd', 'Scrap', 'Sheepdog', 'Sleigh',
-        'Snowy Village', 'Stockpile', 'Supplies'
+        "Black Cat",
+        "Camel Train",
+        "Goatherd",
+        "Scrap",
+        "Sheepdog",
+        "Sleigh",
+        "Snowy Village",
+        "Stockpile",
+        "Supplies",
     ),
     Nocturne.cards(
-        'Changeling', 'Druid', 'Faithful Hound',
-        'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)',
-        'Ghost Town', 'Guardian', 'Leprechaun', 'Monastery', 'Night Watchman',
-        'Pixie + Goat (Heirloom)', 'Secret Cave + Magic Lamp (Heirloom)',
-        'Tracker + Pouch (Heirloom)'
+        "Changeling",
+        "Druid",
+        "Faithful Hound",
+        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
+        "Ghost Town",
+        "Guardian",
+        "Leprechaun",
+        "Monastery",
+        "Night Watchman",
+        "Pixie + Goat (Heirloom)",
+        "Secret Cave + Magic Lamp (Heirloom)",
+        "Tracker + Pouch (Heirloom)",
     ),
-    Prosperity.cards('Loan', 'Trade Route', 'Watchtower'),
+    Prosperity.cards("Loan", "Trade Route", "Watchtower"),
     Renaissance.cards(
-        'Acting Troupe', 'Border Guard', 'Cargo Ship', 'Ducat', 'Experiment',
-        'Improve', 'Lackeys'
+        "Acting Troupe",
+        "Border Guard",
+        "Cargo Ship",
+        "Ducat",
+        "Experiment",
+        "Improve",
+        "Lackeys",
     ),
     Seaside.cards(
-        'Ambassador', 'Embargo', 'Fishing Village', 'Haven', 'Lighthouse',
-        'Lookout', 'Native Village', 'Pearl Diver', 'Smugglers', 'Warehouse'
-    )
+        "Ambassador",
+        "Embargo",
+        "Fishing Village",
+        "Haven",
+        "Lighthouse",
+        "Lookout",
+        "Native Village",
+        "Pearl Diver",
+        "Smugglers",
+        "Warehouse",
+    ),
 )
 
 
@@ -716,12 +1195,10 @@ def RandomizeDominion(setNames=None, options=None):
             counter += 1
 
         # Get final list of landscape cards
-        if options and options.get('limit-landscapes'):
+        if options and options.get("limit-landscapes"):
             landscapeList = random.sample(waySet, len(waySet))[:1]
             landscapeList.extend(
-                random.sample(
-                    landscapeSet, len(landscapeSet)
-                )[: 2 - len(landscapeList)]
+                random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
             )
         else:
             landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
@@ -733,7 +1210,7 @@ def RandomizeDominion(setNames=None, options=None):
         resultSet = set(random.sample(kingdomSet, 10))
 
     # Enforce Alchemy rule
-    if (options or {}).get('enforce-alchemy-rule', True):
+    if (options or {}).get("enforce-alchemy-rule", True):
         alchemyCards = Alchemy.cards & resultSet
         if len(alchemyCards) == 1:
             # If there's only 1 Alchemy card, remove Alchemy from the options
@@ -748,7 +1225,7 @@ def RandomizeDominion(setNames=None, options=None):
         # If there are 3 or more Alchemy cards, let it lie.
 
     # Young Witch support
-    includeBane = resultSet & Cornucopia.cards('Young Witch')
+    includeBane = resultSet & Cornucopia.cards("Young Witch")
     if includeBane:
         eligibleBanes = (kingdomSet & BaneCards) - resultSet
         if not eligibleBanes:
@@ -764,9 +1241,7 @@ def RandomizeDominion(setNames=None, options=None):
     # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
     # select a card from the Bane Cards. The card chosen for Way of the Mouse
     # should not be used when determining most additional card rules.
-    includeMouse = Menagerie.cards('Way of the Mouse').intersection(
-        landscapeList
-    )
+    includeMouse = Menagerie.cards("Way of the Mouse").intersection(landscapeList)
     mouseSet = set()
     if includeMouse:
         eligibleMice = (kingdomSet & BaneCards) - resultSet
@@ -789,16 +1264,15 @@ def RandomizeDominion(setNames=None, options=None):
     fullResults = resultSet.union(landscapeList)
 
     # Check for Colonies and Platinums
-    includeColoniesAndPlatinum = (
-        Prosperity in sets
-        and PlatinumLove.intersection(random.sample(fullResults, 2))
+    includeColoniesAndPlatinum = Prosperity in sets and PlatinumLove.intersection(
+        random.sample(fullResults, 2)
     )
 
     # Check for Potions
     includePotions = Alchemy.potionCards & resultSet
 
     # Check for Prizes
-    includePrizes = Cornucopia.cards('Tournament') & resultSet
+    includePrizes = Cornucopia.cards("Tournament") & resultSet
 
     # Check for Shelters
     includeShelters = DarkAges in sets and ShelterLove.intersection(
@@ -807,31 +1281,29 @@ def RandomizeDominion(setNames=None, options=None):
     # Check for Ruins
     includeRuins = LooterCards & resultSet
     # Check for Madman
-    includeMadman = DarkAges.cards('Hermit') & resultSet
+    includeMadman = DarkAges.cards("Hermit") & resultSet
     # Check for Mercenary
-    includeMercenary = DarkAges.cards('Urchin') & resultSet
+    includeMercenary = DarkAges.cards("Urchin") & resultSet
     # Check for Spoils
     includeSpoils = SpoilsCards & resultSet
 
     # Check for special Nocturne cards
     includeGhost = resultSet & Nocturne.cards(
-        'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist'
+        "Cemetary + Haunted Mirror (Heirloom)", "Exorcist"
     )
 
     includeBoons = BoonCards & (resultSet | mouseSet)
 
     includeHexes = HexCards & (resultSet | mouseSet)
 
-    includeWisp = includeBoons or (Nocturne.cards('Exorcist') & resultSet)
+    includeWisp = includeBoons or (Nocturne.cards("Exorcist") & resultSet)
 
-    includeBat = Nocturne.cards('Vampire') & resultSet
+    includeBat = Nocturne.cards("Vampire") & resultSet
 
-    includeImp = resultSet & Nocturne.cards(
-        "Devil's Workshop", 'Exorcist', 'Tormentor'
-    )
+    includeImp = resultSet & Nocturne.cards("Devil's Workshop", "Exorcist", "Tormentor")
 
     includeWish = resultSet & Nocturne.cards(
-        'Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)'
+        "Leprechaun", "Secret Cave + Magic Lamp (Heirloom)"
     )
 
     # Check for Horses
@@ -846,64 +1318,66 @@ def RandomizeDominion(setNames=None, options=None):
     additionalCards = set()
 
     if includePotions:
-        additionalCards.add('Alchemy: Potions')
+        additionalCards.add("Alchemy: Potions")
     if includeShelters:
-        additionalCards.add('Dark Ages: Shelters')
+        additionalCards.add("Dark Ages: Shelters")
     if includeRuins:
-        additionalCards.add('Dark Ages: Ruins')
+        additionalCards.add("Dark Ages: Ruins")
     if includeColoniesAndPlatinum:
-        additionalCards.update(('Prosperity: Colony', 'Prosperity: Platinum'))
+        additionalCards.update(("Prosperity: Colony", "Prosperity: Platinum"))
     if includeBoulderTraps:
         # Technically this is not a landscape card, but it is set up
         # differently than other Kingdom cards
-        landscapeList.append('(Antiquities Trap): Boulder Traps')
+        landscapeList.append("(Antiquities Trap): Boulder Traps")
     if includeMadman:
-        additionalCards.add('Dark Ages: Madman')
+        additionalCards.add("Dark Ages: Madman")
     if includeMercenary:
-        additionalCards.add('Dark Ages: Mercenary')
+        additionalCards.add("Dark Ages: Mercenary")
     if includeSpoils:
-        additionalCards.add('Dark Ages: Spoils')
+        additionalCards.add("Dark Ages: Spoils")
     if includePrizes:
-        additionalCards.update((
-            'Cornucopia: Bag of Gold',
-            'Cornucopia: Diadem',
-            'Cornucopia: Followers',
-            'Cornucopia: Princess',
-            'Cornucopia: Trusty Steed'
-        ))
+        additionalCards.update(
+            (
+                "Cornucopia: Bag of Gold",
+                "Cornucopia: Diadem",
+                "Cornucopia: Followers",
+                "Cornucopia: Princess",
+                "Cornucopia: Trusty Steed",
+            )
+        )
     if includeGhost:
-        additionalCards.add('Nocturne: Ghost')
+        additionalCards.add("Nocturne: Ghost")
     if includeBoons:
-        landscapeList.append('(Nocturne: Boons Deck)')
+        landscapeList.append("(Nocturne: Boons Deck)")
     if includeHexes:
-        landscapeList.append('(Nocturne: Hexes Deck)')
+        landscapeList.append("(Nocturne: Hexes Deck)")
     if includeWisp:
-        additionalCards.add('Nocturne: Will-o-wisp')
+        additionalCards.add("Nocturne: Will-o-wisp")
     if includeBat:
-        additionalCards.add('Nocturne: Bat')
+        additionalCards.add("Nocturne: Bat")
     if includeImp:
-        additionalCards.add('Nocturne: Imp')
+        additionalCards.add("Nocturne: Imp")
     if includeWish:
-        additionalCards.add('Nocturne: Wish')
+        additionalCards.add("Nocturne: Wish")
     if includeHorse:
-        additionalCards.add('Menagerie: Horse')
+        additionalCards.add("Menagerie: Horse")
 
     # Create final card list
     if includeBane:
         # Append Bane Card to end of list
         resultSet.remove(baneCard)
         finalResult = sorted(resultSet | additionalCards)
-        finalResult.append('Bane is {}'.format(baneCard))
+        finalResult.append("Bane is {}".format(baneCard))
     else:
         finalResult = sorted(resultSet | additionalCards)
 
     # Add non-kingdom cards
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
-        finalResult.append('Mouse is {}'.format(mouseCard))
+        finalResult.append("Mouse is {}".format(mouseCard))
 
     return [str(card) for card in finalResult]
 
 
-if __name__ == '__main__':
-    print('\n'.join(RandomizeDominion()))
+if __name__ == "__main__":
+    print("\n".join(RandomizeDominion()))
