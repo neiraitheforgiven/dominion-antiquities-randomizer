@@ -313,7 +313,7 @@ Prosperity.AddCards(
         "Monument",
         "Quarry",
         "Talisman",
-        "Worker Village",
+        "Worker's Village",
         "City",
         "Contraband",
         "Counting House",
