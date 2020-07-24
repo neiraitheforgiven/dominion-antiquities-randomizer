@@ -250,8 +250,8 @@ Cornucopia.AddCards([
 
 Hinterlands = Set('Hinterlands')
 Hinterlands.AddCards([
-    'Crossroads', 'Duchess', 'Fools Gold', 'Develop', 'Oasis', 'Oracle',
-    'Scheme', 'Tunnel', 'Jack of all Trades', 'Noble Brigand', 'Nomad Camp',
+    'Crossroads', 'Duchess', "Fool's Gold", 'Develop', 'Oasis', 'Oracle',
+    'Scheme', 'Tunnel', 'Jack of All Trades', 'Noble Brigand', 'Nomad Camp',
     'Silk Road', 'Spice Merchant', 'Trader', 'Cache', 'Cartographer',
     'Embassy', 'Haggler', 'Highway', 'Ill-gotten Gains', 'Inn', 'Mandarin',
     'Margrave', 'Stables', 'Border Village', 'Farmland'
@@ -309,7 +309,7 @@ Empires.AddCards([
     'Engineer', 'City Quarter', 'Overlord', 'Royal Blacksmith',
     'Encampment/Plunder', 'Patrician/Emporium', 'Settlers/Bustling Village',
     'Castles', 'Catapult/Rocks', 'Chariot Race', 'Enchantress',
-    'Farmers Market', 'Gladiator/Fortune', 'Sacrifice', 'Temple', 'Villa',
+    "Farmers' Market", 'Gladiator/Fortune', 'Sacrifice', 'Temple', 'Villa',
     'Archive', 'Capital', 'Charm', 'Crown', 'Forum', 'Groundskeeper',
     'Legionary', 'Wild Hunt',
     {'name': 'Advance', 'types': {Event}},
@@ -353,7 +353,7 @@ Nocturne = Set('Nocturne')
 Nocturne.AddCards([
     'Bard', 'Blessed Village', 'Cemetary + Haunted Mirror (Heirloom)',
     'Changeling', 'Cobbler', 'Conclave', 'Crypt', 'Cursed Village',
-    'Den of Sin', 'Devils Workshop', 'Druid', 'Exorcist', 'Faithful Hound',
+    'Den of Sin', "Devil's Workshop", 'Druid', 'Exorcist', 'Faithful Hound',
     'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)', 'Guardian',
     'Ghost Town', 'Idol', 'Leprechaun', 'Monastery', 'Necromancer + Zombies',
     'Night Watchman', 'Pixie + Goat (Heirloom)',
@@ -469,26 +469,33 @@ PlatinumLove = Prosperity.cards.union(
     Alchemy.cards('Philosopher Stone'),
     Cornucopia.cards('Tournament'),
     Hinterlands.cards(
-        'Border Village', 'Cache', 'Duchess', 'Embassy', 'Fools Gold'
+        'Border Village', 'Cache', 'Duchess', 'Embassy', "Fool's Gold"
     ),
     DarkAges.cards('Altar', 'Counterfeit', 'Hunting Grounds', 'Poor House'),
     Guilds.cards('Masterpiece', 'Soothsayer'),
-    Adventures.cards('Hireling', 'Lost City', 'Page', 'Treasure Trove'),
+    Adventures.cards(
+        'Hireling', 'Lost City', 'Page', 'Treasure Trove', 'Seaway', 'Training'
+    ),
     Empires.cards(
         'Capital', 'Castles', 'Chariot Race', 'Crown', 'Encampment/Plunder',
-        'Farmers Market', 'Gladiator/Fortune', 'Groundskeeper', 'Legionary',
-        'Patrician/Emporium', 'Sacrifice', 'Temple', 'Wild Hunt'
+        "Farmers' Market", 'Gladiator/Fortune', 'Groundskeeper', 'Legionary',
+        'Patrician/Emporium', 'Sacrifice', 'Temple', 'Wild Hunt', 'Triumph',
+        'Delve', 'Wedding', 'Conquest', 'Dominate', 'Basilica', 'Keep'
     ),
     Nocturne.cards(
         'Pooka + Cursed Gold (Heirloom)', 'Raider', 'Sacred Grove',
         'Secret Cave + Magic Lamp (Heirloom)', 'Tragic Hero'
     ),
-    Renaissance.cards('Ducat', 'Scepter', 'Spices'),
+    Renaissance.cards('Ducat', 'Scepter', 'Spices', 'Capitalism', 'Guildhall'),
+    Menagerie.cards(
+        'Supplies', 'Camel Train', 'Stockpile', 'Livery', 'Animal Fair',
+        'Commerce', 'Enclave', 'Way of the Chameleon'
+    ),
     Antiquities.cards(
-        'Archaeologist', 'Collector', 'Dig', 'Discovery', 'Encroach',
-        'Gamepiece', 'Mausoleum', 'Mission House', 'Pharaoh', 'Pyramid',
-        'Stoneworks', 'Stronghold'
-    )
+        'Agora', 'Archaeologist', 'Curio', 'Discovery', 'Encroach',
+        'Gamepiece', 'Moundbuilder Village', 'Pharaoh', 'Pyramid',
+        'Snake Charmer', 'Stoneworks'
+    ),
 )
 
 ShelterLove = DarkAges.cards.union(
@@ -499,18 +506,24 @@ ShelterLove = DarkAges.cards.union(
     Prosperity.cards('Bishop', 'Expand', 'Forge'),
     Cornucopia.cards('Remake'),
     Hinterlands.cards('Develop', 'Farmland', 'Trader'),
-    Adventures.cards('Raze', 'Transmogrify'),
-    Empires.cards('Catapult/Rocks', 'Sacrifice'),
+    Adventures.cards('Raze', 'Transmogrify', 'Trade'),
+    Empires.cards(
+        'Catapult/Rocks', 'Sacrifice', 'Fountain', 'Labyrinth', 'Museum',
+        'Tomb'
+    ),
     Guilds.cards('Butcher', 'Journeyman', 'Stonemason', 'Taxman'),
     Nocturne.cards(
         'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist',
         'Necromancer + Zombies'
     ),
-    Renaissance.cards('Priest'),
+    Renaissance.cards('Priest', 'Pageant'),
+    Menagerie.cards(
+        'Camel Train', 'Scrap', 'Displace', 'Enhance', 'Way of the Butterfly'
+    ),
     Antiquities.cards(
-        'Collector', 'Graveyard', 'Pharaoh', 'Profiteer', 'Shipwreck',
-        'Snake Charmer', 'Stoneworks', 'Stronghold'
-    )
+        'Collector', 'Graveyard', 'Mendicant', 'Pharaoh', 'Profiteer',
+        'Shipwreck', 'Snake Charmer', 'Stoneworks'
+    ),
 )
 
 LooterCards = DarkAges.cards('Death Cart', 'Marauder', 'Cultist')
@@ -546,39 +559,52 @@ HorseCards = Menagerie.cards(
 )
 
 TrapLove = Antiquities.cards.union(
-    Base.cards('Cellar', 'Harbinger', 'Vassal', 'Remodel', 'Mine'),
-    Intrigue.cards('Lurker', 'Baron', 'Mill', 'Replace', 'Upgrade'),
-    Seaside.cards('Treasure Map', 'Tactician'),
-    Alchemy.cards('Transmute'),
-    Prosperity.cards(
-        'Watchtower', 'Bishop', 'Counting House', 'Vault', 'Goons', 'Expand',
-        'Forge'
+    Base.cards('Vassal', 'Remodel', 'Workshop', 'Mine', 'Library', 'Artisan'),
+    Intrigue.cards(
+        'Courtyard', 'Lurker', 'Masquerade', 'Swindler', 'Ironworks',
+        'Minion', 'Replace', 'Upgrade'
     ),
-    Cornucopia.cards('Hamlet', 'Horse Traders', 'Remake', 'Harvest'),
+    Seaside.cards('Lookout', 'Warehouse', 'Navigator', 'Salvager'),
+    Alchemy.cards('University'),
+    Prosperity.cards(
+        'Loan', 'Watchtower', 'Bishop', 'Vault', 'Venture', 'Goons',
+        'Expand', 'Forge'
+    ),
+    Cornucopia.cards(
+        'Fortune Teller', 'Menagerie', 'Farming Village', 'Remake',
+        'Young Witch', 'Harvest', 'Hunting Party'
+    ),
     Hinterlands.cards(
-        'Fools Gold', 'Develop', 'Tunnel', 'Jack of all Trades', 'Trader',
-        'Inn', 'Stables', 'Farmland'
+        'Develop', 'Oracle', 'Trader', 'Cartographer', 'Embassy', 'Haggler',
+        'Margrave', 'Border Village', 'Farmland'
     ),
     DarkAges.cards(
-        'Beggar', 'Squire', 'Hermit', 'Market Square', 'Storeroom', 'Urchin',
-        'Feodum', 'Procession', 'Rats', 'Scavenger', 'Catacombs',
-        'Graverobber', 'Pillage', 'Rebuild', 'Altar', 'Hunting Grounds'
+        'Hermit', 'Storeroom', 'Urchin', 'Feodum', 'Rats',
+        'Wandering Minstrel', 'Catacombs', 'Rebuild', 'Rogue'
     ),
-    Guilds.cards('Stonemason', 'Herald', 'Plaza', 'Taxman', 'Butcher'),
-    Adventures.cards('Guide', 'Transmogrify', 'Artificer'),
+    Guilds.cards('Stonemason', 'Butcher'),
+    Adventures.cards(
+        'Raze', 'Guide', 'Duplicate', 'Magpie', 'Messenger', 'Transmogrify',
+        'Scouting Party'
+    ),
     Empires.cards(
-        'Engineer', 'Settlers/Bustling Village', 'Chariot Race',
-        'Farmers Market', 'Catapult/Rocks', 'Sacrifice', 'Temple',
-        'Patrician/Emporium', 'Groundskeeper', 'Encampment/Plunder',
-        'Wild Hunt', 'Castles'
+        'Engineer', "Farmers' Market", 'Catapult/Rocks', 'Gladiator', 'Temple',
+        'Forum', 'Legionary', 'Triumph', 'Ritual', 'Conquest', 'Labyrinth',
+        'Museum'
     ),
     Nocturne.cards(
-        'Changeling', 'Secret Cave + Magic Lamp (Heirloom)', 'Exorcist',
-        'Shepherd + Pasture (Heirloom)', 'Tragic Hero', 'Vampire',
-        'Necromancer + Zombies', 'Cemetary + Haunted Mirror (Heirloom)'
+        'Monastery', 'Changeling', 'Secret Cave + Magic Lamp (Heirloom)',
+        "Devil's Workshop", 'Exorcist', 'Cobbler', 'Vampire',
+        'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)'
     ),
     Renaissance.cards(
-        'Improve', 'Mountain Village', 'Swashbuckler', 'Border Guard'
+        'Experiment', 'Inventor', 'Research', 'Recruiter', 'Scholar',
+        'Sculptor', 'Villain'
+    ),
+    Menagerie.cards(
+        'Camel Train', 'Scrap', 'Bounty Hunter', 'Groom', 'Hunting Lodge',
+        'Displace', 'Kiln', 'Livery', 'Destrier', 'Enhance', 'Commerce',
+        'Populate', 'Way of the Mole'
     )
 )
 
@@ -603,12 +629,12 @@ BaneCards = set().union(
     ),
     Empires.cards(
         'Castles', 'Catapult/Rocks', 'Chariot Race', 'Encampment/Plunder',
-        'Enchantress', 'Farmers Market', 'Gladiator', 'Gladiator/Forture',
+        'Enchantress', "Farmers' Market", 'Gladiator', 'Gladiator/Forture',
         'Patrician/Emporium', 'Settlers/Bustling Village'
     ),
     Guilds.cards('Candlestick Maker', 'Doctor', 'Masterpiece', 'Stonemason'),
     Hinterlands.cards(
-        'Crossroads', 'Develop', 'Duchess', 'Fools Gold', 'Oasis', 'Scheme',
+        'Crossroads', 'Develop', 'Duchess', "Fool's Gold", 'Oasis', 'Scheme',
         'Tunnel'
     ),
     Intrigue.cards(
@@ -767,7 +793,7 @@ def RandomizeDominion(setNames=None, options=None):
     includeBat = Nocturne.cards('Vampire') & resultSet
 
     includeImp = resultSet & Nocturne.cards(
-        'Devils Workshop', 'Exorcist', 'Tormentor'
+        "Devil's Workshop", 'Exorcist', 'Tormentor'
     )
 
     includeWish = resultSet & Nocturne.cards(
