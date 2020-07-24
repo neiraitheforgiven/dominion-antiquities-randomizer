@@ -11,15 +11,25 @@ document.addEventListener('DOMContentLoaded', function(event) {
         }
 
         var data = {
-            sets: []
+            sets: [],
+            options: {}
         };
 
         for (var i = 0; i < form.sets.elements.length; i++) {
             let checkbox = form.sets.elements[i];
 
-            if (checkbox.checked) {
+            if (checkbox.className == 'set' && checkbox.checked) {
                 data.sets.push(checkbox.value);
             }
+            else {
+                data.options[checkbox.name] = checkbox.checked;
+            }
+        }
+
+        for (var i = 0; i < form.moreOptions.elements.length; i++) {
+            let checkbox = form.sets.elements[i];
+
+            data.options[checkbox.name] = checkbox.checked;
         }
 
         fetch(url, {
@@ -38,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 ul.appendChild(li);
             }
             cards.appendChild(ul);
+            cards.scrollIntoView({behavior: 'smooth'});
         })
     }, false);
 });

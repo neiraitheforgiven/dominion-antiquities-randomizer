@@ -69,14 +69,33 @@ html, body {
     align-items: center;
 }
 
-#sets {
+form > fieldset {
     margin-bottom: 16px;
+    width: 100%;
 }
 
-#sets > span {
-    display: inline-block;
-    margin-right: 16px;
-    margin-bottom: 8px;
+form > fieldset > span {
+    display: block;
+    padding: 0.4em;
+}
+
+fieldset.set-options {
+    background-color: #EEEEEE;
+    display: block;
+    max-height: 0;
+    padding-left: 16px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, margin-top 0.3s ease-out;
+}
+
+input.set:checked ~ fieldset.set-options {
+    max-height: 4em;
+    margin-top: 4px;
+}
+
+fieldset.set-options > span {
+    display: block;
+    padding: 4px 0;
 }
 
 #randomize {

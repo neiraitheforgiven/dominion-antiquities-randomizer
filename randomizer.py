@@ -69,6 +69,8 @@ class Set(object):
         global AllSets
         self.name = name
         self._cards = CardList()
+        self._firstEdition = None
+        self._secondEdition = None
 
         self._events = None
         self._landmarks = None
@@ -84,19 +86,47 @@ class Set(object):
     def __repr__(self):
         return '<randomizer.Set: {}>'.format(self.name)
 
-    def AddCards(self, cards):
+    def _AddCards(self, cardList, cards):
         for cardData in cards:
-            if isinstance(cardData, dict):
+            if isinstance(cardData, Card):
+                cardList.add(cardData)
+            elif isinstance(cardData, dict):
                 card = Card(**cardData)
                 card.set = self
-                self.cards.add(card)
+                cardList.add(card)
             else:
                 # Assume card data is name for now
-                self.cards.add(Card(cardData, cardSet=self))
+                cardList.add(Card(cardData, cardSet=self))
+
+    def AddCards(self, cards):
+        self._AddCards(self._cards, cards)
+
+    def RemoveCards(self, cards):
+        self._cards -= cards
 
     @property
     def cards(self):
         return self._cards
+
+    @property
+    def firstEdition(self):
+        return self._firstEdition
+
+    @firstEdition.setter
+    def firstEdition(self, cards):
+        if self._firstEdition is None:
+            self._firstEdition = CardList()
+        self._AddCards(self._firstEdition, cards)
+
+    @property
+    def secondEdition(self):
+        return self._secondEdition
+
+    @secondEdition.setter
+    def secondEdition(self, cards):
+        if self._secondEdition is None:
+            self._secondEdition = CardList()
+        self._AddCards(self._secondEdition, cards)
 
     @property
     def events(self):
@@ -123,20 +153,20 @@ class Set(object):
         return self._projects
 
     @property
-    def potionCards(self):
-        if self._potionCards is None:
-            self._potionCards = CardList(
-                card for card in self._cards if card.types & {Potion}
-            )
-        return self._potionCards
-
-    @property
     def ways(self):
         if self._ways is None:
             self._ways = CardList(
                 card for card in self._cards if card.types & {Way}
             )
         return self._ways
+
+    @property
+    def potionCards(self):
+        if self._potionCards is None:
+            self._potionCards = CardList(
+                card for card in self._cards if card.types & {Potion}
+            )
+        return self._potionCards
 
 
 # Define card types
@@ -151,10 +181,15 @@ Base = Set('Base')
 Base.AddCards([
     'Cellar', 'Chapel', 'Moat', 'Harbinger', 'Merchant', 'Village', 'Workshop',
     'Vassal', 'Bureaucrat', 'Gardens', 'Militia', 'Moneylender', 'Poacher',
-    'Remodel', 'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room',
-    'Festival', 'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch',
-    'Artisan'
+    'Remodel', 'Smithy', 'Throne Room', 'Bandit', 'Council Room', 'Festival',
+    'Laboratory', 'Library', 'Market', 'Mine', 'Sentry', 'Witch', 'Artisan'
 ])
+Base.firstEdition = [
+    'Adventurer', 'Chancellor', 'Feast', 'Spy', 'Thief', 'Woodcutter'
+]
+Base.secondEdition = Base.cards(
+    'Artisan', 'Bandit', 'Harbinger', 'Merchant', 'Poacher', 'Sentry', 'Vassal'
+)
 
 Intrigue = Set('Intrigue')
 Intrigue.AddCards([
@@ -164,6 +199,14 @@ Intrigue.AddCards([
     'Duke', 'Minion', 'Patrol', 'Replace', 'Torturer', 'Trading Post',
     'Upgrade', 'Harem', 'Nobles'
 ])
+Intrigue.firstEdition = [
+    'Coppersmith', 'Great Hall', 'Saboteur', 'Scout', 'Secret Chamber',
+    'Tribute'
+]
+Intrigue.secondEdition = Intrigue.cards(
+    'Courtier', 'Diplomat', 'Lurker', 'Mill', 'Patrol', 'Replace',
+    'Secret Passage'
+)
 
 Seaside = Set('Seaside')
 Seaside.AddCards([
@@ -207,8 +250,8 @@ Cornucopia.AddCards([
 
 Hinterlands = Set('Hinterlands')
 Hinterlands.AddCards([
-    'Crossroads', 'Duchess', 'Fools Gold', 'Develop', 'Oasis', 'Oracle',
-    'Scheme', 'Tunnel', 'Jack of all Trades', 'Noble Brigand', 'Nomad Camp',
+    'Crossroads', 'Duchess', "Fool's Gold", 'Develop', 'Oasis', 'Oracle',
+    'Scheme', 'Tunnel', 'Jack of All Trades', 'Noble Brigand', 'Nomad Camp',
     'Silk Road', 'Spice Merchant', 'Trader', 'Cache', 'Cartographer',
     'Embassy', 'Haggler', 'Highway', 'Ill-gotten Gains', 'Inn', 'Mandarin',
     'Margrave', 'Stables', 'Border Village', 'Farmland'
@@ -266,7 +309,7 @@ Empires.AddCards([
     'Engineer', 'City Quarter', 'Overlord', 'Royal Blacksmith',
     'Encampment/Plunder', 'Patrician/Emporium', 'Settlers/Bustling Village',
     'Castles', 'Catapult/Rocks', 'Chariot Race', 'Enchantress',
-    'Farmers Market', 'Gladiator/Fortune', 'Sacrifice', 'Temple', 'Villa',
+    "Farmers' Market", 'Gladiator/Fortune', 'Sacrifice', 'Temple', 'Villa',
     'Archive', 'Capital', 'Charm', 'Crown', 'Forum', 'Groundskeeper',
     'Legionary', 'Wild Hunt',
     {'name': 'Advance', 'types': {Event}},
@@ -310,7 +353,7 @@ Nocturne = Set('Nocturne')
 Nocturne.AddCards([
     'Bard', 'Blessed Village', 'Cemetary + Haunted Mirror (Heirloom)',
     'Changeling', 'Cobbler', 'Conclave', 'Crypt', 'Cursed Village',
-    'Den of Sin', 'Devils Workshop', 'Druid', 'Exorcist', 'Faithful Hound',
+    'Den of Sin', "Devil's Workshop", 'Druid', 'Exorcist', 'Faithful Hound',
     'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)', 'Guardian',
     'Ghost Town', 'Idol', 'Leprechaun', 'Monastery', 'Necromancer + Zombies',
     'Night Watchman', 'Pixie + Goat (Heirloom)',
@@ -426,26 +469,33 @@ PlatinumLove = Prosperity.cards.union(
     Alchemy.cards('Philosopher Stone'),
     Cornucopia.cards('Tournament'),
     Hinterlands.cards(
-        'Border Village', 'Cache', 'Duchess', 'Embassy', 'Fools Gold'
+        'Border Village', 'Cache', 'Duchess', 'Embassy', "Fool's Gold"
     ),
     DarkAges.cards('Altar', 'Counterfeit', 'Hunting Grounds', 'Poor House'),
     Guilds.cards('Masterpiece', 'Soothsayer'),
-    Adventures.cards('Hireling', 'Lost City', 'Page', 'Treasure Trove'),
+    Adventures.cards(
+        'Hireling', 'Lost City', 'Page', 'Treasure Trove', 'Seaway', 'Training'
+    ),
     Empires.cards(
         'Capital', 'Castles', 'Chariot Race', 'Crown', 'Encampment/Plunder',
-        'Farmers Market', 'Gladiator/Fortune', 'Groundskeeper', 'Legionary',
-        'Patrician/Emporium', 'Sacrifice', 'Temple', 'Wild Hunt'
+        "Farmers' Market", 'Gladiator/Fortune', 'Groundskeeper', 'Legionary',
+        'Patrician/Emporium', 'Sacrifice', 'Temple', 'Wild Hunt', 'Triumph',
+        'Delve', 'Wedding', 'Conquest', 'Dominate', 'Basilica', 'Keep'
     ),
     Nocturne.cards(
         'Pooka + Cursed Gold (Heirloom)', 'Raider', 'Sacred Grove',
         'Secret Cave + Magic Lamp (Heirloom)', 'Tragic Hero'
     ),
-    Renaissance.cards('Ducat', 'Scepter', 'Spices'),
+    Renaissance.cards('Ducat', 'Scepter', 'Spices', 'Capitalism', 'Guildhall'),
+    Menagerie.cards(
+        'Supplies', 'Camel Train', 'Stockpile', 'Livery', 'Animal Fair',
+        'Commerce', 'Enclave', 'Way of the Chameleon'
+    ),
     Antiquities.cards(
-        'Archaeologist', 'Collector', 'Dig', 'Discovery', 'Encroach',
-        'Gamepiece', 'Mausoleum', 'Mission House', 'Pharaoh', 'Pyramid',
-        'Stoneworks', 'Stronghold'
-    )
+        'Agora', 'Archaeologist', 'Curio', 'Discovery', 'Encroach',
+        'Gamepiece', 'Moundbuilder Village', 'Pharaoh', 'Pyramid',
+        'Snake Charmer', 'Stoneworks'
+    ),
 )
 
 ShelterLove = DarkAges.cards.union(
@@ -456,18 +506,24 @@ ShelterLove = DarkAges.cards.union(
     Prosperity.cards('Bishop', 'Expand', 'Forge'),
     Cornucopia.cards('Remake'),
     Hinterlands.cards('Develop', 'Farmland', 'Trader'),
-    Adventures.cards('Raze', 'Transmogrify'),
-    Empires.cards('Catapult/Rocks', 'Sacrifice'),
+    Adventures.cards('Raze', 'Transmogrify', 'Trade'),
+    Empires.cards(
+        'Catapult/Rocks', 'Sacrifice', 'Fountain', 'Labyrinth', 'Museum',
+        'Tomb'
+    ),
     Guilds.cards('Butcher', 'Journeyman', 'Stonemason', 'Taxman'),
     Nocturne.cards(
         'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist',
         'Necromancer + Zombies'
     ),
-    Renaissance.cards('Priest'),
+    Renaissance.cards('Priest', 'Pageant'),
+    Menagerie.cards(
+        'Camel Train', 'Scrap', 'Displace', 'Enhance', 'Way of the Butterfly'
+    ),
     Antiquities.cards(
-        'Collector', 'Graveyard', 'Pharaoh', 'Profiteer', 'Shipwreck',
-        'Snake Charmer', 'Stoneworks', 'Stronghold'
-    )
+        'Collector', 'Graveyard', 'Mendicant', 'Pharaoh', 'Profiteer',
+        'Shipwreck', 'Snake Charmer', 'Stoneworks'
+    ),
 )
 
 LooterCards = DarkAges.cards('Death Cart', 'Marauder', 'Cultist')
@@ -486,40 +542,69 @@ HexCards = Nocturne.cards(
 
 WishCards = Nocturne.cards('Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)')
 
+HorseCards = Menagerie.cards(
+    'Cavalry',
+    'Groom',
+    'Hostelry',
+    'Livery',
+    'Paddock',
+    'Scrap',
+    'Sleigh',
+    'Supplies',
+    # Events
+    'Bargain',
+    'Demand',
+    'Ride',
+    'Stampede',
+)
+
 TrapLove = Antiquities.cards.union(
-    Base.cards('Cellar', 'Harbinger', 'Vassal', 'Remodel', 'Mine'),
-    Intrigue.cards('Lurker', 'Baron', 'Mill', 'Replace', 'Upgrade'),
-    Seaside.cards('Treasure Map', 'Tactician'),
-    Alchemy.cards('Transmute'),
-    Prosperity.cards(
-        'Watchtower', 'Bishop', 'Counting House', 'Vault', 'Goons', 'Expand',
-        'Forge'
+    Base.cards('Vassal', 'Remodel', 'Workshop', 'Mine', 'Library', 'Artisan'),
+    Intrigue.cards(
+        'Courtyard', 'Lurker', 'Masquerade', 'Swindler', 'Ironworks',
+        'Minion', 'Replace', 'Upgrade'
     ),
-    Cornucopia.cards('Hamlet', 'Horse Traders', 'Remake', 'Harvest'),
+    Seaside.cards('Lookout', 'Warehouse', 'Navigator', 'Salvager'),
+    Alchemy.cards('University'),
+    Prosperity.cards(
+        'Loan', 'Watchtower', 'Bishop', 'Vault', 'Venture', 'Goons',
+        'Expand', 'Forge'
+    ),
+    Cornucopia.cards(
+        'Fortune Teller', 'Menagerie', 'Farming Village', 'Remake',
+        'Young Witch', 'Harvest', 'Hunting Party'
+    ),
     Hinterlands.cards(
-        'Fools Gold', 'Develop', 'Tunnel', 'Jack of all Trades', 'Trader',
-        'Inn', 'Stables', 'Farmland'
+        'Develop', 'Oracle', 'Trader', 'Cartographer', 'Embassy', 'Haggler',
+        'Margrave', 'Border Village', 'Farmland'
     ),
     DarkAges.cards(
-        'Beggar', 'Squire', 'Hermit', 'Market Square', 'Storeroom', 'Urchin',
-        'Feodum', 'Procession', 'Rats', 'Scavenger', 'Catacombs',
-        'Graverobber', 'Pillage', 'Rebuild', 'Altar', 'Hunting Grounds'
+        'Hermit', 'Storeroom', 'Urchin', 'Feodum', 'Rats',
+        'Wandering Minstrel', 'Catacombs', 'Rebuild', 'Rogue'
     ),
-    Guilds.cards('Stonemason', 'Herald', 'Plaza', 'Taxman', 'Butcher'),
-    Adventures.cards('Guide', 'Transmogrify', 'Artificer'),
+    Guilds.cards('Stonemason', 'Butcher'),
+    Adventures.cards(
+        'Raze', 'Guide', 'Duplicate', 'Magpie', 'Messenger', 'Transmogrify',
+        'Scouting Party'
+    ),
     Empires.cards(
-        'Engineer', 'Settlers/Bustling Village', 'Chariot Race',
-        'Farmers Market', 'Catapult/Rocks', 'Sacrifice', 'Temple',
-        'Patrician/Emporium', 'Groundskeeper', 'Encampment/Plunder',
-        'Wild Hunt', 'Castles'
+        'Engineer', "Farmers' Market", 'Catapult/Rocks', 'Gladiator', 'Temple',
+        'Forum', 'Legionary', 'Triumph', 'Ritual', 'Conquest', 'Labyrinth',
+        'Museum'
     ),
     Nocturne.cards(
-        'Changeling', 'Secret Cave + Magic Lamp (Heirloom)', 'Exorcist',
-        'Shepherd + Pasture (Heirloom)', 'Tragic Hero', 'Vampire',
-        'Necromancer + Zombies', 'Cemetary + Haunted Mirror (Heirloom)'
+        'Monastery', 'Changeling', 'Secret Cave + Magic Lamp (Heirloom)',
+        "Devil's Workshop", 'Exorcist', 'Cobbler', 'Vampire',
+        'Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)'
     ),
     Renaissance.cards(
-        'Improve', 'Mountain Village', 'Swashbuckler', 'Border Guard'
+        'Experiment', 'Inventor', 'Research', 'Recruiter', 'Scholar',
+        'Sculptor', 'Villain'
+    ),
+    Menagerie.cards(
+        'Camel Train', 'Scrap', 'Bounty Hunter', 'Groom', 'Hunting Lodge',
+        'Displace', 'Kiln', 'Livery', 'Destrier', 'Enhance', 'Commerce',
+        'Populate', 'Way of the Mole'
     )
 )
 
@@ -544,12 +629,12 @@ BaneCards = set().union(
     ),
     Empires.cards(
         'Castles', 'Catapult/Rocks', 'Chariot Race', 'Encampment/Plunder',
-        'Enchantress', 'Farmers Market', 'Gladiator', 'Gladiator/Forture',
+        'Enchantress', "Farmers' Market", 'Gladiator', 'Gladiator/Forture',
         'Patrician/Emporium', 'Settlers/Bustling Village'
     ),
     Guilds.cards('Candlestick Maker', 'Doctor', 'Masterpiece', 'Stonemason'),
     Hinterlands.cards(
-        'Crossroads', 'Develop', 'Duchess', 'Fools Gold', 'Oasis', 'Scheme',
+        'Crossroads', 'Develop', 'Duchess', "Fool's Gold", 'Oasis', 'Scheme',
         'Tunnel'
     ),
     Intrigue.cards(
@@ -579,7 +664,7 @@ BaneCards = set().union(
 )
 
 
-def RandomizeDominion(setNames=None):
+def RandomizeDominion(setNames=None, options=None):
     # Make full list + Events + Landmarks to determine landmarks
     sets = set()
     if setNames is None:
@@ -589,99 +674,113 @@ def RandomizeDominion(setNames=None):
             if setName in AllSets:
                 sets.add(AllSets[setName])
 
-    completeSet = set().union(*(cardSet.cards for cardSet in sets))
-    completeList = list(completeSet)
+    if options:
+        if Base in sets:
+            if options.get("base-first-edition"):
+                Base.AddCards(Base.firstEdition)
 
+            if not options.get("base-second-edition", True):
+                Base.RemoveCards(Base.secondEdition)
+
+        if Intrigue in sets:
+            if options.get("intrigue-first-edition"):
+                Intrigue.AddCards(Intrigue.firstEdition)
+
+            if not options.get("intrigue-second-edition", True):
+                Intrigue.RemoveCards(Intrigue.secondEdition)
+
+    completeSet = set().union(*(cardSet.cards for cardSet in sets))
     landscapeSet = set()
 
-    # Check 10% of all cards for Events
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    eventList = []
-    for t in tempList:
-        if t in Events:
-            eventList = eventList + [t]
-    landscapeSet.update(eventList[:len(eventList) % 2])
+    if completeSet & LandscapeCards:
+        # Handle sets that include landscape cards
+        kingdomSet = completeSet - LandscapeCards
 
-    # Check 10% of all cards for Landmarks
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    landmarkList = []
-    for t in tempList:
-        if t in Landmarks:
-            landmarkList = landmarkList + [t]
-    landscapeSet.update(landmarkList[:len(landmarkList) % 2])
+        resultSet = set()
+        waySet = set()
+        counter = 0
+        while not landscapeSet and counter < 3:
+            # Shuffle all cards
+            cards = iter(random.sample(completeSet, len(completeSet)))
 
-    # Check 10% of all cards for Projects
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    projectList = []
-    for t in tempList:
-        if t in Projects:
-            projectList = projectList + [t]
-    landscapeSet.update(projectList[:len(projectList) % 2])
+            # Categorize cards from the shuffled pile
+            while len(resultSet) < 10:
+                card = next(cards)
+                if card.types & {Way}:
+                    waySet.add(card)
+                elif card.types & {Event, Landmark, Project}:
+                    landscapeSet.add(card)
+                else:
+                    resultSet.add(card)
 
-    # Check 10% of all cards for Ways
-    random.shuffle(completeList)
-    tempList = completeList[:int(math.ceil(len(completeList) / 10))]
-    wayList = []
-    for t in tempList:
-        if t.types & {Way}:
-            wayList.append(t)
-    landscapeSet.update(wayList[:len(wayList) % 2])
+            counter += 1
 
-    # Ensure no more than two landscape cards
-    landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
+        # Get final list of landscape cards
+        if options and options.get('limit-landscapes'):
+            landscapeList = random.sample(waySet, len(waySet))[:1]
+            landscapeList.extend(
+                random.sample(
+                    landscapeSet, len(landscapeSet)
+                )[: 2 - len(landscapeList)]
+            )
+        else:
+            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+            landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+    else:
+        kingdomSet = completeSet
+        landscapeList = []
 
-    # Pull cards
-    pullSet = completeSet - LandscapeCards
-    pullList = list(pullSet)
-    random.shuffle(pullList)
-    resultList = pullList[:10]
+        resultSet = set(random.sample(kingdomSet, 10))
 
-    # enforce Alchemy rule
-    alcCount = 0
-    for r in resultList:
-        if r in Alchemy.cards:
-            alcCount = alcCount + 1
-    # if there's only 1 alchemy card, remove alchemy from the options and
-    # redraw Kingdom cards
-    if alcCount == 1:
-        pullSet -= Alchemy.cards
-        pullList = list(pullSet)
-        random.shuffle(pullList)
-        resultList = pullList[:10]
-    # if there's only alchemy cards, pull 3 alchemy cards, and then randomize
-    # the rest from not alchemy
-    if alcCount == 2:
-        alcList = list(Alchemy.cards)
-        random.shuffle(alcList)
-        alcList = alcList[:3]
-        pullSet -= set(alcList)
-        pullList = list(pullSet)
-        random.shuffle(pullList)
-        resultList = alcList + pullList[:7]
-    # if there are 3 or more alchemy cards, let it lie.
+    # Enforce Alchemy rule
+    if (options or {}).get('enforce-alchemy-rule', True):
+        alchemyCards = Alchemy.cards & resultSet
+        if len(alchemyCards) == 1:
+            # If there's only 1 Alchemy card, remove Alchemy from the options
+            # and draw an addtional Kingdom card
+            resultSet -= alchemyCards
+            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+        elif len(alchemyCards) == 2:
+            # If there are only 2 Alchemy cards, pull an additional Alchemy
+            # card and randomly remove one non-Alchemy card
+            alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
+            resultSet = alchemyCards.union(random.sample(resultSet, 7))
+        # If there are 3 or more Alchemy cards, let it lie.
 
-    # Check for Potions
-    includePotions = set(resultList) & Alchemy.potionCards
+    # Young Witch support
+    includeBane = resultSet & Cornucopia.cards('Young Witch')
+    if includeBane:
+        eligibleBanes = (kingdomSet & BaneCards) - resultSet
+        if not eligibleBanes:
+            # All eligible Bane cards are already part of the randomized set!
+            # Add a new card to the set and pull a Bane from the randomized
+            # cards.
+            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+            baneCard = random.sample(resultSet & BaneCards, 1)[0]
+        else:
+            baneCard = random.sample(eligibleBanes, 1)[0]
+            resultSet.add(baneCard)
 
-    # Check for Shelters
-    random.shuffle(resultList)
-    includeShelters = DarkAges in sets and set(resultList[:2]) & ShelterLove
+    fullResults = resultSet.union(landscapeList)
 
     # Check for Colonies and Platinums
-    random.shuffle(resultList)
-    includeColPlat = Prosperity in sets and set(resultList[:2]) & PlatinumLove
+    includeColoniesAndPlatinum = (
+        Prosperity in sets
+        and PlatinumLove.intersection(random.sample(fullResults, 2))
+    )
 
-    # Check for Boulder traps
-    random.shuffle(resultList)
-    includeBTraps = Antiquities in sets and set(resultList[:1]) & TrapLove
+    # Check for Potions
+    includePotions = Alchemy.potionCards & resultSet
 
-    resultSet = set(resultList)
+    # Check for Prizes
+    includePrizes = Cornucopia.cards('Tournament') & resultSet
 
-    # Check for Looters
-    includeLooters = LooterCards & resultSet
+    # Check for Shelters
+    includeShelters = DarkAges in sets and ShelterLove.intersection(
+        random.sample(fullResults, 2)
+    )
+    # Check for Ruins
+    includeRuins = LooterCards & resultSet
     # Check for Madman
     includeMadman = DarkAges.cards('Hermit') & resultSet
     # Check for Mercenary
@@ -689,57 +788,50 @@ def RandomizeDominion(setNames=None):
     # Check for Spoils
     includeSpoils = SpoilsCards & resultSet
 
-    # add Prizes
-    includePrizes = Cornucopia.cards('Tournament') & resultSet
-
+    # Check for special Nocturne cards
     includeGhost = resultSet & Nocturne.cards(
         'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist'
     )
 
     includeBoons = resultSet & BoonCards
-    includeHex = resultSet & HexCards
+
+    includeHexes = resultSet & HexCards
 
     includeWisp = includeBoons or (Nocturne.cards('Exorcist') & resultSet)
 
     includeBat = Nocturne.cards('Vampire') & resultSet
 
     includeImp = resultSet & Nocturne.cards(
-        'Devils Workshop', 'Exorcist', 'Tormentor'
+        "Devil's Workshop", 'Exorcist', 'Tormentor'
     )
 
     includeWish = resultSet & Nocturne.cards(
         'Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)'
     )
 
-    includeHorse = resultSet.union(landscapeList) & Menagerie.cards(
-        'Cavalry',
-        'Groom',
-        'Hostelry',
-        'Livery',
-        'Paddock',
-        'Scrap',
-        'Sleigh',
-        'Supplies',
-        # Events
-        'Bargain',
-        'Demand',
-        'Ride',
-        'Stampede',
+    # Check for Horses
+    includeHorse = resultSet.union(landscapeList) & HorseCards
+
+    # Check for Boulder traps
+    includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
+        random.sample(fullResults, 1)
     )
 
-    # create final list
+    # Create final list
     additionalCards = set()
 
     if includePotions:
         additionalCards.add('Alchemy: Potions')
     if includeShelters:
         additionalCards.add('Dark Ages: Shelters')
-    if includeLooters:
+    if includeRuins:
         additionalCards.add('Dark Ages: Ruins')
-    if includeColPlat:
+    if includeColoniesAndPlatinum:
         additionalCards.update(('Prosperity: Colony', 'Prosperity: Platinum'))
-    if includeBTraps:
-        additionalCards.add('Antiquities: Boulder Traps')
+    if includeBoulderTraps:
+        # Technically this is not a landscape card, but it is set up
+        # differently than other Kingdom cards
+        landscapeList.append('(Antiquities Trap): Boulder Traps')
     if includeMadman:
         additionalCards.add('Dark Ages: Madman')
     if includeMercenary:
@@ -757,9 +849,9 @@ def RandomizeDominion(setNames=None):
     if includeGhost:
         additionalCards.add('Nocturne: Ghost')
     if includeBoons:
-        additionalCards.add('Nocturne: Boons Deck')
-    if includeHex:
-        additionalCards.add('Nocturne: Hexes Deck')
+        landscapeList.append('(Nocturne: Boons Deck)')
+    if includeHexes:
+        landscapeList.append('(Nocturne: Hexes Deck)')
     if includeWisp:
         additionalCards.add('Nocturne: Will-o-wisp')
     if includeBat:
@@ -771,17 +863,17 @@ def RandomizeDominion(setNames=None):
     if includeHorse:
         additionalCards.add('Menagerie: Horse')
 
-    finalResult = sorted(resultSet | additionalCards)
-
-    # Young Witch Support
-    includeBane = resultSet & Cornucopia.cards('Young Witch')
+    # Create final card list
     if includeBane:
-        eligibleBanes = list((pullSet & BaneCards) - resultSet)
-        random.shuffle(eligibleBanes)
-        baneCard = ['Bane is {}'.format(eligibleBanes[0])]
-        finalResult = finalResult + baneCard
+        # Append Bane Card to end of list
+        resultSet.remove(baneCard)
+        finalResult = sorted(resultSet | additionalCards)
+        finalResult.append('Bane is {}'.format(baneCard))
+    else:
+        finalResult = sorted(resultSet | additionalCards)
 
-    finalResult = finalResult + sorted(landscapeList)
+    # Add non-kingdom cards
+    finalResult.extend(sorted(landscapeList))
 
     return [str(card) for card in finalResult]
 
