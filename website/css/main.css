@@ -3,6 +3,7 @@
    License: none (public domain)
 */
 
+/* prettier-ignore */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -24,6 +25,7 @@ time, mark, audio, video {
     vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
+/* prettier-ignore */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
     display: block;
@@ -31,12 +33,15 @@ footer, header, hgroup, menu, nav, section {
 body {
     line-height: 1;
 }
+/* prettier-ignore */
 ol, ul {
     list-style: none;
 }
+/* prettier-ignore */
 blockquote, q {
     quotes: none;
 }
+/* prettier-ignore */
 blockquote:before, blockquote:after,
 q:before, q:after {
     content: '';
@@ -47,9 +52,9 @@ table {
     border-spacing: 0;
 }
 
-
 /* Randomizer CSS */
-html, body {
+html,
+body {
     font-family: "Roboto";
 }
 
@@ -69,18 +74,18 @@ html, body {
     align-items: center;
 }
 
-#sets {
+form > fieldset {
     margin-bottom: 16px;
     width: 100%;
 }
 
-#sets > span {
+form > fieldset > span {
     display: block;
     padding: 0.4em;
 }
 
 fieldset.set-options {
-    background-color: #EEEEEE;
+    background-color: #eeeeee;
     display: block;
     max-height: 0;
     padding-left: 16px;
@@ -104,8 +109,8 @@ fieldset.set-options > span {
     padding: 0.2em 1em;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background: linear-gradient(0deg, #DDDDDD, #F5F5F5);
-    border: solid 1px #AAAAAA;
+    background: linear-gradient(0deg, #dddddd, #f5f5f5);
+    border: solid 1px #aaaaaa;
 }
 
 #randomize:hover {
@@ -113,7 +118,7 @@ fieldset.set-options > span {
 }
 
 #randomize:active {
-    background: linear-gradient(180deg, #DDDDDD, #F5F5F5);
+    background: linear-gradient(180deg, #dddddd, #f5f5f5);
 }
 
 #cards ul {
