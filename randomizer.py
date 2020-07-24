@@ -529,6 +529,22 @@ HexCards = Nocturne.cards(
 
 WishCards = Nocturne.cards('Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)')
 
+HorseCards = Menagerie.cards(
+    'Cavalry',
+    'Groom',
+    'Hostelry',
+    'Livery',
+    'Paddock',
+    'Scrap',
+    'Sleigh',
+    'Supplies',
+    # Events
+    'Bargain',
+    'Demand',
+    'Ride',
+    'Stampede',
+)
+
 TrapLove = Antiquities.cards.union(
     Base.cards('Cellar', 'Harbinger', 'Vassal', 'Remodel', 'Mine'),
     Intrigue.cards('Lurker', 'Baron', 'Mill', 'Replace', 'Upgrade'),
@@ -648,88 +664,88 @@ def RandomizeDominion(setNames=None, options=None):
                 Intrigue.RemoveCards(Intrigue.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
-
-    # Randomize landscape cards
     landscapeSet = set()
-    oneTenth = math.ceil(len(completeSet) / 10)
 
-    # Check 10% of all cards for Events, add one if an odd number is found
-    eventSet = Events.intersection(random.sample(completeSet, oneTenth))
-    if len(eventSet) % 2:
-        landscapeSet.update(random.sample(eventSet, 1))
+    if completeSet & LandscapeCards:
+        # Handle sets that include landscape cards
+        kingdomSet = completeSet - LandscapeCards
 
-    # Check 10% of all cards for Landmarks, add one if an odd number is found
-    landmarkSet = Landmarks.intersection(random.sample(completeSet, oneTenth))
-    if len(landmarkSet) % 2:
-        landscapeSet.update(random.sample(landmarkSet, 1))
+        resultSet = set()
+        waySet = set()
+        counter = 0
+        while not landscapeSet and counter < 3:
+            # Shuffle all cards
+            cards = iter(random.sample(completeSet, len(completeSet)))
 
-    # Check 10% of all cards for Projects, add one if an odd number is found
-    projectSet = Projects.intersection(random.sample(completeSet, oneTenth))
-    if len(projectSet) % 2:
-        landscapeSet.update(random.sample(projectSet, 1))
+            # Categorize cards from the shuffled pile
+            while len(resultSet) < 10:
+                card = next(cards)
+                if card.types & {Way}:
+                    waySet.add(card)
+                elif card.types & {Event, Landmark, Project}:
+                    landscapeSet.add(card)
+                else:
+                    resultSet.add(card)
 
-    # Check 10% of all cards for Ways, add one if an odd number is found
-    waySet = Ways.intersection(random.sample(completeSet, oneTenth))
-    if len(waySet) % 2:
-        landscapeSet.update(random.sample(waySet, 1))
+            counter += 1
 
-    # Ensure no more than two landscape cards
-    landscapeList = random.sample(landscapeSet, len(landscapeSet))[:2]
+        # Get final list of landscape cards
+        landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+        landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+    else:
+        kingdomSet = completeSet
+        landscapeList = []
 
-    # Pull Kingdom cards
-    pullSet = completeSet - LandscapeCards
-    resultSet = set(random.sample(pullSet, 10))
+        resultSet = set(random.sample(kingdomSet, 10))
 
     # Enforce Alchemy rule
-    alchemyCount = len(Alchemy.cards & resultSet)
-    if alchemyCount == 1:
+    alchemyCards = Alchemy.cards & resultSet
+    if len(alchemyCards) == 1:
         # If there's only 1 Alchemy card, remove Alchemy from the options and
-        # redraw Kingdom cards
-        pullSet -= Alchemy.cards
-        resultSet = set(random.sample(pullSet, 10))
-    elif alchemyCount == 2:
-        # If there are only 2 Alchemy cards, pull 3 Alchemy cards and then
-        # randomize the rest from not Alchemy
-        alchemyList = random.sample(Alchemy.cards, 3)
-        pullSet -= Alchemy.cards
-        resultSet = set(alchemyList + random.sample(pullSet, 7))
+        # draw an addtional Kingdom card
+        resultSet -= alchemyCards
+        resultSet.update(random.sample(kingdomSet - resultSet, 1))
+    elif len(alchemyCards) == 2:
+        # If there are only 2 Alchemy cards, pull an additional Alchemy card
+        # and randomly remove one non-Alchemy card
+        alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
+        resultSet = alchemyCards.union(random.sample(resultSet, 7))
     # If there are 3 or more Alchemy cards, let it lie.
 
     # Young Witch support
     includeBane = resultSet & Cornucopia.cards('Young Witch')
     if includeBane:
-        eligibleBanes = (pullSet & BaneCards) - resultSet
+        eligibleBanes = (kingdomSet & BaneCards) - resultSet
         if not eligibleBanes:
             # All eligible Bane cards are already part of the randomized set!
             # Add a new card to the set and pull a Bane from the randomized
             # cards.
-            resultSet.update(random.sample(pullSet - resultSet, 1))
+            resultSet.update(random.sample(kingdomSet - resultSet, 1))
             baneCard = random.sample(resultSet & BaneCards, 1)[0]
         else:
             baneCard = random.sample(eligibleBanes, 1)[0]
             resultSet.add(baneCard)
 
-    # Check for Shelters
-    includeShelters = DarkAges in sets and ShelterLove.intersection(
-        random.sample(resultSet, 2)
-    )
+    fullResults = resultSet.union(landscapeList)
 
     # Check for Colonies and Platinums
     includeColoniesAndPlatinum = (
         Prosperity in sets
-        and PlatinumLove.intersection(random.sample(resultSet, 2))
-    )
-
-    # Check for Boulder traps
-    includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
-        random.sample(resultSet, 1)
+        and PlatinumLove.intersection(random.sample(fullResults, 2))
     )
 
     # Check for Potions
     includePotions = Alchemy.potionCards & resultSet
 
-    # Check for Looters
-    includeLooters = LooterCards & resultSet
+    # Check for Prizes
+    includePrizes = Cornucopia.cards('Tournament') & resultSet
+
+    # Check for Shelters
+    includeShelters = DarkAges in sets and ShelterLove.intersection(
+        random.sample(fullResults, 2)
+    )
+    # Check for Ruins
+    includeRuins = LooterCards & resultSet
     # Check for Madman
     includeMadman = DarkAges.cards('Hermit') & resultSet
     # Check for Mercenary
@@ -737,14 +753,13 @@ def RandomizeDominion(setNames=None, options=None):
     # Check for Spoils
     includeSpoils = SpoilsCards & resultSet
 
-    # add Prizes
-    includePrizes = Cornucopia.cards('Tournament') & resultSet
-
+    # Check for special Nocturne cards
     includeGhost = resultSet & Nocturne.cards(
         'Cemetary + Haunted Mirror (Heirloom)', 'Exorcist'
     )
 
     includeBoons = resultSet & BoonCards
+
     includeHexes = resultSet & HexCards
 
     includeWisp = includeBoons or (Nocturne.cards('Exorcist') & resultSet)
@@ -759,30 +774,22 @@ def RandomizeDominion(setNames=None, options=None):
         'Leprechaun', 'Secret Cave + Magic Lamp (Heirloom)'
     )
 
-    includeHorse = resultSet.union(landscapeList) & Menagerie.cards(
-        'Cavalry',
-        'Groom',
-        'Hostelry',
-        'Livery',
-        'Paddock',
-        'Scrap',
-        'Sleigh',
-        'Supplies',
-        # Events
-        'Bargain',
-        'Demand',
-        'Ride',
-        'Stampede',
+    # Check for Horses
+    includeHorse = resultSet.union(landscapeList) & HorseCards
+
+    # Check for Boulder traps
+    includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
+        random.sample(fullResults, 1)
     )
 
-    # create final list
+    # Create final list
     additionalCards = set()
 
     if includePotions:
         additionalCards.add('Alchemy: Potions')
     if includeShelters:
         additionalCards.add('Dark Ages: Shelters')
-    if includeLooters:
+    if includeRuins:
         additionalCards.add('Dark Ages: Ruins')
     if includeColoniesAndPlatinum:
         additionalCards.update(('Prosperity: Colony', 'Prosperity: Platinum'))
