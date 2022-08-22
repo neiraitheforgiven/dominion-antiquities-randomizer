@@ -1491,9 +1491,6 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Nocturne: Wish")
     if includeHorse:
         additionalCards.add("Menagerie: Horse")
-    if includeAlly:
-        ally = random.sample(AllyCards, 1)[0]
-        resultSet.add(ally)
 
     # Create final card list
     if includeBane:
@@ -1505,6 +1502,9 @@ def RandomizeDominion(setNames=None, options=None):
         finalResult = sorted(resultSet | additionalCards)
 
     # Add non-kingdom cards
+    if includeAlly:
+        ally = random.sample(AllyCards, 1)[0]
+        finalResult.append(ally)
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
