@@ -771,6 +771,7 @@ Allies.AddCards(
         "Skirmisher",
         "Specialist",
         "Swap",
+        "Marquis",
         {"name": "Architects' Guild", "types": {Ally}},
         {"name": "Band of Nomads", "types": {Ally}},
         {"name": "Cave Dwellers", "types": {Ally}},
