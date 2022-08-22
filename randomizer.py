@@ -128,6 +128,13 @@ class Set(object):
         self._AddCards(self._secondEdition, cards)
 
     @property
+    def allyCards(self):
+        if self._allyCards is None:
+            self.allyCards = CardList(
+                card for card in self._cards if card.types & {Ally}
+            )
+
+    @property
     def events(self):
         if self._events is None:
             self._events = CardList(
@@ -764,6 +771,29 @@ Allies.AddCards(
         "Skirmisher",
         "Specialist",
         "Swap",
+        {"name": "Architects' Guild", "types": {Ally}},
+        {"name": "Band of Nomads", "types": {Ally}},
+        {"name": "Cave Dwellers", "types": {Ally}},
+        {"name": "Circle of Witches", "types": {Ally}},
+        {"name": "City-state", "types": {Ally}},
+        {"name": "Coastal Haven", "types": {Ally}},
+        {"name": "Crafters' Guild", "types": {Ally}},
+        {"name": "Desert Guides", "types": {Ally}},
+        {"name": "Family of Inventors", "types": {Ally}},
+        {"name": "Fellowship of Scribes", "types": {Ally}},
+        {"name": "Forest Dwellers", "types": {Ally}},
+        {"name": "Gang of Pickpockets", "types": {Ally}},
+        {"name": "Island Folk", "types": {Ally}},
+        {"name": "League of Bankers", "types": {Ally}},
+        {"name": "League of Shopkeepers", "types": {Ally}},
+        {"name": "Market Towns", "types": {Ally}},
+        {"name": "Mountain Folk", "types": {Ally}},
+        {"name": "Order of Astrologers", "types": {Ally}},
+        {"name": "Order of Masons", "types": {Ally}},
+        {"name": "Peaceful Cult", "types": {Ally}},
+        {"name": "Plateau Shepherds", "types": {Ally}},
+        {"name": "Trappers' Lodge", "types": {Ally}},
+        {"name": "Woodworkers' Guild", "types": {Ally}},
     ]
 )
 
@@ -801,11 +831,12 @@ Antiquities.AddCards(
 )
 
 # Define Landscape cards
+AllyCards = Allies.allyCards
 Events = Adventures.events | Empires.events | Menagerie.events
 Landmarks = Empires.landmarks
 Projects = Renaissance.projects
 Ways = Menagerie.ways
-LandscapeCards = Events | Landmarks | Projects | Ways
+LandscapeCards = Events | Landmarks | Projects | Ways | AllyCards
 
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
