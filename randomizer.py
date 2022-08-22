@@ -58,6 +58,8 @@ class Card(object):
             formatStr = "({} Project): {}"
         elif Way in self.types:
             formatStr = "({} Way): {}"
+        elif Ally in self.types:
+            formatStr = "({} Ally): {}"
         else:
             formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
@@ -76,6 +78,7 @@ class Set(object):
         self._projects = None
         self._potionCards = None
         self._ways = None
+        self._allyCards = None
 
         AllSets[self.name] = self
 
@@ -179,6 +182,7 @@ Landmark = CardType("Landmark")
 Project = CardType("Project")
 Way = CardType("Way")
 Potion = CardType("Potion")
+Ally = CardType("Ally")
 
 # Define sets
 Base = Set("Base")
@@ -983,6 +987,18 @@ HorseCards = Menagerie.cards(
     "Stampede",
 )
 
+LiaisonCards = Allies.cards(
+    "Bauble",
+    "Sycophant",
+    "Importer",
+    "Wizards: Student, Conjurer, Sorcerer, Lich",
+    "Underling",
+    "Broker",
+    "Contract",
+    "Emissary",
+    "Guildmaster",
+)
+
 # TrapLove: cards that care about discarding, sifting, extra kingdom pile gains, and value for multiple gains
 TrapLove = Antiquities.cards.union(
     Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
@@ -1417,6 +1433,9 @@ def RandomizeDominion(setNames=None, options=None):
     # Check for Horses
     includeHorse = HorseCards & (fullResults | mouseSet)
 
+    # Check for Liaisons (for a random Ally Card)
+    includeAlly = LiaisonCards & (fullResults | mouseSet)
+
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
         random.sample(fullResults, 1)
@@ -1469,6 +1488,9 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Nocturne: Wish")
     if includeHorse:
         additionalCards.add("Menagerie: Horse")
+    if includeAlly:
+        ally = random.sample(AllyCards, 1)[0]
+        resultSet.add(ally)
 
     # Create final card list
     if includeBane:
