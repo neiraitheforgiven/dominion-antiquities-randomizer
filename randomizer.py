@@ -731,6 +731,42 @@ Menagerie.AddCards(
     ]
 )
 
+Allies = Set("Allies")
+Allies.AddCards(
+    [
+        "Bauble",
+        "Sycophant",
+        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
+        "Clashes: Battle Plan + Archer + Warlord + Territory",
+        "Forts: Tent + Garrison + Hill Fort + Stronghold",
+        "Merchant Camp",
+        "Importer",
+        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
+        "Sentinel",
+        "Underling",
+        "Wizards: Student, Conjurer, Sorcerer, Lich",
+        "Broker",
+        "Carpenter",
+        "Courier",
+        "Innkeeper",
+        "Royal Galley",
+        "Town",
+        "Barbarian",
+        "Capital City",
+        "Contract",
+        "Emissary",
+        "Galleria",
+        "Guildmaster",
+        "Highwayman",
+        "Hunter",
+        "Modify",
+        "Skirmisher",
+        "Specialist",
+        "Swap",
+    ]
+)
+
 Antiquities = Set("Antiquities")
 Antiquities.AddCards(
     [
