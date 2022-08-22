@@ -910,6 +910,7 @@ PlatinumLove = Prosperity.cards.union(
         "Snake Charmer",
         "Stoneworks",
     ),
+    Allies.cards("Town", "Galleria", "Marquis"),
 )
 
 ShelterLove = DarkAges.cards.union(
@@ -942,6 +943,7 @@ ShelterLove = DarkAges.cards.union(
         "Snake Charmer",
         "Stoneworks",
     ),
+    Allies.cards("Broker", "Carpenter", "Modify"),
 )
 
 LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
@@ -981,6 +983,7 @@ HorseCards = Menagerie.cards(
     "Stampede",
 )
 
+# TrapLove: cards that care about discarding, sifting, extra kingdom pile gains, and value for multiple gains
 TrapLove = Antiquities.cards.union(
     Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
     Intrigue.cards(
@@ -1086,6 +1089,29 @@ TrapLove = Antiquities.cards.union(
         "Commerce",
         "Populate",
         "Way of the Mole",
+    ),
+    Allies.cards(
+        "Sycophant",
+        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
+        "Forts: Tent + Garrison + Hill Fort + Stronghold",
+        "Importer",
+        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
+        "Sentinel",
+        "Broker",
+        "Carpenter",
+        "Courier",
+        "Innkeeper",
+        "Capital City",
+        "Galleria",
+        "Guildmaster",
+        "Hunter",
+        "Specialist",
+        "Swap",
+        "Marquis",
+        "Architect's Guild",
+        "Coastal Haven",
+        "Desert Guides",
     ),
 )
 
