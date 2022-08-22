@@ -1294,6 +1294,8 @@ def RandomizeDominion(setNames=None, options=None):
                 Intrigue.RemoveCards(Intrigue.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
+    # Allies are not randomized
+    completeSet = completeSet - AllyCards
     landscapeSet = set()
 
     if completeSet & LandscapeCards:
