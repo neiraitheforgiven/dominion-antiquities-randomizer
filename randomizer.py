@@ -832,15 +832,17 @@ Antiquities.AddCards(
 )
 
 # Define Landscape cards
-AllyCards = Allies.allyCards
 Events = Adventures.events | Empires.events | Menagerie.events
 Landmarks = Empires.landmarks
 Projects = Renaissance.projects
 Ways = Menagerie.ways
-LandscapeCards = Events | Landmarks | Projects | Ways | AllyCards
+LandscapeCards = Events | Landmarks | Projects | Ways
 
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
+
+# Define Ally cards
+AllyCards = Allies.allyCards
 
 # Define randomizer rules
 PlatinumLove = Prosperity.cards.union(
