@@ -133,9 +133,10 @@ class Set(object):
     @property
     def allyCards(self):
         if self._allyCards is None:
-            self.allyCards = CardList(
+            self._allyCards = CardList(
                 card for card in self._cards if card.types & {Ally}
             )
+        return self._allyCards
 
     @property
     def events(self):
