@@ -1257,7 +1257,12 @@ BaneCards = set().union(
         "Secret Cave + Magic Lamp (Heirloom)",
         "Tracker + Pouch (Heirloom)",
     ),
-    Prosperity.cards("Loan", "Trade Route", "Watchtower"),
+    Prosperity.cards(
+        "Anvil",
+        "Loan",
+        "Trade Route",
+        "Watchtower",
+    ),
     Renaissance.cards(
         "Acting Troupe",
         "Border Guard",
