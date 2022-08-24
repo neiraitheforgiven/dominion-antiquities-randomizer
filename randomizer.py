@@ -318,24 +318,15 @@ Alchemy.AddCards(
 Prosperity = Set("Prosperity")
 Prosperity.AddCards(
     [
-        "Loan",
-        "Trade Route",
         "Watchtower",
         "Bishop",
         "Monument",
         "Quarry",
-        "Talisman",
         "Worker's Village",
         "City",
-        "Contraband",
-        "Counting House",
         "Mint",
-        "Mountebank",
         "Rabble",
-        "Royal Seal",
         "Vault",
-        "Venture",
-        "Goons",
         "Grand Market",
         "Hoard",
         "Bank",
@@ -345,6 +336,29 @@ Prosperity.AddCards(
         "Peddler",
     ]
 )
+Prosperity.firstEdition = [
+    "Loan",
+    "Trade Route",
+    "Talisman",
+    "Contraband",
+    "Counting House",
+    "Mountebank",
+    "Royal Seal",
+    "Venture",
+    "Goons",
+]
+Prosperity.secondEdition = Prosperity.cards(
+    "Anvil",
+    "Clerk",
+    "Investment",
+    "Tiara",
+    "Charlatan",
+    "Collection",
+    "Crystal Ball",
+    "Magnate",
+    "War Chest",
+)
+
 
 Cornucopia = Set("Cornucopia")
 Cornucopia.AddCards(
@@ -1292,6 +1306,13 @@ def RandomizeDominion(setNames=None, options=None):
 
             if not options.get("intrigue-second-edition", True):
                 Intrigue.RemoveCards(Intrigue.secondEdition)
+
+        if Prosperity in sets:
+            if options.get("prosperity-first-edition"):
+                Prosperity.AddCards(Prosperity.firstEdition)
+
+            if not options.get("prosperity-second-edition", True):
+                Prosperity.RemoveCards(Prosperity.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
     # Allies are not randomized
