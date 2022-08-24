@@ -369,32 +369,46 @@ Hinterlands = Set("Hinterlands")
 Hinterlands.AddCards(
     [
         "Crossroads",
-        "Duchess",
         "Fool's Gold",
         "Develop",
         "Oasis",
-        "Oracle",
         "Scheme",
         "Tunnel",
         "Jack of All Trades",
-        "Noble Brigand",
-        "Nomad Camp",
-        "Silk Road",
         "Spice Merchant",
         "Trader",
         "Cache",
         "Cartographer",
-        "Embassy",
         "Haggler",
         "Highway",
-        "Ill-gotten Gains",
         "Inn",
-        "Mandarin",
         "Margrave",
         "Stables",
         "Border Village",
         "Farmland",
     ]
+)
+Hinterlands.firstEdition = [
+    "Duchess",
+    "Oracle",
+    "Noble Brigand",
+    "Nomad Camp",
+    "Silk Road",
+    "Cache",
+    "Embassy",
+    "Ill-gotten Gains",
+    "Mandarin",
+]
+Hinterlands.secondEdition = Hinterlands.cards(
+    "Guard Dog",
+    "Nomads",
+    "Trail",
+    "Weaver",
+    "Berserker",
+    "Cauldron",
+    "Souk",
+    "Wheelwright",
+    "Witch's Hut",
 )
 
 DarkAges = Set("Dark Ages")
@@ -1292,6 +1306,13 @@ def RandomizeDominion(setNames=None, options=None):
 
             if not options.get("intrigue-second-edition", True):
                 Intrigue.RemoveCards(Intrigue.secondEdition)
+
+        if Hinterlands in sets:
+            if options.get("hinterlands-first-edition"):
+                Hinterlands.AddCards(Hinterlands.firstEdition)
+
+            if not options.get("hinterlands-second-edition", True):
+                Hinterlands.RemoveCards(Hinterlands.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
     # Allies are not randomized
