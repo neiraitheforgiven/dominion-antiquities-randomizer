@@ -1220,7 +1220,14 @@ BaneCards = set().union(
     ),
     Guilds.cards("Candlestick Maker", "Doctor", "Masterpiece", "Stonemason"),
     Hinterlands.cards(
-        "Crossroads", "Develop", "Duchess", "Fool's Gold", "Oasis", "Scheme", "Tunnel"
+        "Crossroads",
+        "Develop",
+        "Duchess",
+        "Fool's Gold",
+        "Oasis",
+        "Scheme",
+        "Tunnel",
+        "Guard Dog",
     ),
     Intrigue.cards(
         "Courtyard",
