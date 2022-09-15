@@ -1226,9 +1226,11 @@ BaneCards = set().union(
     ),
     Intrigue.cards(
         "Courtyard",
+        "Great Hall",
         "Lurker",
         "Masquerade",
         "Pawn",
+        "Secret Chamber",
         "Shanty Town",
         "Steward",
         "Swindler",
