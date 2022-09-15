@@ -964,7 +964,13 @@ ShelterLove = DarkAges.cards.union(
     Intrigue.cards("Replace", "Upgrade"),
     Seaside.cards("Salvager"),
     Alchemy.cards("Apprentice", "Scrying Pool"),
-    Prosperity.cards("Bishop", "Expand", "Forge"),
+    Prosperity.cards(
+        "Bishop",
+        "Expand",
+        "Forge",
+        "Investment",
+        "Crystal Ball",
+    ),
     Cornucopia.cards("Remake"),
     Hinterlands.cards("Develop", "Farmland", "Trader"),
     Adventures.cards("Raze", "Transmogrify", "Trade"),
@@ -1295,7 +1301,12 @@ BaneCards = set().union(
         "Secret Cave + Magic Lamp (Heirloom)",
         "Tracker + Pouch (Heirloom)",
     ),
-    Prosperity.cards("Loan", "Trade Route", "Watchtower"),
+    Prosperity.cards(
+        "Anvil",
+        "Loan",
+        "Trade Route",
+        "Watchtower",
+    ),
     Renaissance.cards(
         "Acting Troupe",
         "Border Guard",
