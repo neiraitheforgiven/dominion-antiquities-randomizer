@@ -268,12 +268,9 @@ Intrigue.secondEdition = Intrigue.cards(
 Seaside = Set("Seaside")
 Seaside.AddCards(
     [
-        "Embargo",
         "Haven",
         "Lighthouse",
         "Native Village",
-        "Pearl Diver",
-        "Ambassador",
         "Fishing Village",
         "Lookout",
         "Smugglers",
@@ -281,20 +278,36 @@ Seaside.AddCards(
         "Caravan",
         "Cutpurse",
         "Island",
-        "Navigator",
-        "Pirate Ship",
         "Salvager",
-        "Sea Hag",
         "Treasure Map",
         "Bazaar",
-        "Explorer",
-        "Ghost Ship",
         "Merchant Ship",
         "Outpost",
         "Tactician",
         "Treasury",
         "Wharf",
     ]
+)
+Seaside.firstEdition = [
+    "Embargo",
+    "Pearl Diver",
+    "Ambassador",
+    "Navigator",
+    "Pirate Ship",
+    "Sea Hag",
+    "Explorer",
+    "Ghost Ship",
+]
+Seaside.secondEdition = Seaside.cards(
+    "Astrolabe",
+    "Monkey",
+    "Sea Chart",
+    "Blockade",
+    "Sailor",
+    "Tide Pools",
+    "Corsair",
+    "Pirate",
+    "Sea Witch",
 )
 
 Alchemy = Set("Alchemy")
@@ -1273,13 +1286,16 @@ BaneCards = set().union(
     ),
     Seaside.cards(
         "Ambassador",
+        "Astrolabe",
         "Embargo",
         "Fishing Village",
         "Haven",
         "Lighthouse",
         "Lookout",
+        "Monkey",
         "Native Village",
         "Pearl Diver",
+        "Sea Chart",
         "Smugglers",
         "Warehouse",
     ),
@@ -1317,6 +1333,13 @@ def RandomizeDominion(setNames=None, options=None):
 
             if not options.get("prosperity-second-edition", True):
                 Prosperity.RemoveCards(Prosperity.secondEdition)
+                
+         if Seaside in sets:
+            if options.get("seaside-first-edition"):
+                Seaside.AddCards(Seaside.firstEdition)
+
+            if not options.get("seaside-second-edition", True):
+                Seaside.RemoveCards(Seaside.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
     # Allies are not randomized
