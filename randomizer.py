@@ -874,7 +874,7 @@ AllyCards = Allies.allyCards
 PlatinumLove = Prosperity.cards.union(
     Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
     Intrigue.cards("Harem", "Nobles"),
-    Seaside.cards("Explorer", "Treasure Map"),
+    Seaside.cards("Explorer", "Treasure Map", "Pirate"),
     Alchemy.cards("Philosopher's Stone"),
     Cornucopia.cards("Tournament"),
     Hinterlands.cards("Border Village", "Cache", "Duchess", "Embassy", "Fool's Gold"),
@@ -942,7 +942,7 @@ PlatinumLove = Prosperity.cards.union(
 ShelterLove = DarkAges.cards.union(
     Base.cards("Remodel", "Mine"),
     Intrigue.cards("Replace", "Upgrade"),
-    Seaside.cards("Salvager"),
+    Seaside.cards("Salvager", "Sailor"),
     Alchemy.cards("Apprentice", "Scrying Pool"),
     Prosperity.cards("Bishop", "Expand", "Forge"),
     Cornucopia.cards("Remake"),
@@ -1034,7 +1034,15 @@ TrapLove = Antiquities.cards.union(
         "Replace",
         "Upgrade",
     ),
-    Seaside.cards("Lookout", "Warehouse", "Navigator", "Salvager"),
+    Seaside.cards(
+        "Lookout",
+        "Warehouse",
+        "Navigator",
+        "Salvager",
+        "Monkey",
+        "Sailor",
+        "Sea Witch",
+    ),
     Alchemy.cards("University"),
     Prosperity.cards(
         "Loan", "Watchtower", "Bishop", "Vault", "Venture", "Goons", "Expand", "Forge"
