@@ -1039,7 +1039,16 @@ TrapLove = Antiquities.cards.union(
     Seaside.cards("Lookout", "Warehouse", "Navigator", "Salvager"),
     Alchemy.cards("University"),
     Prosperity.cards(
-        "Loan", "Watchtower", "Bishop", "Vault", "Venture", "Goons", "Expand", "Forge"
+        "Loan",
+        "Watchtower",
+        "Bishop",
+        "Vault",
+        "Venture",
+        "Goons",
+        "Expand",
+        "Forge",
+        "Tiara",
+        "Crystal Ball",
     ),
     Cornucopia.cards(
         "Fortune Teller",
