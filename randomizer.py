@@ -959,6 +959,9 @@ PlatinumLove = Prosperity.cards.union(
     Allies.cards("Town", "Galleria", "Marquis"),
 )
 
+# ShelterLove cards are cards that trash for benefit, or gain victory cards
+# Hypothetically, ShelterLove could also include terminal cards, which
+# Would mean adding a ShelterHate for villages and reducing the chances for each ShelterHate
 ShelterLove = DarkAges.cards.union(
     Base.cards("Remodel", "Mine"),
     Intrigue.cards("Replace", "Upgrade"),
@@ -1063,7 +1066,16 @@ TrapLove = Antiquities.cards.union(
     Seaside.cards("Lookout", "Warehouse", "Navigator", "Salvager"),
     Alchemy.cards("University"),
     Prosperity.cards(
-        "Loan", "Watchtower", "Bishop", "Vault", "Venture", "Goons", "Expand", "Forge"
+        "Loan",
+        "Watchtower",
+        "Bishop",
+        "Vault",
+        "Venture",
+        "Goons",
+        "Expand",
+        "Forge",
+        "Tiara",
+        "Crystal Ball",
     ),
     Cornucopia.cards(
         "Fortune Teller",
