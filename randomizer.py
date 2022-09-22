@@ -189,6 +189,7 @@ Ally = CardType("Ally")
 Base = Set("Base")
 Base.AddCards(
     [
+        "Artisan",
         "Cellar",
         "Chapel",
         "Moat",
@@ -214,7 +215,6 @@ Base.AddCards(
         "Mine",
         "Sentry",
         "Witch",
-        "Artisan",
     ]
 )
 Base.firstEdition = ["Adventurer", "Chancellor", "Feast", "Spy", "Thief", "Woodcutter"]
@@ -331,44 +331,52 @@ Alchemy.AddCards(
 Prosperity = Set("Prosperity")
 Prosperity.AddCards(
     [
-        "Watchtower",
-        "Bishop",
-        "Monument",
-        "Quarry",
-        "Worker's Village",
-        "City",
-        "Mint",
-        "Rabble",
-        "Vault",
-        "Grand Market",
-        "Hoard",
+        "Anvil",
         "Bank",
+        "Bishop",
+        "Charlatan",
+        "City",
+        "Clerk",
+        "Collection",
         "Expand",
         "Forge",
+        "Grand Market",
+        "Hoard",
+        "Investment",
         "King's Court",
+        "Magnate",
+        "Mint",
+        "Monument",
         "Peddler",
+        "Quarry",
+        "Rabble",
+        "Tiara",
+        "Vault",
+        "War Chest",
+        "Watchtower",
+        "Worker's Village",
     ]
 )
 Prosperity.firstEdition = [
-    "Loan",
-    "Trade Route",
-    "Talisman",
     "Contraband",
     "Counting House",
+    "Goons",
+    "Loan",
     "Mountebank",
     "Royal Seal",
+    "Talisman",
+    "Trade Route",
     "Venture",
-    "Goons",
 ]
 Prosperity.secondEdition = Prosperity.cards(
     "Anvil",
-    "Clerk",
-    "Investment",
-    "Tiara",
     "Charlatan",
+    "Clerk",
     "Collection",
     "Crystal Ball",
+    "Investment",
     "Magnate",
+    "Tiara",
     "War Chest",
 )
 
@@ -1377,7 +1385,7 @@ def RandomizeDominion(setNames=None, options=None):
 
             if not options.get("prosperity-second-edition", True):
                 Prosperity.RemoveCards(Prosperity.secondEdition)
-                
+
         if Seaside in sets:
             if options.get("seaside-first-edition"):
                 Seaside.AddCards(Seaside.firstEdition)
