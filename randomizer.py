@@ -872,13 +872,23 @@ PotionCards = Alchemy.potionCards
 AllyCards = Allies.allyCards
 
 # Define randomizer rules
+# PlatinumLove cards grant additional value to other cards or care about extra buys
 PlatinumLove = Prosperity.cards.union(
     Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
     Intrigue.cards("Harem", "Nobles"),
     Seaside.cards("Explorer", "Treasure Map"),
     Alchemy.cards("Philosopher's Stone"),
     Cornucopia.cards("Tournament"),
-    Hinterlands.cards("Border Village", "Cache", "Duchess", "Embassy", "Fool's Gold"),
+    Hinterlands.cards(
+        "Border Village",
+        "Cache",
+        "Duchess",
+        "Embassy",
+        "Fool's Gold",
+        "Nomads",
+        "Cauldron",
+        "Souk",
+    ),
     DarkAges.cards("Altar", "Counterfeit", "Hunting Grounds", "Poor House"),
     Guilds.cards("Masterpiece", "Soothsayer"),
     Adventures.cards(
@@ -947,7 +957,7 @@ ShelterLove = DarkAges.cards.union(
     Alchemy.cards("Apprentice", "Scrying Pool"),
     Prosperity.cards("Bishop", "Expand", "Forge"),
     Cornucopia.cards("Remake"),
-    Hinterlands.cards("Develop", "Farmland", "Trader"),
+    Hinterlands.cards("Develop", "Farmland", "Trader", "Souk"),
     Adventures.cards("Raze", "Transmogrify", "Trade"),
     Empires.cards(
         "Catapult/Rocks", "Sacrifice", "Fountain", "Labyrinth", "Museum", "Tomb"
@@ -1059,6 +1069,7 @@ TrapLove = Antiquities.cards.union(
         "Margrave",
         "Border Village",
         "Farmland",
+        "Wheelwright",
     ),
     DarkAges.cards(
         "Hermit",
