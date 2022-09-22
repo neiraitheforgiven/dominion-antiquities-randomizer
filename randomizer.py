@@ -403,45 +403,53 @@ Cornucopia.AddCards(
 Hinterlands = Set("Hinterlands")
 Hinterlands.AddCards(
     [
-        "Crossroads",
-        "Fool's Gold",
-        "Develop",
-        "Oasis",
-        "Scheme",
-        "Tunnel",
-        "Jack of All Trades",
-        "Spice Merchant",
-        "Trader",
-        "Cache",
+        "Berserker",
+        "Border Village",
         "Cartographer",
+        "Cauldron",
+        "Crossroads",
+        "Develop",
+        "Farmland",
+        "Fool's Gold",
+        "Guard Dog",
         "Haggler",
         "Highway",
         "Inn",
+        "Jack of All Trades",
         "Margrave",
+        "Nomads",
+        "Oasis",
+        "Scheme",
+        "Souk",
+        "Spice Merchant",
         "Stables",
-        "Border Village",
-        "Farmland",
+        "Trader",
+        "Trail",
+        "Tunnel",
+        "Weaver",
+        "Wheelwright",
+        "Witch's Hut",
     ]
 )
 Hinterlands.firstEdition = [
-    "Duchess",
-    "Oracle",
-    "Noble Brigand",
-    "Nomad Camp",
-    "Silk Road",
     "Cache",
+    "Duchess",
     "Embassy",
     "Ill-gotten Gains",
     "Mandarin",
+    "Noble Brigand",
+    "Nomad Camp",
+    "Oracle",
+    "Silk Road",
 ]
 Hinterlands.secondEdition = Hinterlands.cards(
-    "Guard Dog",
-    "Nomads",
-    "Trail",
-    "Weaver",
     "Berserker",
     "Cauldron",
+    "Guard Dog",
+    "Nomads",
     "Souk",
+    "Trail",
+    "Weaver",
     "Wheelwright",
     "Witch's Hut",
 )
@@ -899,13 +907,23 @@ PotionCards = Alchemy.potionCards
 AllyCards = Allies.allyCards
 
 # Define randomizer rules
+# PlatinumLove cards grant additional value to other cards or care about extra buys
 PlatinumLove = Prosperity.cards.union(
     Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
     Intrigue.cards("Harem", "Nobles"),
     Seaside.cards("Explorer", "Treasure Map"),
     Alchemy.cards("Philosopher's Stone"),
     Cornucopia.cards("Tournament"),
-    Hinterlands.cards("Border Village", "Cache", "Duchess", "Embassy", "Fool's Gold"),
+    Hinterlands.cards(
+        "Border Village",
+        "Cache",
+        "Duchess",
+        "Embassy",
+        "Fool's Gold",
+        "Nomads",
+        "Cauldron",
+        "Souk",
+    ),
     DarkAges.cards("Altar", "Counterfeit", "Hunting Grounds", "Poor House"),
     Guilds.cards("Masterpiece", "Soothsayer"),
     Adventures.cards(
@@ -983,7 +1001,7 @@ ShelterLove = DarkAges.cards.union(
         "Crystal Ball",
     ),
     Cornucopia.cards("Remake"),
-    Hinterlands.cards("Develop", "Farmland", "Trader"),
+    Hinterlands.cards("Develop", "Farmland", "Trader", "Souk"),
     Adventures.cards("Raze", "Transmogrify", "Trade"),
     Empires.cards(
         "Catapult/Rocks", "Sacrifice", "Fountain", "Labyrinth", "Museum", "Tomb"
@@ -1104,6 +1122,7 @@ TrapLove = Antiquities.cards.union(
         "Margrave",
         "Border Village",
         "Farmland",
+        "Wheelwright",
     ),
     DarkAges.cards(
         "Hermit",
