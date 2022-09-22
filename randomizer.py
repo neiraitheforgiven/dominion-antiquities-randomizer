@@ -268,23 +268,31 @@ Intrigue.secondEdition = Intrigue.cards(
 Seaside = Set("Seaside")
 Seaside.AddCards(
     [
-        "Haven",
-        "Lighthouse",
-        "Native Village",
-        "Fishing Village",
-        "Lookout",
-        "Smugglers",
-        "Warehouse",
-        "Caravan",
-        "Cutpurse",
-        "Island",
-        "Salvager",
-        "Treasure Map",
+        "Astrolabe",
         "Bazaar",
+        "Blockade",
+        "Caravan",
+        "Corsair" "Cutpurse",
+        "Fishing Village",
+        "Haven",
+        "Island",
+        "Lighthouse",
+        "Lookout",
         "Merchant Ship",
+        "Monkey",
+        "Native Village",
         "Outpost",
+        "Pirate",
+        "Sailor",
+        "Salvager",
+        "Sea Chart",
+        "Sea Witch",
+        "Smugglers",
         "Tactician",
+        "Tide Pools",
+        "Treasure Map",
         "Treasury",
+        "Warehouse",
         "Wharf",
     ]
 )
@@ -300,14 +308,14 @@ Seaside.firstEdition = [
 ]
 Seaside.secondEdition = Seaside.cards(
     "Astrolabe",
-    "Monkey",
-    "Sea Chart",
     "Blockade",
-    "Sailor",
-    "Tide Pools",
     "Corsair",
+    "Monkey",
     "Pirate",
+    "Sailor",
+    "Sea Chart",
     "Sea Witch",
+    "Tide Pools",
 )
 
 Alchemy = Set("Alchemy")
