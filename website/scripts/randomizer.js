@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         "submit",
         (event) => {
             event.preventDefault();
+            const pyodide = globalThis.pyodide;
+            const randomizer = globalThis.randomizer;
 
             if (cards.children.length > 0) {
                 cards.children[0].remove();
@@ -34,26 +36,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 data.options[checkbox.name] = checkbox.checked;
             }
 
-            fetch(url, {
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    let ul = document.createElement("ul");
-                    for (var i = 0; i < data.length; i++) {
-                        let li = document.createElement("li");
-                        let text = document.createTextNode(data[i]);
-                        li.appendChild(text);
-                        ul.appendChild(li);
-                    }
-                    cards.appendChild(ul);
-                    cards.scrollIntoView({ behavior: "smooth" });
-                });
+            let proxy = randomizer.RandomizeDominion(data.sets, data.options)
+            let cardData = proxy.toJs();
+            let ul = document.createElement("ul");
+            for (var i = 0; i < cardData.length; i++) {
+                let li = document.createElement("li");
+                let text = document.createTextNode(cardData[i]);
+                li.appendChild(text);
+                ul.appendChild(li);
+            }
+            cards.appendChild(ul);
+            cards.scrollIntoView({ behavior: "smooth" });
         },
         false
     );
