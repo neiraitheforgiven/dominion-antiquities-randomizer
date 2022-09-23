@@ -1,0 +1,132 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+/* prettier-ignore */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+/* prettier-ignore */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+/* prettier-ignore */
+ol, ul {
+    list-style: none;
+}
+/* prettier-ignore */
+blockquote, q {
+    quotes: none;
+}
+/* prettier-ignore */
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Randomizer CSS */
+html,
+body {
+    font-family: "Roboto";
+}
+
+.wrapper {
+    max-width: 600px;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#options {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
+form > fieldset {
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+form > fieldset > span {
+    display: block;
+    padding: 0.4em;
+}
+
+fieldset.set-options {
+    background-color: #eeeeee;
+    display: block;
+    max-height: 0;
+    padding-left: 16px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, margin-top 0.3s ease-out;
+}
+
+input.set:checked ~ fieldset.set-options {
+    max-height: 4em;
+    margin-top: 4px;
+}
+
+fieldset.set-options > span {
+    display: block;
+    padding: 4px 0;
+}
+
+#randomize {
+    font-family: inherit;
+    font-size: 40px;
+    padding: 0.2em 1em;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: linear-gradient(0deg, #dddddd, #f5f5f5);
+    border: solid 1px #aaaaaa;
+}
+
+#randomize:hover {
+    border-color: #888888;
+}
+
+#randomize:active {
+    background: linear-gradient(180deg, #dddddd, #f5f5f5);
+}
+
+#cards ul {
+    margin-top: 16px;
+    text-align: left;
+    list-style: disc;
+}
+
+#cards ul li {
+    margin-bottom: 8px;
+}
