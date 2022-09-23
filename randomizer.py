@@ -58,6 +58,8 @@ class Card(object):
             formatStr = "({} Project): {}"
         elif Way in self.types:
             formatStr = "({} Way): {}"
+        elif Ally in self.types:
+            formatStr = "({} Ally): {}"
         else:
             formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
@@ -76,6 +78,7 @@ class Set(object):
         self._projects = None
         self._potionCards = None
         self._ways = None
+        self._allyCards = None
 
         AllSets[self.name] = self
 
@@ -128,6 +131,14 @@ class Set(object):
         self._AddCards(self._secondEdition, cards)
 
     @property
+    def allyCards(self):
+        if self._allyCards is None:
+            self._allyCards = CardList(
+                card for card in self._cards if card.types & {Ally}
+            )
+        return self._allyCards
+
+    @property
     def events(self):
         if self._events is None:
             self._events = CardList(
@@ -172,11 +183,13 @@ Landmark = CardType("Landmark")
 Project = CardType("Project")
 Way = CardType("Way")
 Potion = CardType("Potion")
+Ally = CardType("Ally")
 
 # Define sets
 Base = Set("Base")
 Base.AddCards(
     [
+        "Artisan",
         "Cellar",
         "Chapel",
         "Moat",
@@ -202,7 +215,6 @@ Base.AddCards(
         "Mine",
         "Sentry",
         "Witch",
-        "Artisan",
     ]
 )
 Base.firstEdition = ["Adventurer", "Chancellor", "Feast", "Spy", "Thief", "Woodcutter"]
@@ -256,33 +268,54 @@ Intrigue.secondEdition = Intrigue.cards(
 Seaside = Set("Seaside")
 Seaside.AddCards(
     [
-        "Embargo",
-        "Haven",
-        "Lighthouse",
-        "Native Village",
-        "Pearl Diver",
-        "Ambassador",
-        "Fishing Village",
-        "Lookout",
-        "Smugglers",
-        "Warehouse",
-        "Caravan",
-        "Cutpurse",
-        "Island",
-        "Navigator",
-        "Pirate Ship",
-        "Salvager",
-        "Sea Hag",
-        "Treasure Map",
+        "Astrolabe",
         "Bazaar",
-        "Explorer",
-        "Ghost Ship",
+        "Blockade",
+        "Caravan",
+        "Corsair" "Cutpurse",
+        "Fishing Village",
+        "Haven",
+        "Island",
+        "Lighthouse",
+        "Lookout",
         "Merchant Ship",
+        "Monkey",
+        "Native Village",
         "Outpost",
+        "Pirate",
+        "Sailor",
+        "Salvager",
+        "Sea Chart",
+        "Sea Witch",
+        "Smugglers",
         "Tactician",
+        "Tide Pools",
+        "Treasure Map",
         "Treasury",
+        "Warehouse",
         "Wharf",
     ]
+)
+Seaside.firstEdition = [
+    "Embargo",
+    "Pearl Diver",
+    "Ambassador",
+    "Navigator",
+    "Pirate Ship",
+    "Sea Hag",
+    "Explorer",
+    "Ghost Ship",
+]
+Seaside.secondEdition = Seaside.cards(
+    "Astrolabe",
+    "Blockade",
+    "Corsair",
+    "Monkey",
+    "Pirate",
+    "Sailor",
+    "Sea Chart",
+    "Sea Witch",
+    "Tide Pools",
 )
 
 Alchemy = Set("Alchemy")
@@ -306,33 +339,55 @@ Alchemy.AddCards(
 Prosperity = Set("Prosperity")
 Prosperity.AddCards(
     [
-        "Loan",
-        "Trade Route",
-        "Watchtower",
-        "Bishop",
-        "Monument",
-        "Quarry",
-        "Talisman",
-        "Worker's Village",
-        "City",
-        "Contraband",
-        "Counting House",
-        "Mint",
-        "Mountebank",
-        "Rabble",
-        "Royal Seal",
-        "Vault",
-        "Venture",
-        "Goons",
-        "Grand Market",
-        "Hoard",
+        "Anvil",
         "Bank",
+        "Bishop",
+        "Charlatan",
+        "City",
+        "Clerk",
+        "Collection",
         "Expand",
         "Forge",
+        "Grand Market",
+        "Hoard",
+        "Investment",
         "King's Court",
+        "Magnate",
+        "Mint",
+        "Monument",
         "Peddler",
+        "Quarry",
+        "Rabble",
+        "Tiara",
+        "Vault",
+        "War Chest",
+        "Watchtower",
+        "Worker's Village",
     ]
 )
+Prosperity.firstEdition = [
+    "Contraband",
+    "Counting House",
+    "Goons",
+    "Loan",
+    "Mountebank",
+    "Royal Seal",
+    "Talisman",
+    "Trade Route",
+    "Venture",
+]
+Prosperity.secondEdition = Prosperity.cards(
+    "Anvil",
+    "Charlatan",
+    "Clerk",
+    "Collection",
+    "Crystal Ball",
+    "Investment",
+    "Magnate",
+    "Tiara",
+    "War Chest",
+)
+
 
 Cornucopia = Set("Cornucopia")
 Cornucopia.AddCards(
@@ -356,33 +411,55 @@ Cornucopia.AddCards(
 Hinterlands = Set("Hinterlands")
 Hinterlands.AddCards(
     [
-        "Crossroads",
-        "Duchess",
-        "Fool's Gold",
-        "Develop",
-        "Oasis",
-        "Oracle",
-        "Scheme",
-        "Tunnel",
-        "Jack of All Trades",
-        "Noble Brigand",
-        "Nomad Camp",
-        "Silk Road",
-        "Spice Merchant",
-        "Trader",
-        "Cache",
+        "Berserker",
+        "Border Village",
         "Cartographer",
-        "Embassy",
+        "Cauldron",
+        "Crossroads",
+        "Develop",
+        "Farmland",
+        "Fool's Gold",
+        "Guard Dog",
         "Haggler",
         "Highway",
-        "Ill-gotten Gains",
         "Inn",
-        "Mandarin",
+        "Jack of All Trades",
         "Margrave",
+        "Nomads",
+        "Oasis",
+        "Scheme",
+        "Souk",
+        "Spice Merchant",
         "Stables",
-        "Border Village",
-        "Farmland",
+        "Trader",
+        "Trail",
+        "Tunnel",
+        "Weaver",
+        "Wheelwright",
+        "Witch's Hut",
     ]
+)
+Hinterlands.firstEdition = [
+    "Cache",
+    "Duchess",
+    "Embassy",
+    "Ill-gotten Gains",
+    "Mandarin",
+    "Noble Brigand",
+    "Nomad Camp",
+    "Oracle",
+    "Silk Road",
+]
+Hinterlands.secondEdition = Hinterlands.cards(
+    "Berserker",
+    "Cauldron",
+    "Guard Dog",
+    "Nomads",
+    "Souk",
+    "Trail",
+    "Weaver",
+    "Wheelwright",
+    "Witch's Hut",
 )
 
 DarkAges = Set("Dark Ages")
@@ -731,6 +808,66 @@ Menagerie.AddCards(
     ]
 )
 
+Allies = Set("Allies")
+Allies.AddCards(
+    [
+        "Bauble",
+        "Sycophant",
+        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
+        "Clashes: Battle Plan + Archer + Warlord + Territory",
+        "Forts: Tent + Garrison + Hill Fort + Stronghold",
+        "Merchant Camp",
+        "Importer",
+        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
+        "Sentinel",
+        "Underling",
+        "Wizards: Student, Conjurer, Sorcerer, Lich",
+        "Broker",
+        "Carpenter",
+        "Courier",
+        "Innkeeper",
+        "Royal Galley",
+        "Town",
+        "Barbarian",
+        "Capital City",
+        "Contract",
+        "Emissary",
+        "Galleria",
+        "Guildmaster",
+        "Highwayman",
+        "Hunter",
+        "Modify",
+        "Skirmisher",
+        "Specialist",
+        "Swap",
+        "Marquis",
+        {"name": "Architects' Guild", "types": {Ally}},
+        {"name": "Band of Nomads", "types": {Ally}},
+        {"name": "Cave Dwellers", "types": {Ally}},
+        {"name": "Circle of Witches", "types": {Ally}},
+        {"name": "City-state", "types": {Ally}},
+        {"name": "Coastal Haven", "types": {Ally}},
+        {"name": "Crafters' Guild", "types": {Ally}},
+        {"name": "Desert Guides", "types": {Ally}},
+        {"name": "Family of Inventors", "types": {Ally}},
+        {"name": "Fellowship of Scribes", "types": {Ally}},
+        {"name": "Forest Dwellers", "types": {Ally}},
+        {"name": "Gang of Pickpockets", "types": {Ally}},
+        {"name": "Island Folk", "types": {Ally}},
+        {"name": "League of Bankers", "types": {Ally}},
+        {"name": "League of Shopkeepers", "types": {Ally}},
+        {"name": "Market Towns", "types": {Ally}},
+        {"name": "Mountain Folk", "types": {Ally}},
+        {"name": "Order of Astrologers", "types": {Ally}},
+        {"name": "Order of Masons", "types": {Ally}},
+        {"name": "Peaceful Cult", "types": {Ally}},
+        {"name": "Plateau Shepherds", "types": {Ally}},
+        {"name": "Trappers' Lodge", "types": {Ally}},
+        {"name": "Woodworkers' Guild", "types": {Ally}},
+    ]
+)
+
 Antiquities = Set("Antiquities")
 Antiquities.AddCards(
     [
@@ -774,14 +911,27 @@ LandscapeCards = Events | Landmarks | Projects | Ways
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
 
+# Define Ally cards
+AllyCards = Allies.allyCards
+
 # Define randomizer rules
+# PlatinumLove cards grant additional value to other cards or care about extra buys
 PlatinumLove = Prosperity.cards.union(
     Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
     Intrigue.cards("Harem", "Nobles"),
-    Seaside.cards("Explorer", "Treasure Map"),
+    Seaside.cards("Explorer", "Treasure Map", "Pirate"),
     Alchemy.cards("Philosopher's Stone"),
     Cornucopia.cards("Tournament"),
-    Hinterlands.cards("Border Village", "Cache", "Duchess", "Embassy", "Fool's Gold"),
+    Hinterlands.cards(
+        "Border Village",
+        "Cache",
+        "Duchess",
+        "Embassy",
+        "Fool's Gold",
+        "Nomads",
+        "Cauldron",
+        "Souk",
+    ),
     DarkAges.cards("Altar", "Counterfeit", "Hunting Grounds", "Poor House"),
     Guilds.cards("Masterpiece", "Soothsayer"),
     Adventures.cards(
@@ -840,16 +990,26 @@ PlatinumLove = Prosperity.cards.union(
         "Snake Charmer",
         "Stoneworks",
     ),
+    Allies.cards("Town", "Galleria", "Marquis"),
 )
 
+# ShelterLove cards are cards that trash for benefit, or gain victory cards
+# Hypothetically, ShelterLove could also include terminal cards, which
+# Would mean adding a ShelterHate for villages and reducing the chances for each ShelterHate
 ShelterLove = DarkAges.cards.union(
     Base.cards("Remodel", "Mine"),
     Intrigue.cards("Replace", "Upgrade"),
-    Seaside.cards("Salvager"),
+    Seaside.cards("Salvager", "Sailor"),
     Alchemy.cards("Apprentice", "Scrying Pool"),
-    Prosperity.cards("Bishop", "Expand", "Forge"),
+    Prosperity.cards(
+        "Bishop",
+        "Expand",
+        "Forge",
+        "Investment",
+        "Crystal Ball",
+    ),
     Cornucopia.cards("Remake"),
-    Hinterlands.cards("Develop", "Farmland", "Trader"),
+    Hinterlands.cards("Develop", "Farmland", "Trader", "Souk"),
     Adventures.cards("Raze", "Transmogrify", "Trade"),
     Empires.cards(
         "Catapult/Rocks", "Sacrifice", "Fountain", "Labyrinth", "Museum", "Tomb"
@@ -872,6 +1032,7 @@ ShelterLove = DarkAges.cards.union(
         "Snake Charmer",
         "Stoneworks",
     ),
+    Allies.cards("Broker", "Carpenter", "Modify"),
 )
 
 LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
@@ -911,6 +1072,19 @@ HorseCards = Menagerie.cards(
     "Stampede",
 )
 
+LiaisonCards = Allies.cards(
+    "Bauble",
+    "Sycophant",
+    "Importer",
+    "Wizards: Student, Conjurer, Sorcerer, Lich",
+    "Underling",
+    "Broker",
+    "Contract",
+    "Emissary",
+    "Guildmaster",
+)
+
+# TrapLove: cards that care about discarding, sifting, extra kingdom pile gains, and value for multiple gains
 TrapLove = Antiquities.cards.union(
     Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
     Intrigue.cards(
@@ -923,10 +1097,27 @@ TrapLove = Antiquities.cards.union(
         "Replace",
         "Upgrade",
     ),
-    Seaside.cards("Lookout", "Warehouse", "Navigator", "Salvager"),
+    Seaside.cards(
+        "Lookout",
+        "Warehouse",
+        "Navigator",
+        "Salvager",
+        "Monkey",
+        "Sailor",
+        "Sea Witch",
+    ),
     Alchemy.cards("University"),
     Prosperity.cards(
-        "Loan", "Watchtower", "Bishop", "Vault", "Venture", "Goons", "Expand", "Forge"
+        "Loan",
+        "Watchtower",
+        "Bishop",
+        "Vault",
+        "Venture",
+        "Goons",
+        "Expand",
+        "Forge",
+        "Tiara",
+        "Crystal Ball",
     ),
     Cornucopia.cards(
         "Fortune Teller",
@@ -947,6 +1138,7 @@ TrapLove = Antiquities.cards.union(
         "Margrave",
         "Border Village",
         "Farmland",
+        "Wheelwright",
     ),
     DarkAges.cards(
         "Hermit",
@@ -1017,6 +1209,29 @@ TrapLove = Antiquities.cards.union(
         "Populate",
         "Way of the Mole",
     ),
+    Allies.cards(
+        "Sycophant",
+        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
+        "Forts: Tent + Garrison + Hill Fort + Stronghold",
+        "Importer",
+        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
+        "Sentinel",
+        "Broker",
+        "Carpenter",
+        "Courier",
+        "Innkeeper",
+        "Capital City",
+        "Galleria",
+        "Guildmaster",
+        "Hunter",
+        "Specialist",
+        "Swap",
+        "Marquis",
+        "Architect's Guild",
+        "Coastal Haven",
+        "Desert Guides",
+    ),
 )
 
 BaneCards = set().union(
@@ -1033,6 +1248,20 @@ BaneCards = set().union(
         "Raze",
     ),
     Alchemy.cards("Herbalist"),
+    Allies.cards(
+        "Bauble",
+        "Sycophant",
+        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
+        "Clashes: Battle Plan + Archer + Warlord + Territory",
+        "Forts: Tent + Garrison + Hill Fort + Stronghold",
+        "Merchant Camp",
+        "Importer",
+        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
+        "Sentinel",
+        "Underling",
+        "Wizards: Student, Conjurer, Sorcerer, Lich",
+    ),
     Antiquities.cards(
         "Discovery",
         "Gamepiece",
@@ -1046,12 +1275,14 @@ BaneCards = set().union(
     ),
     Base.cards(
         "Cellar",
+        "Chancellor",
         "Chapel",
         "Harbinger",
         "Merchant",
         "Moat",
         "Vassal",
         "Village",
+        "Woodcutter",
         "Workshop",
     ),
     Cornucopia.cards("Fortune Teller", "Hamlet", "Menagerie"),
@@ -1079,13 +1310,22 @@ BaneCards = set().union(
     ),
     Guilds.cards("Candlestick Maker", "Doctor", "Masterpiece", "Stonemason"),
     Hinterlands.cards(
-        "Crossroads", "Develop", "Duchess", "Fool's Gold", "Oasis", "Scheme", "Tunnel"
+        "Crossroads",
+        "Develop",
+        "Duchess",
+        "Fool's Gold",
+        "Oasis",
+        "Scheme",
+        "Tunnel",
+        "Guard Dog",
     ),
     Intrigue.cards(
         "Courtyard",
+        "Great Hall",
         "Lurker",
         "Masquerade",
         "Pawn",
+        "Secret Chamber",
         "Shanty Town",
         "Steward",
         "Swindler",
@@ -1116,7 +1356,12 @@ BaneCards = set().union(
         "Secret Cave + Magic Lamp (Heirloom)",
         "Tracker + Pouch (Heirloom)",
     ),
-    Prosperity.cards("Loan", "Trade Route", "Watchtower"),
+    Prosperity.cards(
+        "Anvil",
+        "Loan",
+        "Trade Route",
+        "Watchtower",
+    ),
     Renaissance.cards(
         "Acting Troupe",
         "Border Guard",
@@ -1128,13 +1373,16 @@ BaneCards = set().union(
     ),
     Seaside.cards(
         "Ambassador",
+        "Astrolabe",
         "Embargo",
         "Fishing Village",
         "Haven",
         "Lighthouse",
         "Lookout",
+        "Monkey",
         "Native Village",
         "Pearl Diver",
+        "Sea Chart",
         "Smugglers",
         "Warehouse",
     ),
@@ -1166,7 +1414,30 @@ def RandomizeDominion(setNames=None, options=None):
             if not options.get("intrigue-second-edition", True):
                 Intrigue.RemoveCards(Intrigue.secondEdition)
 
+        if Prosperity in sets:
+            if options.get("prosperity-first-edition"):
+                Prosperity.AddCards(Prosperity.firstEdition)
+
+            if not options.get("prosperity-second-edition", True):
+                Prosperity.RemoveCards(Prosperity.secondEdition)
+
+        if Seaside in sets:
+            if options.get("seaside-first-edition"):
+                Seaside.AddCards(Seaside.firstEdition)
+
+            if not options.get("seaside-second-edition", True):
+                Seaside.RemoveCards(Seaside.secondEdition)
+
+        if Hinterlands in sets:
+            if options.get("hinterlands-first-edition"):
+                Hinterlands.AddCards(Hinterlands.firstEdition)
+
+            if not options.get("hinterlands-second-edition", True):
+                Hinterlands.RemoveCards(Hinterlands.secondEdition)
+
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
+    # Allies are not randomized
+    completeSet = completeSet - AllyCards
     landscapeSet = set()
 
     if completeSet & LandscapeCards:
@@ -1307,6 +1578,9 @@ def RandomizeDominion(setNames=None, options=None):
     # Check for Horses
     includeHorse = HorseCards & (fullResults | mouseSet)
 
+    # Check for Liaisons (for a random Ally Card)
+    includeAlly = LiaisonCards & (fullResults | mouseSet)
+
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
         random.sample(fullResults, 1)
@@ -1370,6 +1644,9 @@ def RandomizeDominion(setNames=None, options=None):
         finalResult = sorted(resultSet | additionalCards)
 
     # Add non-kingdom cards
+    if includeAlly:
+        ally = random.sample(AllyCards, 1)[0]
+        finalResult.append(ally)
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
