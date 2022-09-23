@@ -9,7 +9,21 @@
             rel="stylesheet"
         />
         <link rel="stylesheet" type="text/css" href="css/main.css" />
-        <script type="text/javascript" src="scripts/randomizer.js"></script>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+        <script>
+            async function main() {
+                globalThis.pyodide = await loadPyodide();
+                await pyodide.runPythonAsync(`
+                    from pyodide.http import pyfetch
+                    response = await pyfetch("scripts/randomizer.py")
+                    with open("randomizer.py", "wb") as f:
+                        f.write(await response.bytes())
+                `);
+                globalThis.randomizer = pyodide.pyimport("randomizer");
+            }
+            main();
+        </script>
+        <script src="scripts/randomizer.js"></script>
     </head>
     <body>
         <div class="wrapper">

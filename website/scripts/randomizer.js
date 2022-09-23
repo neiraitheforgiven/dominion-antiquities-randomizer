@@ -1,13 +1,12 @@
 document.addEventListener("DOMContentLoaded", function (event) {
     const form = document.forms[0];
     const cards = document.getElementById("cards");
-    const url =
-        "https://nv1gwscvf9.execute-api.us-west-2.amazonaws.com/default/DominionRandomizer/";
 
     form.addEventListener(
         "submit",
-        (event) => {
+        async (event) => {
             event.preventDefault();
+            const pyodide = globalThis.pyodide;
 
             if (cards.children.length > 0) {
                 cards.children[0].remove();
@@ -34,26 +33,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 data.options[checkbox.name] = checkbox.checked;
             }
 
-            fetch(url, {
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    let ul = document.createElement("ul");
-                    for (var i = 0; i < data.length; i++) {
-                        let li = document.createElement("li");
-                        let text = document.createTextNode(data[i]);
-                        li.appendChild(text);
-                        ul.appendChild(li);
-                    }
-                    cards.appendChild(ul);
-                    cards.scrollIntoView({ behavior: "smooth" });
-                });
+            self.sets = data.sets;
+            self.options = data.options;
+
+            let proxy = await pyodide.runPythonAsync(`
+                import randomizer
+                from js import sets, options
+
+                randomizer.RandomizeDominion(sets.to_py(), options.to_py())
+            `);
+            let cardData = proxy.toJs();
+            let ul = document.createElement("ul");
+            for (var i = 0; i < cardData.length; i++) {
+                let li = document.createElement("li");
+                let text = document.createTextNode(cardData[i]);
+                li.appendChild(text);
+                ul.appendChild(li);
+            }
+            cards.appendChild(ul);
+            cards.scrollIntoView({ behavior: "smooth" });
+            proxy.destroy()
         },
         false
     );
