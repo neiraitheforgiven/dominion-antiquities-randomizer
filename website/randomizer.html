@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dominion Randomizer</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+        <script>
+            async function main() {
+                globalThis.pyodide = await loadPyodide();
+                await pyodide.runPythonAsync(`
+                    from pyodide.http import pyfetch
+                    response = await pyfetch("scripts/randomizer.py")
+                    with open("randomizer.py", "wb") as f:
+                        f.write(await response.bytes())
+                `);
+                globalThis.randomizer = pyodide.pyimport("randomizer");
+            }
+            main();
+        </script>
+        <script src="scripts/randomizer.js"></script>
+    </head>
+    <body>
+        <div class="wrapper">
+            <form id="options">
+                <fieldset id="sets">
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Base"
+                            id="Base"
+                            value="Base"
+                            checked
+                        />
+                        <label for="Base">Dominion</label>
+                        <fieldset class="set-options" id="base-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="base-first-edition"
+                                    id="base-first-edition"
+                                    value="base-first-edition"
+                                />
+                                <label for="base-first-edition"
+                                    >Include first edition cards</label
+                                >
+                            </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="base-second-edition"
+                                    id="base-second-edition"
+                                    value="base-second-edition"
+                                    checked
+                                />
+                                <label for="base-second-edition"
+                                    >Include second edition cards</label
+                                >
+                            </span>
+                        </fieldset>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Intrigue"
+                            id="Intrigue"
+                            value="Intrigue"
+                            checked
+                        />
+                        <label for="Intrigue">Intrigue</label>
+                        <fieldset class="set-options" id="intrigue-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="intrigue-first-edition"
+                                    id="intrigue-first-edition"
+                                    value="intrigue-first-edition"
+                                />
+                                <label for="intrigue-first-edition"
+                                    >Include first edition cards</label
+                                >
+                            </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="intrigue-second-edition"
+                                    id="intrigue-second-edition"
+                                    value="intrigue-second-edition"
+                                    checked
+                                />
+                                <label for="intrigue-second-edition"
+                                    >Include second edition cards</label
+                                >
+                            </span>
+                        </fieldset>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Seaside"
+                            id="Seaside"
+                            value="Seaside"
+                            checked
+                        />
+                        <label for="Seaside">Seaside</label>
+                        <fieldset class="set-options" id="seaside-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="seaside-first-edition"
+                                    id="seaside-first-edition"
+                                    value="seaside-first-edition"
+                                />
+                                <label for="seaside-first-edition"
+                                    >Include first edition cards</label
+                                >
+                            </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="seaside-second-edition"
+                                    id="seaside-second-edition"
+                                    value="seaside-second-edition"
+                                    checked
+                                />
+                                <label for="seaside-second-edition"
+                                    >Include second edition cards</label
+                                >
+                            </span>
+                        </fieldset>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Alchemy"
+                            id="Alchemy"
+                            value="Alchemy"
+                            checked
+                        />
+                        <label for="Alchemy">Alchemy</label>
+                        <fieldset class="set-options" id="alchemy-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="enforce-alchemy-rule"
+                                    id="enforce-alchemy-rule"
+                                    value="enforce-alchemy-rule"
+                                    checked
+                                />
+                                <label for="enforce-alchemy-rule"
+                                    >Enforce Alchemy rule</label
+                                >
+                            </span>
+                        </fieldset>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Prosperity"
+                            id="Prosperity"
+                            value="Prosperity"
+                            checked
+                        />
+                        <label for="Prosperity">Prosperity</label>
+                        <fieldset class="set-options" id="prosperity-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="prosperity-first-edition"
+                                    id="prosperity-first-edition"
+                                    value="prosperity-first-edition"
+                                />
+                                <label for="prosperity-first-edition"
+                                    >Include first edition cards</label
+                                >
+                            </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="prosperity-second-edition"
+                                    id="prosperity-second-edition"
+                                    value="prosperity-second-edition"
+                                    checked
+                                />
+                                <label for="prosperity-second-edition"
+                                    >Include second edition cards</label
+                                >
+                            </span>
+                        </fieldset>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Cornucopia"
+                            id="Cornucopia"
+                            value="Cornucopia"
+                            checked
+                        />
+                        <label for="Cornucopia">Cornucopia</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Hinterlands"
+                            id="Hinterlands"
+                            value="Hinterlands"
+                            checked
+                        />
+                        <label for="Hinterlands">Hinterlands</label>
+                        <fieldset class="set-options" id="hinterlands-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="hinterlands-first-edition"
+                                    id="hinterlands-first-edition"
+                                    value="hinterlands-first-edition"
+                                />
+                                <label for="hinterlands-first-edition"
+                                    >Include first edition cards</label
+                                >
+                            </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="hinterlands-second-edition"
+                                    id="hinterlands-second-edition"
+                                    value="hinterlands-second-edition"
+                                    checked
+                                />
+                                <label for="hinterlands-second-edition"
+                                    >Include second edition cards</label
+                                >
+                            </span>
+                        </fieldset>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="DarkAges"
+                            id="DarkAges"
+                            value="Dark Ages"
+                            checked
+                        />
+                        <label for="DarkAges">Dark Ages</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Guilds"
+                            id="Guilds"
+                            value="Guilds"
+                            checked
+                        />
+                        <label for="Guilds">Guilds</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Adventures"
+                            id="Adventures"
+                            value="Adventures"
+                            checked
+                        />
+                        <label for="Adventures">Adventures</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Empires"
+                            id="Empires"
+                            value="Empires"
+                            checked
+                        />
+                        <label for="Empires">Empires</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Nocturne"
+                            id="Nocturne"
+                            value="Nocturne"
+                            checked
+                        />
+                        <label for="Nocturne">Nocturne</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Renaissance"
+                            id="Renaissance"
+                            value="Renaissance"
+                            checked
+                        />
+                        <label for="Renaissance">Renaissance</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Menagerie"
+                            id="Menagerie"
+                            value="Menagerie"
+                            checked
+                        />
+                        <label for="Menagerie">Menagerie</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Antiquities"
+                            id="Antiquities"
+                            value="Antiquities"
+                            checked
+                        />
+                        <label for="Antiquities">Antiquities</label>
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="Allies"
+                            id="Allies"
+                            value="Allies"
+                            checked
+                        />
+                        <label for="Allies">Allies</label>
+                    </span>
+                </fieldset>
+                <fieldset id="moreOptions">
+                    <span>
+                        <input
+                            type="checkbox"
+                            name="limit-landscapes"
+                            id="limit-landscapes"
+                            value="limit-landscapes"
+                        />
+                        <label for="limit-landscapes"
+                            >Maximum 2 landscape cards</label
+                        >
+                    </span>
+                </fieldset>
+                <input type="submit" id="randomize" value="Randomize" />
+            </form>
+            <div id="cards"></div>
+        </div>
+    </body>
+</html>
