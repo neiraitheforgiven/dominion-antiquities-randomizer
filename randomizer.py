@@ -272,7 +272,8 @@ Seaside.AddCards(
         "Bazaar",
         "Blockade",
         "Caravan",
-        "Corsair" "Cutpurse",
+        "Corsair",
+        "Cutpurse",
         "Fishing Village",
         "Haven",
         "Island",
@@ -1403,37 +1404,57 @@ def RandomizeDominion(setNames=None, options=None):
         if Base in sets:
             if options.get("base-first-edition"):
                 Base.AddCards(Base.firstEdition)
+            else:
+                Base.RemoveCards(Base.firstEdition)
 
             if not options.get("base-second-edition", True):
                 Base.RemoveCards(Base.secondEdition)
+            else:
+                Base.AddCards(Base.secondEdition)
 
         if Intrigue in sets:
             if options.get("intrigue-first-edition"):
                 Intrigue.AddCards(Intrigue.firstEdition)
+            else:
+                Intrigue.RemoveCards(Intrigue.firstEdition)
 
             if not options.get("intrigue-second-edition", True):
                 Intrigue.RemoveCards(Intrigue.secondEdition)
+            else:
+                Intrigue.AddCards(Intrigue.secondEdition)
 
         if Prosperity in sets:
             if options.get("prosperity-first-edition"):
                 Prosperity.AddCards(Prosperity.firstEdition)
+            else:
+                Prosperity.RemoveCards(Prosperity.firstEdition)
 
             if not options.get("prosperity-second-edition", True):
                 Prosperity.RemoveCards(Prosperity.secondEdition)
+            else:
+                Prosperity.AddCards(Prosperity.secondEdition)
 
         if Seaside in sets:
             if options.get("seaside-first-edition"):
                 Seaside.AddCards(Seaside.firstEdition)
+            else:
+                Seaside.RemoveCards(Seaside.firstEdition)
 
             if not options.get("seaside-second-edition", True):
                 Seaside.RemoveCards(Seaside.secondEdition)
+            else:
+                Seaside.AddCards(Seaside.secondEdition)
 
         if Hinterlands in sets:
             if options.get("hinterlands-first-edition"):
                 Hinterlands.AddCards(Hinterlands.firstEdition)
+            else:
+                Hinterlands.RemoveCards(Hinterlands.firstEdition)
 
             if not options.get("hinterlands-second-edition", True):
                 Hinterlands.RemoveCards(Hinterlands.secondEdition)
+            else:
+                Hinterlands.AddCards(Hinterlands.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
     # Allies are not randomized
