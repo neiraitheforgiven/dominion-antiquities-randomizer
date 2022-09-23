@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", function (event) {
     const form = document.forms[0];
     const cards = document.getElementById("cards");
-    const url =
-        "https://nv1gwscvf9.execute-api.us-west-2.amazonaws.com/default/DominionRandomizer/";
 
     form.addEventListener(
         "submit",
