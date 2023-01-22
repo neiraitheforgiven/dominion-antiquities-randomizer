@@ -1537,6 +1537,35 @@ BaneCards = set().union(
     ),
 )
 
+NoTraitCards = set().union(
+    Base.cards(
+        "Gardens",
+    ),
+    Seaside.cards("Astrolabe"),
+    Alchemy.cards("Vineyard"),
+    Cornucopia.cards("Fairgrounds"),
+    Hinterlands.cards(
+        "Tunnel",
+        "Silk Road",
+    ),
+    DarkAges.cards("Feodum"),
+    Nocturne.cards(
+        "Guardian",
+        "Monastery",
+        "Changeling",
+        "Ghost Town",
+        "Night Watchman",
+        "Cemetary",
+        "Devil's Workshop",
+        "Exorcist",
+        "Cobbler",
+        "Crypt",
+        "Den of Sin",
+        "Vampire",
+        "Raider",
+    ),
+)
+
 
 def RandomizeDominion(setNames=None, options=None):
     # Make full list + Events + Landmarks to determine landmarks
@@ -1824,6 +1853,17 @@ def RandomizeDominion(setNames=None, options=None):
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
+
+    # Add Traits to selected cards
+    traitsInFinalResult = finalResult & Traits
+    traitedCards = set()
+    for finalTrait in traitsInFinalResult:
+        eligibleCards = finalResult & kingdomSet - NoTraitCards - traitedCards
+        pickedCard = random.choice(eligibleCards)
+        traitedCards.add(pickedCard)
+        for card in finalResult:
+            if card == pickedCard:
+                finalResult[finalResult.index(card)] += " ({})".format(finalTrait)
 
     return [str(card) for card in finalResult]
 
