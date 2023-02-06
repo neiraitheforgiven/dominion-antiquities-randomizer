@@ -167,11 +167,11 @@ class Set(object):
 
     @property
     def traits(self):
-        if self._traits is None:
-            self._traits = CardList(
+        if self._traitcards is None:
+            self._traitcards = CardList(
                 card for card in self._cards if card.types & {Trait}
             )
-        return self._traits
+        return self._traitcards
 
     @property
     def ways(self):
@@ -1654,7 +1654,7 @@ def RandomizeDominion(setNames=None, options=None):
                 card = next(cards)
                 if card.types & {Way}:
                     waySet.add(card)
-                elif card.types & {Event, Landmark, Project}:
+                elif card.types & {Event, Landmark, Project, Trait}:
                     landscapeSet.add(card)
                 else:
                     resultSet.add(card)
@@ -1853,19 +1853,20 @@ def RandomizeDominion(setNames=None, options=None):
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
-
     # Add Traits to selected cards
-    traitsInFinalResult = finalResult & Traits
+    selectedTraits = Plunder.traits.intersection(list(landscapeList))
     traitedCards = set()
-    for finalTrait in traitsInFinalResult:
-        eligibleCards = finalResult & kingdomSet - NoTraitCards - traitedCards
-        pickedCard = random.choice(eligibleCards)
-        traitedCards.add(pickedCard)
-        for card in finalResult:
-            if card == pickedCard:
-                finalResult[finalResult.index(card)] += " ({})".format(finalTrait)
+    for trait in selectedTraits:
+        eligibleCards = resultSet & kingdomSet - NoTraitCards - traitedCards
+        traitCard = random.sample(eligibleCards, 1)[0]
+        traitedCards.add(traitCard)
 
-    return [str(card) for card in finalResult]
+        for card in resultSet:
+            if card == traitCard:
+                finalResult.remove(card)
+                finalResult.append("{} is {}".format(card, trait.name))
+
+    return sorted([str(card) for card in finalResult])
 
 
 if __name__ == "__main__":
