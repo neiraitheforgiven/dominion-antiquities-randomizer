@@ -1093,9 +1093,10 @@ PlatinumLove = Prosperity.cards.union(
     ),
 )
 
-# ShelterLove cards are cards that trash for benefit, or gain victory cards
-# Hypothetically, ShelterLove could also include terminal cards, which
-# Would mean adding a ShelterHate for villages and reducing the chances for each ShelterHate
+# ShelterLove cards are cards that trash for benefit, or gain victory cards.
+# Hypothetically, ShelterLove could also include terminal cards, which would
+# mean adding a ShelterHate for villages and reducing the chances for each
+# ShelterHate.
 ShelterLove = DarkAges.cards.union(
     Base.cards("Remodel", "Mine"),
     Intrigue.cards("Replace", "Upgrade"),
@@ -1212,7 +1213,8 @@ IncludeLootCards = Plunder.cards(
     "Cursed",
 )
 
-# TrapLove: cards that care about discarding, sifting, extra kingdom pile gains, and value for multiple gains
+# TrapLove: cards that care about discarding, sifting, extra kingdom pile
+# gains, and value for multiple gains
 TrapLove = Antiquities.cards.union(
     Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
     Intrigue.cards(
