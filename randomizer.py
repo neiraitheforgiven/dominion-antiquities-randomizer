@@ -1839,6 +1839,16 @@ def RandomizeDominion(setNames=None, options=None):
     if includeLoot:
         additionalCards.add("(Plunder: Loot Deck)")
 
+    # Assign Traits to selected cards
+    selectedTraits = dict.fromkeys(Traits.intersection(landscapeList))
+    if selectedTraits:
+        eligibleCards = resultSet - NoTraitCards
+        for trait in selectedTraits:
+            if not eligibleCards:
+                break
+            selectedTraits[trait] = traitCard = random.sample(eligibleCards, 1)[0]
+            eligibleCards.remove(traitCard)
+
     # Create final card list
     if includeBane:
         # Append Bane Card to end of list
@@ -1848,6 +1858,11 @@ def RandomizeDominion(setNames=None, options=None):
     else:
         finalResult = sorted(resultSet | additionalCards)
 
+    # Add trait information to list
+    for trait, card in selectedTraits.items():
+        if card:
+            finalResult.append("Trait: {} is {}".format(card, trait))
+
     # Add non-kingdom cards
     if includeAlly:
         ally = random.sample(AllyCards, 1)[0]
@@ -1855,20 +1870,8 @@ def RandomizeDominion(setNames=None, options=None):
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
-    # Add Traits to selected cards
-    selectedTraits = Plunder.traits.intersection(list(landscapeList))
-    traitedCards = set()
-    for trait in selectedTraits:
-        eligibleCards = resultSet & kingdomSet - NoTraitCards - traitedCards
-        traitCard = random.sample(eligibleCards, 1)[0]
-        traitedCards.add(traitCard)
 
-        for card in resultSet:
-            if card == traitCard:
-                finalResult.remove(card)
-                finalResult.append("{} is {}".format(card, trait.name))
-
-    return sorted([str(card) for card in finalResult])
+    return [str(card) for card in finalResult]
 
 
 if __name__ == "__main__":
