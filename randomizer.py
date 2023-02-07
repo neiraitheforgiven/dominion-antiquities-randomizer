@@ -1837,17 +1837,19 @@ def RandomizeDominion(setNames=None, options=None):
     if includeHorse:
         additionalCards.add("Menagerie: Horse")
     if includeLoot:
-        additionalCards.add("(Plunder: Loot Deck)")
+        landscapeList.append("(Plunder: Loot Deck)")
 
     # Assign Traits to selected cards
-    selectedTraits = dict.fromkeys(Traits.intersection(landscapeList))
+    selectedTraits = Traits.intersection(landscapeList)
     if selectedTraits:
         eligibleCards = resultSet - NoTraitCards
         for trait in selectedTraits:
+            landscapeList.remove(trait)
             if not eligibleCards:
                 break
-            selectedTraits[trait] = traitCard = random.sample(eligibleCards, 1)[0]
+            traitCard = random.sample(eligibleCards, 1)[0]
             eligibleCards.remove(traitCard)
+            landscapeList.append("{} (on {})".format(trait, traitCard))
 
     # Create final card list
     if includeBane:
@@ -1857,11 +1859,6 @@ def RandomizeDominion(setNames=None, options=None):
         finalResult.append("Bane is {}".format(baneCard))
     else:
         finalResult = sorted(resultSet | additionalCards)
-
-    # Add trait information to list
-    for trait, card in selectedTraits.items():
-        if card:
-            finalResult.append("Trait: {} is {}".format(card, trait))
 
     # Add non-kingdom cards
     if includeAlly:
