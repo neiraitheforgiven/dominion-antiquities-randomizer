@@ -1093,9 +1093,10 @@ PlatinumLove = Prosperity.cards.union(
     ),
 )
 
-# ShelterLove cards are cards that trash for benefit, or gain victory cards
-# Hypothetically, ShelterLove could also include terminal cards, which
-# Would mean adding a ShelterHate for villages and reducing the chances for each ShelterHate
+# ShelterLove cards are cards that trash for benefit, or gain victory cards.
+# Hypothetically, ShelterLove could also include terminal cards, which would
+# mean adding a ShelterHate for villages and reducing the chances for each
+# ShelterHate.
 ShelterLove = DarkAges.cards.union(
     Base.cards("Remodel", "Mine"),
     Intrigue.cards("Replace", "Upgrade"),
@@ -1212,7 +1213,8 @@ IncludeLootCards = Plunder.cards(
     "Cursed",
 )
 
-# TrapLove: cards that care about discarding, sifting, extra kingdom pile gains, and value for multiple gains
+# TrapLove: cards that care about discarding, sifting, extra kingdom pile
+# gains, and value for multiple gains
 TrapLove = Antiquities.cards.union(
     Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
     Intrigue.cards(
@@ -1835,7 +1837,19 @@ def RandomizeDominion(setNames=None, options=None):
     if includeHorse:
         additionalCards.add("Menagerie: Horse")
     if includeLoot:
-        additionalCards.add("(Plunder: Loot Deck)")
+        landscapeList.append("(Plunder: Loot Deck)")
+
+    # Assign Traits to selected cards
+    selectedTraits = Traits.intersection(landscapeList)
+    if selectedTraits:
+        eligibleCards = resultSet - NoTraitCards
+        for trait in selectedTraits:
+            landscapeList.remove(trait)
+            if not eligibleCards:
+                break
+            traitCard = random.sample(eligibleCards, 1)[0]
+            eligibleCards.remove(traitCard)
+            landscapeList.append("{} (on {})".format(trait, traitCard))
 
     # Create final card list
     if includeBane:
@@ -1853,20 +1867,8 @@ def RandomizeDominion(setNames=None, options=None):
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
-    # Add Traits to selected cards
-    selectedTraits = Plunder.traits.intersection(list(landscapeList))
-    traitedCards = set()
-    for trait in selectedTraits:
-        eligibleCards = resultSet & kingdomSet - NoTraitCards - traitedCards
-        traitCard = random.sample(eligibleCards, 1)[0]
-        traitedCards.add(traitCard)
 
-        for card in resultSet:
-            if card == traitCard:
-                finalResult.remove(card)
-                finalResult.append("{} is {}".format(card, trait.name))
-
-    return sorted([str(card) for card in finalResult])
+    return [str(card) for card in finalResult]
 
 
 if __name__ == "__main__":
