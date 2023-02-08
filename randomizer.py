@@ -1540,9 +1540,7 @@ BaneCards = set().union(
 )
 
 NoTraitCards = set().union(
-    Base.cards(
-        "Gardens",
-    ),
+    Base.cards("Gardens"),
     Seaside.cards("Astrolabe"),
     Alchemy.cards("Vineyard"),
     Cornucopia.cards("Fairgrounds"),
