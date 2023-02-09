@@ -1698,13 +1698,12 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Menagerie: Horse")
 
     # Obelisk support
-    obeliskPicked = set(landscapeList) & Empires.cards("Obelisk")
-    print("obeliskPicked is {}".format(obeliskPicked))
+    obeliskPicked = Empires.cards("Obelisk").intersection(landscapeList)
     if obeliskPicked:
-        eligibleCards = resultSet & ActionCards
-        print("eligibleCards are {}".format(eligibleCards))
+        eligibleCards = resultSet & Actions
+        (obelisk,) = Empires.cards("Obelisk")
+        landscapeList.remove(list(obeliskPicked)[0])
         if eligibleCards:
-            landscapeList.remove(list(obeliskPicked)[0])
             obeliskCard = random.sample(eligibleCards, 1)[0]
             landscapeList.append(
                 "(Empires Landmark): Obelisk (on {})".format(obeliskCard)
