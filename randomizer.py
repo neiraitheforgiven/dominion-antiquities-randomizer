@@ -78,7 +78,7 @@ class Set(object):
         self._projects = None
         self._potionCards = None
         self._ways = None
-        self._actionCards = None
+        self._actions = None
         self._allyCards = None
 
         AllSets[self.name] = self
@@ -132,12 +132,12 @@ class Set(object):
         self._AddCards(self._secondEdition, cards)
 
     @property
-    def actionCards(self):
-        if self._actionCards is None:
-            self._actionCards = CardList(
+    def actions(self):
+        if self._actions is None:
+            self._actions = CardList(
                 card for card in self._cards if card.types & {Action}
             )
-        return self._actionCards
+        return self._actions
 
     @property
     def allyCards(self):
@@ -948,24 +948,8 @@ Ways = Menagerie.ways
 LandscapeCards = Events | Landmarks | Projects | Ways
 
 # Define action cards
-ActionCards = (
-    Base.actionCards
-    | Intrigue.actionCards
-    | Seaside.actionCards
-    | Alchemy.actionCards
-    | Prosperity.actionCards
-    | Cornucopia.actionCards
-    | Hinterlands.actionCards
-    | DarkAges.actionCards
-    | Guilds.actionCards
-    | Adventures.actionCards
-    | Empires.actionCards
-    | Nocturne.actionCards
-    | Renaissance.actionCards
-    | Menagerie.actionCards
-    | Allies.actionCards
-    | Plunder.actionCards
-)
+listOfSetsOfActions = (cardSet.actions for cardSet in AllSets.values())
+Actions = set().union(*listOfSetsOfActions)
 
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
