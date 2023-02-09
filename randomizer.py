@@ -947,6 +947,26 @@ Projects = Renaissance.projects
 Ways = Menagerie.ways
 LandscapeCards = Events | Landmarks | Projects | Ways
 
+# Define action cards
+ActionCards = (
+    Base.actionCards
+    | Intrigue.actionCards
+    | Seaside.actionCards
+    | Alchemy.actionCards
+    | Prosperity.actionCards
+    | Cornucopia.actionCards
+    | Hinterlands.actionCards
+    | DarkAges.actionCards
+    | Guilds.actionCards
+    | Adventures.actionCards
+    | Empires.actionCards
+    | Nocturne.actionCards
+    | Renaissance.actionCards
+    | Menagerie.actionCards
+    | Allies.actionCards
+    | Plunder.actionCards
+)
+
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
 
@@ -1692,6 +1712,19 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Nocturne: Wish")
     if includeHorse:
         additionalCards.add("Menagerie: Horse")
+
+    # Obelisk support
+    obeliskPicked = set(landscapeList) & Empires.cards("Obelisk")
+    print("obeliskPicked is {}".format(obeliskPicked))
+    if obeliskPicked:
+        eligibleCards = resultSet & ActionCards
+        print("eligibleCards are {}".format(eligibleCards))
+        if eligibleCards:
+            landscapeList.remove(list(obeliskPicked)[0])
+            obeliskCard = random.sample(eligibleCards, 1)[0]
+            landscapeList.append(
+                "(Empires Landmark): Obelisk (on {})".format(obeliskCard)
+            )
 
     # Create final card list
     if includeBane:
