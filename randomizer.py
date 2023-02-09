@@ -1457,7 +1457,8 @@ def RandomizeDominion(setNames=None, options=None):
                 Hinterlands.AddCards(Hinterlands.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
-    # Allies are not randomized
+    # Ally inclusion is not randomized - instead Allies are included if there are any
+    # Liaison cards in the set.
     completeSet = completeSet - AllyCards
     landscapeSet = set()
 
@@ -1485,13 +1486,50 @@ def RandomizeDominion(setNames=None, options=None):
             counter += 1
 
         # Get final list of landscape cards
+        landscapeList = random.sample(waySet, len(waySet))[:1]
+        """Figure out card for Way of the Mouse. This uses similar rules to Young
+        Witch, so select a card from the Bane Cards. The card chosen for Way of the
+        Mouse should not be used when determining most additional card rules, but
+        we do need to check if it is a Liaison for ALly inclusion."""
+        includeMouse = Menagerie.cards("Way of the Mouse").intersection(landscapeList)
+        mouseSet = set()
+        if includeMouse:
+            eligibleMice = (kingdomSet & BaneCards) - resultSet
+            if not eligibleMice:
+                # All eligible Mouse cards are already part of the randomized set!
+                # (This is nearly impossible.) Get a Mouse from the randomized
+                # cards, add a new card to the set, and remove the mouse from the
+                # set.
+                mouseCard = random.sample(eligibleMice, 1)[0]
+                resultSet.update(random.sample(kingdomSet - resultSet, 1))
+                resultSet.remove(mouseCard)
+            else:
+                mouseCard = random.sample(eligibleMice, 1)[0]
+            mouseSet.add(mouseCard)
+        # Young Witch support
+        includeBane = resultSet & Cornucopia.cards("Young Witch")
+        if includeBane:
+            eligibleBanes = (kingdomSet & BaneCards) - resultSet - mouseSet
+            if not eligibleBanes:
+                # All eligible Bane cards are already part of the randomized set!
+                # Add a new card to the set and pull a Bane from the randomized
+                # cards.
+                resultSet.update(random.sample(kingdomSet - resultSet - mouseSet, 1))
+                baneCard = random.sample(resultSet & BaneCards - mouseSet, 1)[0]
+            else:
+                baneCard = random.sample(eligibleBanes, 1)[0]
+                resultSet.add(baneCard)
+        # Check for Liaisons (for a random Ally Card)
+        includeAlly = LiaisonCards & (resultSet | mouseSet)
+        if includeAlly:
+            ally = random.sample(AllyCards, 1)
+            landscapeList.extend(ally)
         if options and options.get("limit-landscapes"):
-            landscapeList = random.sample(waySet, len(waySet))[:1]
             landscapeList.extend(
                 random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
             )
         else:
-            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+            landscapeList.extend(random.sample(landscapeSet, len(landscapeSet))[:3])
             landscapeList.extend(random.sample(waySet, len(waySet))[:1])
     else:
         kingdomSet = completeSet
@@ -1513,43 +1551,6 @@ def RandomizeDominion(setNames=None, options=None):
             alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
             resultSet = alchemyCards.union(random.sample(resultSet, 7))
         # If there are 3 or more Alchemy cards, let it lie.
-
-    # Young Witch support
-    includeBane = resultSet & Cornucopia.cards("Young Witch")
-    if includeBane:
-        eligibleBanes = (kingdomSet & BaneCards) - resultSet
-        if not eligibleBanes:
-            # All eligible Bane cards are already part of the randomized set!
-            # Add a new card to the set and pull a Bane from the randomized
-            # cards.
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
-            baneCard = random.sample(resultSet & BaneCards, 1)[0]
-        else:
-            baneCard = random.sample(eligibleBanes, 1)[0]
-            resultSet.add(baneCard)
-
-    # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
-    # select a card from the Bane Cards. The card chosen for Way of the Mouse
-    # should not be used when determining most additional card rules.
-    includeMouse = Menagerie.cards("Way of the Mouse").intersection(landscapeList)
-    mouseSet = set()
-    if includeMouse:
-        eligibleMice = (kingdomSet & BaneCards) - resultSet
-        if not eligibleMice:
-            # All eligible Mouse cards are already part of the randomized set!
-            # (This is nearly impossible.) Get a Mouse from the randomized
-            # cards, add a new card to the set, and remove the mouse from the
-            # set.
-            eligibleMice = resultSet & BaneCards
-            if includeBane:
-                eligibleMice.remove(baneCard)
-
-            mouseCard = random.sample(eligibleMice, 1)[0]
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
-            resultSet.remove(mouseCard)
-        else:
-            mouseCard = random.sample(eligibleMice, 1)[0]
-        mouseSet.add(mouseCard)
 
     fullResults = resultSet.union(landscapeList)
 
@@ -1664,10 +1665,6 @@ def RandomizeDominion(setNames=None, options=None):
     else:
         finalResult = sorted(resultSet | additionalCards)
 
-    # Add non-kingdom cards
-    if includeAlly:
-        ally = random.sample(AllyCards, 1)[0]
-        finalResult.append(ally)
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
