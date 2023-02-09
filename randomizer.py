@@ -1511,7 +1511,7 @@ def RandomizeDominion(setNames=None, options=None):
             # If there are only 2 Alchemy cards, pull an additional Alchemy
             # card and randomly remove one non-Alchemy card
             alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
-            resultSet = alchemyCards.union(random.sample(resultSet, 7))
+            resultSet = alchemyCards.union(random.sample(resultSet - alchemyCards, 7))
         # If there are 3 or more Alchemy cards, let it lie.
 
     # Young Witch support
