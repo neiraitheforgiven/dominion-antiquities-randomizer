@@ -80,7 +80,7 @@ class Set(object):
         self._projects = None
         self._potionCards = None
         self._ways = None
-        self._actionCards = None
+        self._actions = None
         self._allyCards = None
         self._traitcards = None
 
@@ -135,12 +135,12 @@ class Set(object):
         self._AddCards(self._secondEdition, cards)
 
     @property
-    def actionCards(self):
-        if self._actionCards is None:
-            self._actionCards = CardList(
+    def actions(self):
+        if self._actions is None:
+            self._actions = CardList(
                 card for card in self._cards if card.types & {Action}
             )
-        return self._actionCards
+        return self._actions
 
     @property
     def allyCards(self):
@@ -1035,6 +1035,10 @@ Projects = Renaissance.projects
 Ways = Menagerie.ways
 Traits = Plunder.traits
 LandscapeCards = Events | Landmarks | Projects | Ways | Traits
+
+# Define action cards
+listOfSetsOfActions = (cardSet.actions for cardSet in AllSets.values())
+Actions = set().union(*listOfSetsOfActions)
 
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
