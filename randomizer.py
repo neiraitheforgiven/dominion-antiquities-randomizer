@@ -1580,7 +1580,7 @@ BaneCards = set().union(
     ),
 )
 
-NoTraitCards = set().union(
+CannotHaveTraits = set().union(
     Base.cards("Gardens"),
     Seaside.cards("Astrolabe"),
     Alchemy.cards("Vineyard"),
@@ -1590,6 +1590,7 @@ NoTraitCards = set().union(
         "Silk Road",
     ),
     DarkAges.cards("Feodum"),
+    Empires.cards("Castles"),
     Nocturne.cards(
         "Guardian",
         "Monastery",
@@ -1881,7 +1882,7 @@ def RandomizeDominion(setNames=None, options=None):
     # Assign Traits to selected cards
     selectedTraits = Traits.intersection(landscapeList)
     if selectedTraits:
-        eligibleCards = resultSet - NoTraitCards
+        eligibleCards = resultSet - CannotHaveTraits
         for trait in selectedTraits:
             landscapeList.remove(trait)
             if not eligibleCards:
