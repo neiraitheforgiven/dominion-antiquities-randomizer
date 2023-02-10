@@ -82,7 +82,7 @@ class Set(object):
         self._ways = None
         self._actions = None
         self._allyCards = None
-        self._traitcards = None
+        self._traits = None
 
         AllSets[self.name] = self
 
@@ -176,11 +176,11 @@ class Set(object):
 
     @property
     def traits(self):
-        if self._traitcards is None:
-            self._traitcards = CardList(
+        if self._traits is None:
+            self._traits = CardList(
                 card for card in self._cards if card.types & {Trait}
             )
-        return self._traitcards
+        return self._traits
 
     @property
     def ways(self):
