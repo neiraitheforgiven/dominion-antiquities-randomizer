@@ -60,6 +60,8 @@ class Card(object):
             formatStr = "({} Way): {}"
         elif Ally in self.types:
             formatStr = "({} Ally): {}"
+        elif Trait in self.types:
+            formatStr = "({} Trait): {}"
         else:
             formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
@@ -80,6 +82,7 @@ class Set(object):
         self._ways = None
         self._actions = None
         self._allyCards = None
+        self._traits = None
 
         AllSets[self.name] = self
 
@@ -172,6 +175,14 @@ class Set(object):
         return self._projects
 
     @property
+    def traits(self):
+        if self._traits is None:
+            self._traits = CardList(
+                card for card in self._cards if card.types & {Trait}
+            )
+        return self._traits
+
+    @property
     def ways(self):
         if self._ways is None:
             self._ways = CardList(card for card in self._cards if card.types & {Way})
@@ -193,6 +204,7 @@ Project = CardType("Project")
 Way = CardType("Way")
 Potion = CardType("Potion")
 Ally = CardType("Ally")
+Trait = CardType("Trait")
 Action = CardType("Action")
 
 # Define sets
@@ -907,6 +919,82 @@ Allies.AddCards(
     ]
 )
 
+Plunder = Set("Plunder")
+Plunder.AddCards(
+    [
+        "Abundance",
+        "Buried Treasure",
+        "Cage",
+        "Crucible",
+        "Figurine",
+        "Gondola",
+        "Grotto",
+        "Jewelled Egg",
+        "King's Cache",
+        "Pendant",
+        "Pickaxe",
+        "Rope",
+        "Sack of Loot",
+        "Silver Mine",
+        "Tools",
+        {"name": "Search", "types": {Action}},
+        {"name": "Shaman", "types": {Action}},
+        {"name": "Secluded Shrine", "types": {Action}},
+        {"name": "Siren", "types": {Action}},
+        {"name": "Stowaway", "types": {Action}},
+        {"name": "Taskmaster", "types": {Action}},
+        {"name": "Cabin Boy", "types": {Action}},
+        {"name": "Flagship", "types": {Action}},
+        {"name": "Fortune Hunter", "types": {Action}},
+        {"name": "Harbor Village", "types": {Action}},
+        {"name": "Landing Party", "types": {Action}},
+        {"name": "Mapmaker", "types": {Action}},
+        {"name": "Maroon", "types": {Action}},
+        {"name": "Swamp Shacks", "types": {Action}},
+        {"name": "Crew", "types": {Action}},
+        {"name": "Cutthroat", "types": {Action}},
+        {"name": "Enlarge", "types": {Action}},
+        {"name": "First Mate", "types": {Action}},
+        {"name": "Frigate", "types": {Action}},
+        {"name": "Longship", "types": {Action}},
+        {"name": "Mining Road", "types": {Action}},
+        {"name": "Pilgrim", "types": {Action}},
+        {"name": "Quartermaster", "types": {Action}},
+        {"name": "Trickster", "types": {Action}},
+        {"name": "Wealthy Village", "types": {Action}},
+        {"name": "Bury", "types": {Event}},
+        {"name": "Avoid", "types": {Event}},
+        {"name": "Deliver", "types": {Event}},
+        {"name": "Peril", "types": {Event}},
+        {"name": "Rush", "types": {Event}},
+        {"name": "Foray", "types": {Event}},
+        {"name": "Launch", "types": {Event}},
+        {"name": "Mirror", "types": {Event}},
+        {"name": "Prepare", "types": {Event}},
+        {"name": "Scrounge", "types": {Event}},
+        {"name": "Journey", "types": {Event}},
+        {"name": "Maelstrom", "types": {Event}},
+        {"name": "Looting", "types": {Event}},
+        {"name": "Invasion", "types": {Event}},
+        {"name": "Prosper", "types": {Event}},
+        {"name": "Cheap", "types": {Trait}},
+        {"name": "Cursed", "types": {Trait}},
+        {"name": "Fated", "types": {Trait}},
+        {"name": "Fawning", "types": {Trait}},
+        {"name": "Friendly", "types": {Trait}},
+        {"name": "Hasty", "types": {Trait}},
+        {"name": "Inherited", "types": {Trait}},
+        {"name": "Inspiring", "types": {Trait}},
+        {"name": "Nearby", "types": {Trait}},
+        {"name": "Patient", "types": {Trait}},
+        {"name": "Pious", "types": {Trait}},
+        {"name": "Reckless", "types": {Trait}},
+        {"name": "Rich", "types": {Trait}},
+        {"name": "Shy", "types": {Trait}},
+        {"name": "Tireless", "types": {Trait}},
+    ]
+)
+
 Antiquities = Set("Antiquities")
 Antiquities.AddCards(
     [
@@ -941,15 +1029,15 @@ Antiquities.AddCards(
 )
 
 # Define Landscape cards
-Events = Adventures.events | Empires.events | Menagerie.events
+Events = Adventures.events | Empires.events | Menagerie.events | Plunder.events
 Landmarks = Empires.landmarks
 Projects = Renaissance.projects
 Ways = Menagerie.ways
-LandscapeCards = Events | Landmarks | Projects | Ways
+Traits = Plunder.traits
+LandscapeCards = Events | Landmarks | Projects | Ways | Traits
 
 # Define action cards
-listOfSetsOfActions = (cardSet.actions for cardSet in AllSets.values())
-Actions = set().union(*listOfSetsOfActions)
+Actions = set().union(*(cardSet.actions for cardSet in AllSets.values()))
 
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
@@ -1034,11 +1122,22 @@ PlatinumLove = Prosperity.cards.union(
         "Stoneworks",
     ),
     Allies.cards("Town", "Galleria", "Marquis"),
+    Plunder.cards(
+        "Search",
+        "Fortune Hunter",
+        "Harbor Village",
+        "Mining Road",
+        "Pendant",
+        "King's Cache",
+        "Deliver",
+        "Prosper",
+    ),
 )
 
-# ShelterLove cards are cards that trash for benefit, or gain victory cards
-# Hypothetically, ShelterLove could also include terminal cards, which
-# Would mean adding a ShelterHate for villages and reducing the chances for each ShelterHate
+# ShelterLove cards are cards that trash for benefit, or gain victory cards.
+# Hypothetically, ShelterLove could also include terminal cards, which would
+# mean adding a ShelterHate for villages and reducing the chances for each
+# ShelterHate.
 ShelterLove = DarkAges.cards.union(
     Base.cards("Remodel", "Mine"),
     Intrigue.cards("Replace", "Upgrade"),
@@ -1076,6 +1175,17 @@ ShelterLove = DarkAges.cards.union(
         "Stoneworks",
     ),
     Allies.cards("Broker", "Carpenter", "Modify"),
+    Plunder.cards(
+        "Cage",
+        "Jewelled Egg",
+        "Search",
+        "Shaman",
+        "Enlarge",
+        "Peril",
+        "Scrounge",
+        "Invasion",
+        "Inherited",
+    ),
 )
 
 LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
@@ -1127,7 +1237,25 @@ LiaisonCards = Allies.cards(
     "Guildmaster",
 )
 
-# TrapLove: cards that care about discarding, sifting, extra kingdom pile gains, and value for multiple gains
+LootCards = Plunder.cards(
+    "Cutthroat",
+    "Jewelled Egg",
+    "Pickaxe",
+    "Sack of Loot",
+    "Search",
+    "Wealthy Village",
+    # Events
+    "Foray",
+    "Invasion",
+    "Looting",
+    "Peril",
+    "Prosper",
+    # Traits
+    "Cursed",
+)
+
+# TrapLove: cards that care about discarding, sifting, extra kingdom pile
+# gains, and value for multiple gains
 TrapLove = Antiquities.cards.union(
     Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
     Intrigue.cards(
@@ -1274,6 +1402,16 @@ TrapLove = Antiquities.cards.union(
         "Architect's Guild",
         "Coastal Haven",
         "Desert Guides",
+    ),
+    Plunder.cards(
+        "Cage",
+        "Grotto",
+        "Mapmaker",
+        "Pickaxe",
+        "Quartermaster",
+        "Avoid",
+        "Foray",
+        "Prepare",
     ),
 )
 
@@ -1429,6 +1567,45 @@ BaneCards = set().union(
         "Smugglers",
         "Warehouse",
     ),
+    Plunder.cards(
+        "Cage",
+        "Grotto",
+        "Jewelled Egg",
+        "Search",
+        "Shaman",
+        "Secluded Shrine",
+        "Siren",
+        "Stowaway",
+        "Taskmaster",
+    ),
+)
+
+CannotHaveTraits = set().union(
+    Base.cards("Gardens"),
+    Seaside.cards("Astrolabe"),
+    Alchemy.cards("Vineyard"),
+    Cornucopia.cards("Fairgrounds"),
+    Hinterlands.cards(
+        "Tunnel",
+        "Silk Road",
+    ),
+    DarkAges.cards("Feodum"),
+    Empires.cards("Castles"),
+    Nocturne.cards(
+        "Guardian",
+        "Monastery",
+        "Changeling",
+        "Ghost Town",
+        "Night Watchman",
+        "Cemetary",
+        "Devil's Workshop",
+        "Exorcist",
+        "Cobbler",
+        "Crypt",
+        "Den of Sin",
+        "Vampire",
+        "Raider",
+    ),
 )
 
 
@@ -1519,7 +1696,7 @@ def RandomizeDominion(setNames=None, options=None):
                 card = next(cards)
                 if card.types & {Way}:
                     waySet.add(card)
-                elif card.types & {Event, Landmark, Project}:
+                elif card.types & {Event, Landmark, Project, Trait}:
                     landscapeSet.add(card)
                 else:
                     resultSet.add(card)
@@ -1645,6 +1822,9 @@ def RandomizeDominion(setNames=None, options=None):
     # Check for Liaisons (for a random Ally Card)
     includeAlly = LiaisonCards & (fullResults | mouseSet)
 
+    # Check for Loot cards
+    includeLoot = LootCards & (fullResults | mouseSet)
+
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
         random.sample(fullResults, 1)
@@ -1697,6 +1877,20 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Nocturne: Wish")
     if includeHorse:
         additionalCards.add("Menagerie: Horse")
+    if includeLoot:
+        landscapeList.append("(Plunder: Loot Deck)")
+
+    # Assign Traits to selected cards
+    selectedTraits = Traits.intersection(landscapeList)
+    if selectedTraits:
+        eligibleCards = resultSet - CannotHaveTraits
+        for trait in selectedTraits:
+            landscapeList.remove(trait)
+            if not eligibleCards:
+                break
+            traitCard = random.sample(eligibleCards, 1)[0]
+            eligibleCards.remove(traitCard)
+            landscapeList.append("{} (on {})".format(trait, traitCard))
 
     # Obelisk support
     obeliskPicked = Empires.cards("Obelisk").intersection(landscapeList)
