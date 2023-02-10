@@ -1037,8 +1037,7 @@ Traits = Plunder.traits
 LandscapeCards = Events | Landmarks | Projects | Ways | Traits
 
 # Define action cards
-listOfSetsOfActions = (cardSet.actions for cardSet in AllSets.values())
-Actions = set().union(*listOfSetsOfActions)
+Actions = set().union(*(cardSet.actions for cardSet in AllSets.values()))
 
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
@@ -1890,6 +1889,18 @@ def RandomizeDominion(setNames=None, options=None):
             traitCard = random.sample(eligibleCards, 1)[0]
             eligibleCards.remove(traitCard)
             landscapeList.append("{} (on {})".format(trait, traitCard))
+
+    # Obelisk support
+    obeliskPicked = Empires.cards("Obelisk").intersection(landscapeList)
+    if obeliskPicked:
+        eligibleCards = resultSet & Actions
+        (obelisk,) = Empires.cards("Obelisk")
+        landscapeList.remove(list(obeliskPicked)[0])
+        if eligibleCards:
+            obeliskCard = random.sample(eligibleCards, 1)[0]
+            landscapeList.append(
+                "(Empires Landmark): Obelisk (on {})".format(obeliskCard)
+            )
 
     # Create final card list
     if includeBane:
