@@ -1725,6 +1725,7 @@ def RandomizeDominion(setNames=None, options=None):
             # If there's only 1 Alchemy card, remove Alchemy from the options
             # and draw an addtional Kingdom card
             resultSet -= alchemyCards
+            kingdomSet -= Alchemy.Cards
             resultSet.update(random.sample(kingdomSet - resultSet, 1))
         elif len(alchemyCards) == 2:
             # If there are only 2 Alchemy cards, pull an additional Alchemy
