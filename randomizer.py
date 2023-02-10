@@ -1237,7 +1237,7 @@ LiaisonCards = Allies.cards(
     "Guildmaster",
 )
 
-IncludeLootCards = Plunder.cards(
+LootCards = Plunder.cards(
     "Cutthroat",
     "Jewelled Egg",
     "Pickaxe",
@@ -1821,7 +1821,7 @@ def RandomizeDominion(setNames=None, options=None):
     includeAlly = LiaisonCards & (fullResults | mouseSet)
 
     # Check for Loot cards
-    includeLoot = IncludeLootCards & (fullResults | mouseSet)
+    includeLoot = LootCards & (fullResults | mouseSet)
 
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
