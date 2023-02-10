@@ -60,6 +60,8 @@ class Card(object):
             formatStr = "({} Way): {}"
         elif Ally in self.types:
             formatStr = "({} Ally): {}"
+        elif Trait in self.types:
+            formatStr = "({} Trait): {}"
         else:
             formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
@@ -78,7 +80,9 @@ class Set(object):
         self._projects = None
         self._potionCards = None
         self._ways = None
+        self._actions = None
         self._allyCards = None
+        self._traits = None
 
         AllSets[self.name] = self
 
@@ -131,6 +135,14 @@ class Set(object):
         self._AddCards(self._secondEdition, cards)
 
     @property
+    def actions(self):
+        if self._actions is None:
+            self._actions = CardList(
+                card for card in self._cards if card.types & {Action}
+            )
+        return self._actions
+
+    @property
     def allyCards(self):
         if self._allyCards is None:
             self._allyCards = CardList(
@@ -163,6 +175,14 @@ class Set(object):
         return self._projects
 
     @property
+    def traits(self):
+        if self._traits is None:
+            self._traits = CardList(
+                card for card in self._cards if card.types & {Trait}
+            )
+        return self._traits
+
+    @property
     def ways(self):
         if self._ways is None:
             self._ways = CardList(card for card in self._cards if card.types & {Way})
@@ -184,82 +204,97 @@ Project = CardType("Project")
 Way = CardType("Way")
 Potion = CardType("Potion")
 Ally = CardType("Ally")
+Trait = CardType("Trait")
+Action = CardType("Action")
 
 # Define sets
 Base = Set("Base")
 Base.AddCards(
     [
-        "Artisan",
-        "Cellar",
-        "Chapel",
-        "Moat",
-        "Harbinger",
-        "Merchant",
-        "Village",
-        "Workshop",
-        "Vassal",
-        "Bureaucrat",
         "Gardens",
-        "Militia",
-        "Moneylender",
-        "Poacher",
-        "Remodel",
-        "Smithy",
-        "Throne Room",
-        "Bandit",
-        "Council Room",
-        "Festival",
-        "Laboratory",
-        "Library",
-        "Market",
-        "Mine",
-        "Sentry",
-        "Witch",
+        {"name": "Artisan", "types": {Action}},
+        {"name": "Cellar", "types": {Action}},
+        {"name": "Chapel", "types": {Action}},
+        {"name": "Moat", "types": {Action}},
+        {"name": "Harbinger", "types": {Action}},
+        {"name": "Merchant", "types": {Action}},
+        {"name": "Village", "types": {Action}},
+        {"name": "Workshop", "types": {Action}},
+        {"name": "Vassal", "types": {Action}},
+        {"name": "Bureaucrat", "types": {Action}},
+        {"name": "Militia", "types": {Action}},
+        {"name": "Moneylender", "types": {Action}},
+        {"name": "Poacher", "types": {Action}},
+        {"name": "Remodel", "types": {Action}},
+        {"name": "Smithy", "types": {Action}},
+        {"name": "Throne Room", "types": {Action}},
+        {"name": "Bandit", "types": {Action}},
+        {"name": "Council Room", "types": {Action}},
+        {"name": "Festival", "types": {Action}},
+        {"name": "Laboratory", "types": {Action}},
+        {"name": "Library", "types": {Action}},
+        {"name": "Market", "types": {Action}},
+        {"name": "Mine", "types": {Action}},
+        {"name": "Sentry", "types": {Action}},
+        {"name": "Witch", "types": {Action}},
     ]
 )
-Base.firstEdition = ["Adventurer", "Chancellor", "Feast", "Spy", "Thief", "Woodcutter"]
+Base.firstEdition = [
+    {"name": "Adventurer", "types": {Action}},
+    {"name": "Chancellor", "types": {Action}},
+    {"name": "Feast", "types": {Action}},
+    {"name": "Spy", "types": {Action}},
+    {"name": "Thief", "types": {Action}},
+    {"name": "Woodcutter", "types": {Action}},
+]
 Base.secondEdition = Base.cards(
-    "Artisan", "Bandit", "Harbinger", "Merchant", "Poacher", "Sentry", "Vassal"
+    "Artisan",
+    "Bandit",
+    "Harbinger",
+    "Merchant",
+    "Poacher",
+    "Sentry",
+    "Vassal",
 )
 
 Intrigue = Set("Intrigue")
 Intrigue.AddCards(
     [
-        "Courtyard",
-        "Lurker",
-        "Pawn",
-        "Masquerade",
-        "Shanty Town",
-        "Steward",
-        "Swindler",
-        "Wishing Well",
-        "Baron",
-        "Bridge",
-        "Conspirator",
-        "Diplomat",
-        "Ironworks",
-        "Mill",
-        "Mining Village",
-        "Secret Passage",
-        "Courtier",
-        "Duke",
-        "Minion",
-        "Patrol",
-        "Replace",
-        "Torturer",
-        "Trading Post",
-        "Upgrade",
         "Harem",
-        "Nobles",
+        {"name": "Courtyard", "types": {Action}},
+        {"name": "Lurker", "types": {Action}},
+        {"name": "Pawn", "types": {Action}},
+        {"name": "Masquerade", "types": {Action}},
+        {"name": "Shanty Town", "types": {Action}},
+        {"name": "Steward", "types": {Action}},
+        {"name": "Swindler", "types": {Action}},
+        {"name": "Wishing Well", "types": {Action}},
+        {"name": "Baron", "types": {Action}},
+        {"name": "Bridge", "types": {Action}},
+        {"name": "Conspirator", "types": {Action}},
+        {"name": "Diplomat", "types": {Action}},
+        {"name": "Ironworks", "types": {Action}},
+        {"name": "Mill", "types": {Action}},
+        {"name": "Mining Village", "types": {Action}},
+        {"name": "Secret Passage", "types": {Action}},
+        {"name": "Courtier", "types": {Action}},
+        {"name": "Duke", "types": {Action}},
+        {"name": "Minion", "types": {Action}},
+        {"name": "Patrol", "types": {Action}},
+        {"name": "Replace", "types": {Action}},
+        {"name": "Torturer", "types": {Action}},
+        {"name": "Trading Post", "types": {Action}},
+        {"name": "Upgrade", "types": {Action}},
+        {"name": "Nobles", "types": {Action}},
     ]
 )
 Intrigue.firstEdition = [
-    "Coppersmith",
-    "Great Hall",
-    "Saboteur",
-    "Scout",
-    "Secret Chamber",
-    "Tribute",
+    {"name": "Coppersmith", "types": {Action}},
+    {"name": "Great Hall", "types": {Action}},
+    {"name": "Saboteur", "types": {Action}},
+    {"name": "Scout", "types": {Action}},
+    {"name": "Secret Chamber", "types": {Action}},
+    {"name": "Tribute", "types": {Action}},
 ]
 Intrigue.secondEdition = Intrigue.cards(
     "Courtier", "Diplomat", "Lurker", "Mill", "Patrol", "Replace", "Secret Passage"
@@ -269,43 +304,43 @@ Seaside = Set("Seaside")
 Seaside.AddCards(
     [
         "Astrolabe",
-        "Bazaar",
-        "Blockade",
-        "Caravan",
-        "Corsair",
-        "Cutpurse",
-        "Fishing Village",
-        "Haven",
-        "Island",
-        "Lighthouse",
-        "Lookout",
-        "Merchant Ship",
-        "Monkey",
-        "Native Village",
-        "Outpost",
-        "Pirate",
-        "Sailor",
-        "Salvager",
-        "Sea Chart",
-        "Sea Witch",
-        "Smugglers",
-        "Tactician",
-        "Tide Pools",
-        "Treasure Map",
-        "Treasury",
-        "Warehouse",
-        "Wharf",
+        {"name": "Bazaar", "types": {Action}},
+        {"name": "Blockade", "types": {Action}},
+        {"name": "Caravan", "types": {Action}},
+        {"name": "Corsair", "types": {Action}},
+        {"name": "Cutpurse", "types": {Action}},
+        {"name": "Fishing Village", "types": {Action}},
+        {"name": "Haven", "types": {Action}},
+        {"name": "Island", "types": {Action}},
+        {"name": "Lighthouse", "types": {Action}},
+        {"name": "Lookout", "types": {Action}},
+        {"name": "Merchant Ship", "types": {Action}},
+        {"name": "Monkey", "types": {Action}},
+        {"name": "Native Village", "types": {Action}},
+        {"name": "Outpost", "types": {Action}},
+        {"name": "Pirate", "types": {Action}},
+        {"name": "Sailor", "types": {Action}},
+        {"name": "Salvager", "types": {Action}},
+        {"name": "Sea Chart", "types": {Action}},
+        {"name": "Sea Witch", "types": {Action}},
+        {"name": "Smugglers", "types": {Action}},
+        {"name": "Tactician", "types": {Action}},
+        {"name": "Tide Pools", "types": {Action}},
+        {"name": "Treasure Map", "types": {Action}},
+        {"name": "Treasury", "types": {Action}},
+        {"name": "Warehouse", "types": {Action}},
+        {"name": "Wharf", "types": {Action}},
     ]
 )
 Seaside.firstEdition = [
-    "Embargo",
-    "Pearl Diver",
-    "Ambassador",
-    "Navigator",
-    "Pirate Ship",
-    "Sea Hag",
-    "Explorer",
-    "Ghost Ship",
+    {"name": "Embargo", "types": {Action}},
+    {"name": "Pearl Diver", "types": {Action}},
+    {"name": "Ambassador", "types": {Action}},
+    {"name": "Navigator", "types": {Action}},
+    {"name": "Pirate Ship", "types": {Action}},
+    {"name": "Sea Hag", "types": {Action}},
+    {"name": "Explorer", "types": {Action}},
+    {"name": "Ghost Ship", "types": {Action}},
 ]
 Seaside.secondEdition = Seaside.cards(
     "Astrolabe",
@@ -322,18 +357,18 @@ Seaside.secondEdition = Seaside.cards(
 Alchemy = Set("Alchemy")
 Alchemy.AddCards(
     [
-        "Herbalist",
-        "Apprentice",
-        {"name": "Transmute", "types": {Potion}},
+        {"name": "Herbalist", "types": {Action}},
+        {"name": "Apprentice", "types": {Action}},
+        {"name": "Transmute", "types": {Action, Potion}},
         {"name": "Vineyard", "types": {Potion}},
-        {"name": "Apothecary", "types": {Potion}},
-        {"name": "Scrying Pool", "types": {Potion}},
-        {"name": "University", "types": {Potion}},
-        {"name": "Alchemist", "types": {Potion}},
-        {"name": "Familiar", "types": {Potion}},
+        {"name": "Apothecary", "types": {Action, Potion}},
+        {"name": "Scrying Pool", "types": {Action, Potion}},
+        {"name": "University", "types": {Action, Potion}},
+        {"name": "Alchemist", "types": {Action, Potion}},
+        {"name": "Familiar", "types": {Action, Potion}},
         {"name": "Philosopher's Stone", "types": {Potion}},
-        {"name": "Golem", "types": {Potion}},
-        {"name": "Possession", "types": {Potion}},
+        {"name": "Golem", "types": {Action, Potion}},
+        {"name": "Possession", "types": {Action, Potion}},
     ]
 )
 
@@ -342,40 +377,40 @@ Prosperity.AddCards(
     [
         "Anvil",
         "Bank",
-        "Bishop",
-        "Charlatan",
-        "City",
-        "Clerk",
         "Collection",
-        "Expand",
-        "Forge",
-        "Grand Market",
         "Hoard",
         "Investment",
-        "King's Court",
-        "Magnate",
-        "Mint",
-        "Monument",
-        "Peddler",
         "Quarry",
-        "Rabble",
         "Tiara",
-        "Vault",
         "War Chest",
-        "Watchtower",
-        "Worker's Village",
+        {"name": "Bishop", "types": {Action}},
+        {"name": "Charlatan", "types": {Action}},
+        {"name": "City", "types": {Action}},
+        {"name": "Clerk", "types": {Action}},
+        {"name": "Expand", "types": {Action}},
+        {"name": "Forge", "types": {Action}},
+        {"name": "Grand Market", "types": {Action}},
+        {"name": "King's Court", "types": {Action}},
+        {"name": "Magnate", "types": {Action}},
+        {"name": "Mint", "types": {Action}},
+        {"name": "Monument", "types": {Action}},
+        {"name": "Peddler", "types": {Action}},
+        {"name": "Rabble", "types": {Action}},
+        {"name": "Vault", "types": {Action}},
+        {"name": "Watchtower", "types": {Action}},
+        {"name": "Worker's Village", "types": {Action}},
     ]
 )
 Prosperity.firstEdition = [
     "Contraband",
-    "Counting House",
-    "Goons",
     "Loan",
-    "Mountebank",
     "Royal Seal",
     "Talisman",
-    "Trade Route",
     "Venture",
+    {"name": "Counting House", "types": {Action}},
+    {"name": "Goons", "types": {Action}},
+    {"name": "Mountebank", "types": {Action}},
+    {"name": "Trade Route", "types": {Action}},
 ]
 Prosperity.secondEdition = Prosperity.cards(
     "Anvil",
@@ -393,63 +428,63 @@ Prosperity.secondEdition = Prosperity.cards(
 Cornucopia = Set("Cornucopia")
 Cornucopia.AddCards(
     [
-        "Hamlet",
-        "Fortune Teller",
-        "Menagerie",
-        "Farming Village",
-        "Horse Traders",
-        "Remake",
-        "Tournament",
-        "Young Witch",
-        "Harvest",
-        "Horn of Plenty",
-        "Hunting Party",
-        "Jester",
         "Fairgrounds",
+        "Horn of Plenty",
+        {"name": "Hamlet", "types": {Action}},
+        {"name": "Fortune Teller", "types": {Action}},
+        {"name": "Menagerie", "types": {Action}},
+        {"name": "Farming Village", "types": {Action}},
+        {"name": "Horse Traders", "types": {Action}},
+        {"name": "Remake", "types": {Action}},
+        {"name": "Tournament", "types": {Action}},
+        {"name": "Young Witch", "types": {Action}},
+        {"name": "Harvest", "types": {Action}},
+        {"name": "Hunting Party", "types": {Action}},
+        {"name": "Jester", "types": {Action}},
     ]
 )
 
 Hinterlands = Set("Hinterlands")
 Hinterlands.AddCards(
     [
-        "Berserker",
-        "Border Village",
-        "Cartographer",
         "Cauldron",
-        "Crossroads",
-        "Develop",
         "Farmland",
         "Fool's Gold",
-        "Guard Dog",
-        "Haggler",
-        "Highway",
-        "Inn",
-        "Jack of All Trades",
-        "Margrave",
-        "Nomads",
-        "Oasis",
-        "Scheme",
-        "Souk",
-        "Spice Merchant",
-        "Stables",
-        "Trader",
-        "Trail",
         "Tunnel",
-        "Weaver",
-        "Wheelwright",
-        "Witch's Hut",
+        {"name": "Berserker", "types": {Action}},
+        {"name": "Border Village", "types": {Action}},
+        {"name": "Cartographer", "types": {Action}},
+        {"name": "Crossroads", "types": {Action}},
+        {"name": "Develop", "types": {Action}},
+        {"name": "Guard Dog", "types": {Action}},
+        {"name": "Haggler", "types": {Action}},
+        {"name": "Highway", "types": {Action}},
+        {"name": "Inn", "types": {Action}},
+        {"name": "Jack of All Trades", "types": {Action}},
+        {"name": "Margrave", "types": {Action}},
+        {"name": "Nomads", "types": {Action}},
+        {"name": "Oasis", "types": {Action}},
+        {"name": "Scheme", "types": {Action}},
+        {"name": "Souk", "types": {Action}},
+        {"name": "Spice Merchant", "types": {Action}},
+        {"name": "Stables", "types": {Action}},
+        {"name": "Trader", "types": {Action}},
+        {"name": "Trail", "types": {Action}},
+        {"name": "Weaver", "types": {Action}},
+        {"name": "Wheelwright", "types": {Action}},
+        {"name": "Witch's Hut", "types": {Action}},
     ]
 )
 Hinterlands.firstEdition = [
     "Cache",
-    "Duchess",
-    "Embassy",
     "Ill-gotten Gains",
-    "Mandarin",
-    "Noble Brigand",
-    "Nomad Camp",
-    "Oracle",
     "Silk Road",
+    {"name": "Duchess", "types": {Action}},
+    {"name": "Embassy", "types": {Action}},
+    {"name": "Mandarin", "types": {Action}},
+    {"name": "Noble Brigand", "types": {Action}},
+    {"name": "Nomad Camp", "types": {Action}},
+    {"name": "Oracle", "types": {Action}},
 ]
 Hinterlands.secondEdition = Hinterlands.cards(
     "Berserker",
@@ -466,60 +501,60 @@ Hinterlands.secondEdition = Hinterlands.cards(
 DarkAges = Set("Dark Ages")
 DarkAges.AddCards(
     [
-        "Poor House",
-        "Beggar",
-        "Squire",
-        "Vagrant",
-        "Forager",
-        "Hermit",
-        "Market Square",
-        "Sage",
-        "Storeroom",
-        "Urchin",
-        "Armory",
-        "Death Cart",
-        "Feodum",
-        "Fortress",
-        "Ironmonger",
-        "Marauder",
-        "Procession",
-        "Rats",
-        "Scavenger",
-        "Wandering Minstrel",
-        "Band of Misfits",
-        "Bandit Camp",
-        "Catacombs",
-        "Count",
         "Counterfeit",
-        "Cultist",
-        "Graverobber",
-        "Junk Dealer",
-        "Knights",
-        "Mystic",
-        "Pillage",
-        "Rebuild",
-        "Rogue",
-        "Altar",
-        "Hunting Grounds",
+        "Feodum",
+        {"name": "Poor House", "types": {Action}},
+        {"name": "Beggar", "types": {Action}},
+        {"name": "Squire", "types": {Action}},
+        {"name": "Vagrant", "types": {Action}},
+        {"name": "Forager", "types": {Action}},
+        {"name": "Hermit", "types": {Action}},
+        {"name": "Market Square", "types": {Action}},
+        {"name": "Sage", "types": {Action}},
+        {"name": "Storeroom", "types": {Action}},
+        {"name": "Urchin", "types": {Action}},
+        {"name": "Armory", "types": {Action}},
+        {"name": "Death Cart", "types": {Action}},
+        {"name": "Fortress", "types": {Action}},
+        {"name": "Ironmonger", "types": {Action}},
+        {"name": "Marauder", "types": {Action}},
+        {"name": "Procession", "types": {Action}},
+        {"name": "Rats", "types": {Action}},
+        {"name": "Scavenger", "types": {Action}},
+        {"name": "Wandering Minstrel", "types": {Action}},
+        {"name": "Band of Misfits", "types": {Action}},
+        {"name": "Bandit Camp", "types": {Action}},
+        {"name": "Catacombs", "types": {Action}},
+        {"name": "Count", "types": {Action}},
+        {"name": "Cultist", "types": {Action}},
+        {"name": "Graverobber", "types": {Action}},
+        {"name": "Junk Dealer", "types": {Action}},
+        {"name": "Knights", "types": {Action}},
+        {"name": "Mystic", "types": {Action}},
+        {"name": "Pillage", "types": {Action}},
+        {"name": "Rebuild", "types": {Action}},
+        {"name": "Rogue", "types": {Action}},
+        {"name": "Altar", "types": {Action}},
+        {"name": "Hunting Grounds", "types": {Action}},
     ]
 )
 
 Guilds = Set("Guilds")
 Guilds.AddCards(
     [
-        "Candlestick Maker",
-        "Stonemason",
-        "Doctor",
         "Masterpiece",
-        "Advisor",
-        "Plaza",
-        "Taxman",
-        "Herald",
-        "Baker",
-        "Butcher",
-        "Journeyman",
-        "Merchant Guild",
-        "Soothsayer",
+        {"name": "Candlestick Maker", "types": {Action}},
+        {"name": "Stonemason", "types": {Action}},
+        {"name": "Doctor", "types": {Action}},
+        {"name": "Advisor", "types": {Action}},
+        {"name": "Plaza", "types": {Action}},
+        {"name": "Taxman", "types": {Action}},
+        {"name": "Herald", "types": {Action}},
+        {"name": "Baker", "types": {Action}},
+        {"name": "Butcher", "types": {Action}},
+        {"name": "Journeyman", "types": {Action}},
+        {"name": "Merchant Guild", "types": {Action}},
+        {"name": "Soothsayer", "types": {Action}},
     ]
 )
 
@@ -527,35 +562,35 @@ Adventures = Set("Adventures")
 Adventures.AddCards(
     [
         "Coin of the Realm",
-        "Page",
-        "Peasant",
-        "Ratcatcher",
-        "Raze",
-        "Amulet",
-        "Caravan Guard",
-        "Dungeon",
-        "Gear",
-        "Guide",
-        "Duplicate",
-        "Magpie",
-        "Messenger",
-        "Miser",
-        "Port",
-        "Ranger",
-        "Transmogrify",
-        "Artificer",
-        "Bridge Troll",
         "Distant Lands",
-        "Giant",
-        "Haunted Woods",
-        "Lost City",
         "Relic",
-        "Royal Carriage",
-        "Storyteller",
-        "Swamp Hag",
         "Treasure Trove",
-        "Wine Merchant",
-        "Hireling",
+        {"name": "Page", "types": {Action}},
+        {"name": "Peasant", "types": {Action}},
+        {"name": "Ratcatcher", "types": {Action}},
+        {"name": "Raze", "types": {Action}},
+        {"name": "Amulet", "types": {Action}},
+        {"name": "Caravan Guard", "types": {Action}},
+        {"name": "Dungeon", "types": {Action}},
+        {"name": "Gear", "types": {Action}},
+        {"name": "Guide", "types": {Action}},
+        {"name": "Duplicate", "types": {Action}},
+        {"name": "Magpie", "types": {Action}},
+        {"name": "Messenger", "types": {Action}},
+        {"name": "Miser", "types": {Action}},
+        {"name": "Port", "types": {Action}},
+        {"name": "Ranger", "types": {Action}},
+        {"name": "Transmogrify", "types": {Action}},
+        {"name": "Artificer", "types": {Action}},
+        {"name": "Bridge Troll", "types": {Action}},
+        {"name": "Giant", "types": {Action}},
+        {"name": "Haunted Woods", "types": {Action}},
+        {"name": "Lost City", "types": {Action}},
+        {"name": "Royal Carriage", "types": {Action}},
+        {"name": "Storyteller", "types": {Action}},
+        {"name": "Swamp Hag", "types": {Action}},
+        {"name": "Wine Merchant", "types": {Action}},
+        {"name": "Hireling", "types": {Action}},
         {"name": "Alms", "types": {Event}},
         {"name": "Borrow", "types": {Event}},
         {"name": "Quest", "types": {Event}},
@@ -581,30 +616,30 @@ Adventures.AddCards(
 Empires = Set("Empires")
 Empires.AddCards(
     [
-        "Engineer",
-        "City Quarter",
-        "Overlord",
-        "Royal Blacksmith",
-        "Encampment/Plunder",
-        "Patrician/Emporium",
-        "Settlers/Bustling Village",
         "Castles",
-        "Catapult/Rocks",
-        "Chariot Race",
-        "Enchantress",
-        "Farmers' Market",
-        "Gladiator/Fortune",
-        "Sacrifice",
-        "Temple",
-        "Villa",
-        "Archive",
         "Capital",
         "Charm",
-        "Crown",
-        "Forum",
-        "Groundskeeper",
-        "Legionary",
-        "Wild Hunt",
+        {"name": "Engineer", "types": {Action}},
+        {"name": "City Quarter", "types": {Action}},
+        {"name": "Overlord", "types": {Action}},
+        {"name": "Royal Blacksmith", "types": {Action}},
+        {"name": "Encampment/Plunder", "types": {Action}},
+        {"name": "Patrician/Emporium", "types": {Action}},
+        {"name": "Settlers/Bustling Village", "types": {Action}},
+        {"name": "Catapult/Rocks", "types": {Action}},
+        {"name": "Chariot Race", "types": {Action}},
+        {"name": "Enchantress", "types": {Action}},
+        {"name": "Farmers' Market", "types": {Action}},
+        {"name": "Gladiator/Fortune", "types": {Action}},
+        {"name": "Sacrifice", "types": {Action}},
+        {"name": "Temple", "types": {Action}},
+        {"name": "Villa", "types": {Action}},
+        {"name": "Archive", "types": {Action}},
+        {"name": "Crown", "types": {Action}},
+        {"name": "Forum", "types": {Action}},
+        {"name": "Groundskeeper", "types": {Action}},
+        {"name": "Legionary", "types": {Action}},
+        {"name": "Wild Hunt", "types": {Action}},
         {"name": "Advance", "types": {Event}},
         {"name": "Annex", "types": {Event}},
         {"name": "Banquet", "types": {Event}},
@@ -646,70 +681,73 @@ Empires.AddCards(
 Nocturne = Set("Nocturne")
 Nocturne.AddCards(
     [
-        "Bard",
-        "Blessed Village",
         "Cemetary + Haunted Mirror (Heirloom)",
         "Changeling",
         "Cobbler",
-        "Conclave",
         "Crypt",
-        "Cursed Village",
         "Den of Sin",
         "Devil's Workshop",
-        "Druid",
         "Exorcist",
-        "Faithful Hound",
-        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
         "Guardian",
         "Ghost Town",
         "Idol",
-        "Leprechaun",
         "Monastery",
-        "Necromancer + Zombies",
         "Night Watchman",
-        "Pixie + Goat (Heirloom)",
-        "Pooka + Cursed Gold (Heirloom)",
-        "Sacred Grove",
-        "Secret Cave + Magic Lamp (Heirloom)",
-        "Shepherd + Pasture (Heirloom)",
         "Raider",
-        "Skulk",
-        "Tormentor",
-        "Tracker + Pouch (Heirloom)",
-        "Tragic Hero",
         "Vampire",
-        "Werewolf",
+        {"name": "Bard", "types": {Action}},
+        {"name": "Blessed Village", "types": {Action}},
+        {"name": "Conclave", "types": {Action}},
+        {"name": "Cursed Village", "types": {Action}},
+        {"name": "Druid", "types": {Action}},
+        {"name": "Faithful Hound", "types": {Action}},
+        {
+            "name": "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
+            "types": {Action},
+        },
+        {"name": "Leprechaun", "types": {Action}},
+        {"name": "Necromancer + Zombies", "types": {Action}},
+        {"name": "Pixie + Goat (Heirloom)", "types": {Action}},
+        {"name": "Pooka + Cursed Gold (Heirloom)", "types": {Action}},
+        {"name": "Sacred Grove", "types": {Action}},
+        {"name": "Secret Cave + Magic Lamp (Heirloom)", "types": {Action}},
+        {"name": "Shepherd + Pasture (Heirloom)", "types": {Action}},
+        {"name": "Skulk", "types": {Action}},
+        {"name": "Tormentor", "types": {Action}},
+        {"name": "Tracker + Pouch (Heirloom)", "types": {Action}},
+        {"name": "Tragic Hero", "types": {Action}},
+        {"name": "Werewolf", "types": {Action}},
     ]
 )
 
 Renaissance = Set("Renaissance")
 Renaissance.AddCards(
     [
-        "Border Guard",
         "Ducat",
-        "Lackeys",
-        "Acting Troupe",
-        "Cargo Ship",
-        "Experiment",
-        "Improve",
-        "Flag Bearer",
-        "Hideout",
-        "Inventor",
-        "Mountain Village",
-        "Patron",
-        "Priest",
-        "Research",
-        "Silk Merchant",
-        "Old Witch",
-        "Recruiter",
         "Scepter",
-        "Scholar",
-        "Sculptor",
-        "Seer",
         "Spices",
-        "Swashbuckler",
-        "Treasurer",
-        "Villain",
+        {"name": "Border Guard", "types": {Action}},
+        {"name": "Lackeys", "types": {Action}},
+        {"name": "Acting Troupe", "types": {Action}},
+        {"name": "Cargo Ship", "types": {Action}},
+        {"name": "Experiment", "types": {Action}},
+        {"name": "Improve", "types": {Action}},
+        {"name": "Flag Bearer", "types": {Action}},
+        {"name": "Hideout", "types": {Action}},
+        {"name": "Inventor", "types": {Action}},
+        {"name": "Mountain Village", "types": {Action}},
+        {"name": "Patron", "types": {Action}},
+        {"name": "Priest", "types": {Action}},
+        {"name": "Research", "types": {Action}},
+        {"name": "Silk Merchant", "types": {Action}},
+        {"name": "Old Witch", "types": {Action}},
+        {"name": "Recruiter", "types": {Action}},
+        {"name": "Scholar", "types": {Action}},
+        {"name": "Sculptor", "types": {Action}},
+        {"name": "Seer", "types": {Action}},
+        {"name": "Swashbuckler", "types": {Action}},
+        {"name": "Treasurer", "types": {Action}},
+        {"name": "Villain", "types": {Action}},
         {"name": "Cathedral", "types": {Project}},
         {"name": "City Gate", "types": {Project}},
         {"name": "Pageant", "types": {Project}},
@@ -736,36 +774,36 @@ Renaissance.AddCards(
 Menagerie = Set("Menagerie")
 Menagerie.AddCards(
     [
-        "Animal Fair",
-        "Barge",
-        "Black Cat",
-        "Bounty Hunter",
-        "Camel Train",
-        "Cardinal",
-        "Cavalry",
-        "Coven",
-        "Destrier",
-        "Displace",
-        "Falconer",
-        "Fisherman",
-        "Gatekeeper",
-        "Goatherd",
-        "Groom",
-        "Hostelry",
-        "Hunting Lodge",
-        "Kiln",
-        "Livery",
-        "Mastermind",
-        "Paddock",
-        "Sanctuary",
-        "Scrap",
-        "Sheepdog",
-        "Sleigh",
-        "Snowy Village",
         "Stockpile",
         "Supplies",
-        "Village Green",
-        "Wayfarer",
+        {"name": "Animal Fair", "types": {Action}},
+        {"name": "Barge", "types": {Action}},
+        {"name": "Black Cat", "types": {Action}},
+        {"name": "Bounty Hunter", "types": {Action}},
+        {"name": "Camel Train", "types": {Action}},
+        {"name": "Cardinal", "types": {Action}},
+        {"name": "Cavalry", "types": {Action}},
+        {"name": "Coven", "types": {Action}},
+        {"name": "Destrier", "types": {Action}},
+        {"name": "Displace", "types": {Action}},
+        {"name": "Falconer", "types": {Action}},
+        {"name": "Fisherman", "types": {Action}},
+        {"name": "Gatekeeper", "types": {Action}},
+        {"name": "Goatherd", "types": {Action}},
+        {"name": "Groom", "types": {Action}},
+        {"name": "Hostelry", "types": {Action}},
+        {"name": "Hunting Lodge", "types": {Action}},
+        {"name": "Kiln", "types": {Action}},
+        {"name": "Livery", "types": {Action}},
+        {"name": "Mastermind", "types": {Action}},
+        {"name": "Paddock", "types": {Action}},
+        {"name": "Sanctuary", "types": {Action}},
+        {"name": "Scrap", "types": {Action}},
+        {"name": "Sheepdog", "types": {Action}},
+        {"name": "Sleigh", "types": {Action}},
+        {"name": "Snowy Village", "types": {Action}},
+        {"name": "Village Green", "types": {Action}},
+        {"name": "Wayfarer", "types": {Action}},
         {"name": "Alliance", "types": {Event}},
         {"name": "Banish", "types": {Event}},
         {"name": "Bargain", "types": {Event}},
@@ -813,36 +851,48 @@ Allies = Set("Allies")
 Allies.AddCards(
     [
         "Bauble",
-        "Sycophant",
-        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
-        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
-        "Clashes: Battle Plan + Archer + Warlord + Territory",
-        "Forts: Tent + Garrison + Hill Fort + Stronghold",
-        "Merchant Camp",
-        "Importer",
-        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
-        "Sentinel",
-        "Underling",
-        "Wizards: Student, Conjurer, Sorcerer, Lich",
-        "Broker",
-        "Carpenter",
-        "Courier",
-        "Innkeeper",
-        "Royal Galley",
-        "Town",
-        "Barbarian",
-        "Capital City",
         "Contract",
-        "Emissary",
-        "Galleria",
-        "Guildmaster",
-        "Highwayman",
-        "Hunter",
-        "Modify",
-        "Skirmisher",
-        "Specialist",
-        "Swap",
-        "Marquis",
+        {"name": "Sycophant", "types": {Action}},
+        {
+            "name": "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+            "types": {Action},
+        },
+        {
+            "name": "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
+            "types": {Action},
+        },
+        {
+            "name": "Clashes: Battle Plan + Archer + Warlord + Territory",
+            "types": {Action},
+        },
+        {"name": "Forts: Tent + Garrison + Hill Fort + Stronghold", "types": {Action}},
+        {"name": "Merchant Camp", "types": {Action}},
+        {"name": "Importer", "types": {Action}},
+        {
+            "name": "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
+            "types": {Action},
+        },
+        {"name": "Sentinel", "types": {Action}},
+        {"name": "Underling", "types": {Action}},
+        {"name": "Wizards: Student, Conjurer, Sorcerer, Lich", "types": {Action}},
+        {"name": "Broker", "types": {Action}},
+        {"name": "Carpenter", "types": {Action}},
+        {"name": "Courier", "types": {Action}},
+        {"name": "Innkeeper", "types": {Action}},
+        {"name": "Royal Galley", "types": {Action}},
+        {"name": "Town", "types": {Action}},
+        {"name": "Barbarian", "types": {Action}},
+        {"name": "Capital City", "types": {Action}},
+        {"name": "Emissary", "types": {Action}},
+        {"name": "Galleria", "types": {Action}},
+        {"name": "Guildmaster", "types": {Action}},
+        {"name": "Highwayman", "types": {Action}},
+        {"name": "Hunter", "types": {Action}},
+        {"name": "Modify", "types": {Action}},
+        {"name": "Skirmisher", "types": {Action}},
+        {"name": "Specialist", "types": {Action}},
+        {"name": "Swap", "types": {Action}},
+        {"name": "Marquis", "types": {Action}},
         {"name": "Architects' Guild", "types": {Ally}},
         {"name": "Band of Nomads", "types": {Ally}},
         {"name": "Cave Dwellers", "types": {Ally}},
@@ -869,45 +919,125 @@ Allies.AddCards(
     ]
 )
 
+Plunder = Set("Plunder")
+Plunder.AddCards(
+    [
+        "Abundance",
+        "Buried Treasure",
+        "Cage",
+        "Crucible",
+        "Figurine",
+        "Gondola",
+        "Grotto",
+        "Jewelled Egg",
+        "King's Cache",
+        "Pendant",
+        "Pickaxe",
+        "Rope",
+        "Sack of Loot",
+        "Silver Mine",
+        "Tools",
+        {"name": "Search", "types": {Action}},
+        {"name": "Shaman", "types": {Action}},
+        {"name": "Secluded Shrine", "types": {Action}},
+        {"name": "Siren", "types": {Action}},
+        {"name": "Stowaway", "types": {Action}},
+        {"name": "Taskmaster", "types": {Action}},
+        {"name": "Cabin Boy", "types": {Action}},
+        {"name": "Flagship", "types": {Action}},
+        {"name": "Fortune Hunter", "types": {Action}},
+        {"name": "Harbor Village", "types": {Action}},
+        {"name": "Landing Party", "types": {Action}},
+        {"name": "Mapmaker", "types": {Action}},
+        {"name": "Maroon", "types": {Action}},
+        {"name": "Swamp Shacks", "types": {Action}},
+        {"name": "Crew", "types": {Action}},
+        {"name": "Cutthroat", "types": {Action}},
+        {"name": "Enlarge", "types": {Action}},
+        {"name": "First Mate", "types": {Action}},
+        {"name": "Frigate", "types": {Action}},
+        {"name": "Longship", "types": {Action}},
+        {"name": "Mining Road", "types": {Action}},
+        {"name": "Pilgrim", "types": {Action}},
+        {"name": "Quartermaster", "types": {Action}},
+        {"name": "Trickster", "types": {Action}},
+        {"name": "Wealthy Village", "types": {Action}},
+        {"name": "Bury", "types": {Event}},
+        {"name": "Avoid", "types": {Event}},
+        {"name": "Deliver", "types": {Event}},
+        {"name": "Peril", "types": {Event}},
+        {"name": "Rush", "types": {Event}},
+        {"name": "Foray", "types": {Event}},
+        {"name": "Launch", "types": {Event}},
+        {"name": "Mirror", "types": {Event}},
+        {"name": "Prepare", "types": {Event}},
+        {"name": "Scrounge", "types": {Event}},
+        {"name": "Journey", "types": {Event}},
+        {"name": "Maelstrom", "types": {Event}},
+        {"name": "Looting", "types": {Event}},
+        {"name": "Invasion", "types": {Event}},
+        {"name": "Prosper", "types": {Event}},
+        {"name": "Cheap", "types": {Trait}},
+        {"name": "Cursed", "types": {Trait}},
+        {"name": "Fated", "types": {Trait}},
+        {"name": "Fawning", "types": {Trait}},
+        {"name": "Friendly", "types": {Trait}},
+        {"name": "Hasty", "types": {Trait}},
+        {"name": "Inherited", "types": {Trait}},
+        {"name": "Inspiring", "types": {Trait}},
+        {"name": "Nearby", "types": {Trait}},
+        {"name": "Patient", "types": {Trait}},
+        {"name": "Pious", "types": {Trait}},
+        {"name": "Reckless", "types": {Trait}},
+        {"name": "Rich", "types": {Trait}},
+        {"name": "Shy", "types": {Trait}},
+        {"name": "Tireless", "types": {Trait}},
+    ]
+)
+
 Antiquities = Set("Antiquities")
 Antiquities.AddCards(
     [
-        "Inscription",
-        "Agora",
-        "Discovery",
-        "Aquifer",
-        "Tomb Raider",
         "Curio",
+        "Discovery",
         "Gamepiece",
-        "Dig",
-        "Moundbuilder Village",
-        "Encroach",
-        "Stoneworks",
-        "Graveyard",
-        "Inspector",
-        "Archaeologist",
-        "Mission House",
-        "Mendicant",
-        "Profiteer",
-        "Miner",
-        "Pyramid",
-        "Mastermind",
-        "Mausoleum",
-        "Shipwreck",
-        "Collector",
-        "Pharaoh",
-        "Grave Watcher",
-        "Stronghold",
-        "Snake Charmer",
+        {"name": "Inscription", "types": {Action}},
+        {"name": "Agora", "types": {Action}},
+        {"name": "Aquifer", "types": {Action}},
+        {"name": "Tomb Raider", "types": {Action}},
+        {"name": "Dig", "types": {Action}},
+        {"name": "Moundbuilder Village", "types": {Action}},
+        {"name": "Encroach", "types": {Action}},
+        {"name": "Stoneworks", "types": {Action}},
+        {"name": "Graveyard", "types": {Action}},
+        {"name": "Inspector", "types": {Action}},
+        {"name": "Archaeologist", "types": {Action}},
+        {"name": "Mission House", "types": {Action}},
+        {"name": "Mendicant", "types": {Action}},
+        {"name": "Profiteer", "types": {Action}},
+        {"name": "Miner", "types": {Action}},
+        {"name": "Pyramid", "types": {Action}},
+        {"name": "Mastermind", "types": {Action}},
+        {"name": "Mausoleum", "types": {Action}},
+        {"name": "Shipwreck", "types": {Action}},
+        {"name": "Collector", "types": {Action}},
+        {"name": "Pharaoh", "types": {Action}},
+        {"name": "Grave Watcher", "types": {Action}},
+        {"name": "Stronghold", "types": {Action}},
+        {"name": "Snake Charmer", "types": {Action}},
     ]
 )
 
 # Define Landscape cards
-Events = Adventures.events | Empires.events | Menagerie.events
+Events = Adventures.events | Empires.events | Menagerie.events | Plunder.events
 Landmarks = Empires.landmarks
 Projects = Renaissance.projects
 Ways = Menagerie.ways
-LandscapeCards = Events | Landmarks | Projects | Ways
+Traits = Plunder.traits
+LandscapeCards = Events | Landmarks | Projects | Ways | Traits
+
+# Define action cards
+Actions = set().union(*(cardSet.actions for cardSet in AllSets.values()))
 
 # Define cards requiring potions
 PotionCards = Alchemy.potionCards
@@ -992,11 +1122,22 @@ PlatinumLove = Prosperity.cards.union(
         "Stoneworks",
     ),
     Allies.cards("Town", "Galleria", "Marquis"),
+    Plunder.cards(
+        "Search",
+        "Fortune Hunter",
+        "Harbor Village",
+        "Mining Road",
+        "Pendant",
+        "King's Cache",
+        "Deliver",
+        "Prosper",
+    ),
 )
 
-# ShelterLove cards are cards that trash for benefit, or gain victory cards
-# Hypothetically, ShelterLove could also include terminal cards, which
-# Would mean adding a ShelterHate for villages and reducing the chances for each ShelterHate
+# ShelterLove cards are cards that trash for benefit, or gain victory cards.
+# Hypothetically, ShelterLove could also include terminal cards, which would
+# mean adding a ShelterHate for villages and reducing the chances for each
+# ShelterHate.
 ShelterLove = DarkAges.cards.union(
     Base.cards("Remodel", "Mine"),
     Intrigue.cards("Replace", "Upgrade"),
@@ -1034,6 +1175,17 @@ ShelterLove = DarkAges.cards.union(
         "Stoneworks",
     ),
     Allies.cards("Broker", "Carpenter", "Modify"),
+    Plunder.cards(
+        "Cage",
+        "Jewelled Egg",
+        "Search",
+        "Shaman",
+        "Enlarge",
+        "Peril",
+        "Scrounge",
+        "Invasion",
+        "Inherited",
+    ),
 )
 
 LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
@@ -1085,7 +1237,25 @@ LiaisonCards = Allies.cards(
     "Guildmaster",
 )
 
-# TrapLove: cards that care about discarding, sifting, extra kingdom pile gains, and value for multiple gains
+LootCards = Plunder.cards(
+    "Cutthroat",
+    "Jewelled Egg",
+    "Pickaxe",
+    "Sack of Loot",
+    "Search",
+    "Wealthy Village",
+    # Events
+    "Foray",
+    "Invasion",
+    "Looting",
+    "Peril",
+    "Prosper",
+    # Traits
+    "Cursed",
+)
+
+# TrapLove: cards that care about discarding, sifting, extra kingdom pile
+# gains, and value for multiple gains
 TrapLove = Antiquities.cards.union(
     Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
     Intrigue.cards(
@@ -1232,6 +1402,16 @@ TrapLove = Antiquities.cards.union(
         "Architect's Guild",
         "Coastal Haven",
         "Desert Guides",
+    ),
+    Plunder.cards(
+        "Cage",
+        "Grotto",
+        "Mapmaker",
+        "Pickaxe",
+        "Quartermaster",
+        "Avoid",
+        "Foray",
+        "Prepare",
     ),
 )
 
@@ -1387,6 +1567,45 @@ BaneCards = set().union(
         "Smugglers",
         "Warehouse",
     ),
+    Plunder.cards(
+        "Cage",
+        "Grotto",
+        "Jewelled Egg",
+        "Search",
+        "Shaman",
+        "Secluded Shrine",
+        "Siren",
+        "Stowaway",
+        "Taskmaster",
+    ),
+)
+
+CannotHaveTraits = set().union(
+    Base.cards("Gardens"),
+    Seaside.cards("Astrolabe"),
+    Alchemy.cards("Vineyard"),
+    Cornucopia.cards("Fairgrounds"),
+    Hinterlands.cards(
+        "Tunnel",
+        "Silk Road",
+    ),
+    DarkAges.cards("Feodum"),
+    Empires.cards("Castles"),
+    Nocturne.cards(
+        "Guardian",
+        "Monastery",
+        "Changeling",
+        "Ghost Town",
+        "Night Watchman",
+        "Cemetary",
+        "Devil's Workshop",
+        "Exorcist",
+        "Cobbler",
+        "Crypt",
+        "Den of Sin",
+        "Vampire",
+        "Raider",
+    ),
 )
 
 
@@ -1477,7 +1696,7 @@ def RandomizeDominion(setNames=None, options=None):
                 card = next(cards)
                 if card.types & {Way}:
                     waySet.add(card)
-                elif card.types & {Event, Landmark, Project}:
+                elif card.types & {Event, Landmark, Project, Trait}:
                     landscapeSet.add(card)
                 else:
                     resultSet.add(card)
@@ -1510,6 +1729,7 @@ def RandomizeDominion(setNames=None, options=None):
         elif len(alchemyCards) == 2:
             # If there are only 2 Alchemy cards, pull an additional Alchemy
             # card and randomly remove one non-Alchemy card
+            resultSet -= alchemyCards
             alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
             resultSet = alchemyCards.union(random.sample(resultSet, 7))
         # If there are 3 or more Alchemy cards, let it lie.
@@ -1602,6 +1822,9 @@ def RandomizeDominion(setNames=None, options=None):
     # Check for Liaisons (for a random Ally Card)
     includeAlly = LiaisonCards & (fullResults | mouseSet)
 
+    # Check for Loot cards
+    includeLoot = LootCards & (fullResults | mouseSet)
+
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
         random.sample(fullResults, 1)
@@ -1654,6 +1877,32 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Nocturne: Wish")
     if includeHorse:
         additionalCards.add("Menagerie: Horse")
+    if includeLoot:
+        landscapeList.append("(Plunder: Loot Deck)")
+
+    # Assign Traits to selected cards
+    selectedTraits = Traits.intersection(landscapeList)
+    if selectedTraits:
+        eligibleCards = resultSet - CannotHaveTraits
+        for trait in selectedTraits:
+            landscapeList.remove(trait)
+            if not eligibleCards:
+                break
+            traitCard = random.sample(eligibleCards, 1)[0]
+            eligibleCards.remove(traitCard)
+            landscapeList.append("{} (on {})".format(trait, traitCard))
+
+    # Obelisk support
+    obeliskPicked = Empires.cards("Obelisk").intersection(landscapeList)
+    if obeliskPicked:
+        eligibleCards = resultSet & Actions
+        (obelisk,) = Empires.cards("Obelisk")
+        landscapeList.remove(list(obeliskPicked)[0])
+        if eligibleCards:
+            obeliskCard = random.sample(eligibleCards, 1)[0]
+            landscapeList.append(
+                "(Empires Landmark): Obelisk (on {})".format(obeliskCard)
+            )
 
     # Create final card list
     if includeBane:
