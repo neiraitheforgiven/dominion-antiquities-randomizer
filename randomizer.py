@@ -261,6 +261,7 @@ cbMoney3 = CardType("cbMoney3")  # gives +3 Money
 cbPeddler = CardType(
     "cbPeddler"
 )  # cantrip that give +1 Money; seperate class for randomizer reasons
+cbShuffler = CardType("cbShuffler")  # allows you to shuffle your deck immediately
 cbSifter = CardType("cbSifter")  # draws and discards cards to improve hands
 cbSplitter = CardType(
     "cbSplitter"
@@ -347,12 +348,15 @@ Base.AddCards(
     ]
 )
 Base.firstEdition = [
-    {"name": "Adventurer", "types": {Action}},
-    {"name": "Chancellor", "types": {Action}},
-    {"name": "Feast", "types": {Action}},
-    {"name": "Spy", "types": {Action}},
-    {"name": "Thief", "types": {Action}},
-    {"name": "Woodcutter", "types": {Action}},
+    {"name": "Adventurer", "types": {Action, cbCost6, cbSifter, cbTerminal}},
+    {
+        "name": "Chancellor",
+        "types": {Action, cbCost3, cbMoney2, cbShuffler, cbTerminal},
+    },
+    {"name": "Feast", "types": {Action, cbCost4, cbTerminal, cbTrasher, cbUpgrader}},
+    {"name": "Spy", "types": {Action, Attack, cbBadSifter, cbCost4, cbSifter}},
+    {"name": "Thief", "types": {Action, Attack, cbBadThinner, cbCost4, cbTerminal}},
+    {"name": "Woodcutter", "types": {Action, cbBuys, cbCost3, cbMoney2, cbTerminal}},
 ]
 Base.secondEdition = Base.cards(
     "Artisan",
