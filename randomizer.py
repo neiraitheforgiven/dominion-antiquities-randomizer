@@ -288,28 +288,39 @@ cbVillage = CardType(
 Base = Set("Base")
 Base.AddCards(
     [
-        {"name": "Cellar", "types": {Action, cbChainer, cbCost2, cbSifter}},
-        {"name": "Chapel", "types": {Action, cbCost2, cbTerminal, cbThinner}},
         {
-            "name": "Moat",
-            "types": {Action, Reaction, cbBlocker, cbCost2, cbDraw2, cbTerminal},
+            "name": "Artisan",
+            "types": {Action, cbCost6, cbDeckSeeder, cbGainer5, cbTerminal},
         },
-        {"name": "Harbinger", "types": {Action, cbCantrip, cbCost3, cbDeckSeeder}},
-        {"name": "Merchant", "types": {Action, cbPeddler, cbCost3, cbMoney1}},
-        {"name": "Village", "types": {Action, cbCost3, cbVillage}},
-        {"name": "Workshop", "types": {Action, cbCost3, cbGainer4, cbTerminal}},
         {
-            "name": "Vassal",
-            "types": {Action, cbCost3, cbMoney2, cbTerminal, cbTwin},
+            "name": "Bandit",
+            "types": {Action, Attack, cbBadSifter, cbBadThinner, cbCost5, cbTerminal},
         },
         {
             "name": "Bureaucrat",
             "types": {Action, Attack, cbCost4, cbDeckSeeder, cbTerminal},
         },
+        {"name": "Cellar", "types": {Action, cbChainer, cbCost2, cbSifter}},
+        {"name": "Chapel", "types": {Action, cbCost2, cbTerminal, cbThinner}},
+        {
+            "name": "Council Room",
+            "types": {Action, cbBuys, cbCost5, cbDraw4, cbInteractive, cbTerminal},
+        },
+        {"name": "Festival", "types": {Action, cbBuys, cbBuys, cbMoney2}},
         {"name": "Gardens", "types": {Victory, cbCost4}},
+        {"name": "Harbinger", "types": {Action, cbCantrip, cbCost3, cbDeckSeeder}},
+        {"name": "Laboratory", "types": {Action, cbCantrip, cbCost5, cbDraw2}},
+        {"name": "Library", "types": {Action, cbCost5, cbFiller, cbSifter, cbTerminal}},
+        {"name": "Market", "types": {Action, cbBuys, cbCost5, cbPeddler}},
+        {"name": "Merchant", "types": {Action, cbPeddler, cbCost3, cbMoney1}},
         {
             "name": "Militia",
             "types": {Action, Attack, cbDiscard, cbCost4, cbMoney2, cbTerminal},
+        },
+        {"name": "Mine", "types": {Action, cbCost5, cbTerminal, cbTrasher, cbUpgrader}},
+        {
+            "name": "Moat",
+            "types": {Action, Reaction, cbBlocker, cbCost2, cbDraw2, cbTerminal},
         },
         {
             "name": "Moneylender",
@@ -323,33 +334,16 @@ Base.AddCards(
             "name": "Remodel",
             "types": {Action, cbCost4, cbTerminal, cbTrasher, cbUpgrader},
         },
+        {"name": "Sentry", "types": {Action, cbCantrip, cbCost5, cbSifter, cbThinner}},
         {"name": "Smithy", "types": {Action, cbCost4, cbDraw3, cbTerminal}},
         {"name": "Throne Room", "types": {Action, cbCost4, cbSplitter}},
+        {"name": "Workshop", "types": {Action, cbCost3, cbGainer4, cbTerminal}},
         {
-            "name": "Bandit",
-            "types": {Action, Attack, cbBadSifter, cbBadThinner, cbCost5, cbTerminal},
+            "name": "Vassal",
+            "types": {Action, cbCost3, cbMoney2, cbTerminal, cbTwin},
         },
-        {
-            "name": "Council Room",
-            "types": {Action, cbBuys, cbCost5, cbDraw4, cbInteractive, cbTerminal},
-        },
-        {"name": "Festival", "types": {Action, cbBuys, cbBuys, cbMoney2}},
-        {"name": "Laboratory", "types": {Action, cbCantrip, cbCost5, cbDraw2}},
-        {"name": "Library", "types": {Action, cbCost5, cbFiller, cbSifter, cbTerminal}},
-        {"name": "Market", "types": {Action, cbBuys, cbCost5, cbPeddler}},
-        {"name": "Mine", "types": {Action, cbCost5, cbTerminal, cbTrasher, cbUpgrader}},
-        {"name": "Sentry", "types": {Action, cbCantrip, cbCost5, cbSifter, cbThinner}},
+        {"name": "Village", "types": {Action, cbCost3, cbVillage}},
         {"name": "Witch", "types": {Action, cbCost5, cbCurser, cbTerminal}},
-        {
-            "name": "Artisan",
-            "types": {
-                Action,
-                cbCost6,
-                cbDeckSeeder,
-                cbGainer5,
-                cbTerminal,
-            },
-        },
     ]
 )
 Base.firstEdition = [
