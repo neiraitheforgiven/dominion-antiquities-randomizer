@@ -206,37 +206,150 @@ Potion = CardType("Potion")
 Ally = CardType("Ally")
 Trait = CardType("Trait")
 Action = CardType("Action")
+Victory = CardType("Victory")
+Reaction = CardType("Reaction")
+Attack = CardType("Attack")
+# for enhanced randomizer
+cbBadSifter = CardType("cbBadSifter")  # attacks by messing up your deck
+cbBadThinner = CardType("cbBadThinner")  # attacks by messing up your deck
+cbBlocker = CardType(
+    "cbBlocker"
+)  # allows you to be immune to attacks. Wants for Attacks
+cbBuys = CardType("cbBuys")  # allow you to buy more cards in a turn.
+cbCantrip = CardType(
+    "cbCantrip"
+)  # card draws and chains, which essentially makes it a free bonus card
+cbChainer = CardType("cbChainer")  # allows you to play another action after it is done
+cbCost2 = CardType("cbCost2")  # card costs 2
+cbCost3 = CardType("cbCost3")  # card costs 3
+cbCost4 = CardType("cbCost4")  # card costs 4
+cbCost5 = CardType("cbCost5")  # card costs 5
+cbCost6 = CardType("cbCost6")  # card costs 6
+cbCostReducer = CardType(
+    "cbCostReducer"
+)  # reduces the cost of cards. synnergizes with cbBuys and cbGainer
+cbCurser = CardType("cbCurser")  # gives other players curses
+cbDeckGuesser = CardType(
+    "cbDeckGuesser"
+)  # allows you to guess cards from the top of your deck. wants for cbDeckSeeder
+cbDeckSeeder = CardType(
+    "cbDeckSeeder"
+)  # allows you to manipulate your deck; synnergizes with cbDeckGuesser
+cbDiscard = CardType(
+    "cbDiscard"
+)  # discards cards because sometimes you want to do that
+cbDraw2 = CardType("cbDraw2")  # draws 2 cards
+cbDraw3 = CardType("cbDraw3")  # draws 3 cards
+cbDraw4 = CardType("cbDraw4")  # draws 4 cards
+cbEmpty = CardType("cbEmpty")  # cares about empty supply piles
+cbFiller = CardType(
+    "cbFiller"
+)  # fills hand up to a certain point; synnergizes with cbDiscard
+cbGainer4 = CardType(
+    "cbGainer4"
+)  # allows you to gain cards from the supply costing up to 4; synnergizes with cbCostReducer, cbCost4
+cbGainer5 = CardType(
+    "cbGainer5"
+)  # allows you to gain cards from the supply costing up to 5; synnergizes with cbCostReducer, cbCost5
+cbInteractive = CardType(
+    "cbInteractive"
+)  # does something to other players that is not an attack
+
+cbMoney1 = CardType("cbMoney1")  # gives +1 Money
+cbMoney2 = CardType("cbMoney2")  # gives +2 Money
+cbMoney3 = CardType("cbMoney3")  # gives +3 Money
+cbPeddler = CardType(
+    "cbPeddler"
+)  # cantrip that give +1 Money; seperate class for randomizer reasons
+cbSifter = CardType("cbSifter")  # draws and discards cards to improve hands
+cbSplitter = CardType(
+    "cbSplitter"
+)  # allows you to play cards multiple times. Synnergizes with cbCantrip, cbChainer, and cbPeddler
+cbTerminal = CardType(
+    "cbTerminal"
+)  # doesn't allow more actions to be played. synnergizes with cbSplitter and cbVillage
+cbThinner = CardType(
+    "cbThinner"
+)  # Puts cards into the trash and leaves you with a smaller deck
+cbTrasher = CardType(
+    "cbTrasher"
+)  # Puts cards into the trash, but doesn't thin your deck
+cbTwin = CardType(
+    "cbTwin"
+)  # Donald X's secret type that is a good idea to buy 2 of on turn 1
+cbUpgrader = CardType(
+    "cbUpgrader"
+)  # allows you to trash cards and replace them with better cards
+cbVillage = CardType(
+    "cbVillage"
+)  # replaces itself and allows multiple terminals to be played
 
 # Define sets
 Base = Set("Base")
 Base.AddCards(
     [
-        "Gardens",
-        {"name": "Artisan", "types": {Action}},
-        {"name": "Cellar", "types": {Action}},
-        {"name": "Chapel", "types": {Action}},
-        {"name": "Moat", "types": {Action}},
-        {"name": "Harbinger", "types": {Action}},
-        {"name": "Merchant", "types": {Action}},
-        {"name": "Village", "types": {Action}},
-        {"name": "Workshop", "types": {Action}},
-        {"name": "Vassal", "types": {Action}},
-        {"name": "Bureaucrat", "types": {Action}},
-        {"name": "Militia", "types": {Action}},
-        {"name": "Moneylender", "types": {Action}},
-        {"name": "Poacher", "types": {Action}},
-        {"name": "Remodel", "types": {Action}},
-        {"name": "Smithy", "types": {Action}},
-        {"name": "Throne Room", "types": {Action}},
-        {"name": "Bandit", "types": {Action}},
-        {"name": "Council Room", "types": {Action}},
-        {"name": "Festival", "types": {Action}},
-        {"name": "Laboratory", "types": {Action}},
-        {"name": "Library", "types": {Action}},
-        {"name": "Market", "types": {Action}},
-        {"name": "Mine", "types": {Action}},
-        {"name": "Sentry", "types": {Action}},
-        {"name": "Witch", "types": {Action}},
+        {"name": "Cellar", "types": {Action, cbChainer, cbCost2, cbSifter}},
+        {"name": "Chapel", "types": {Action, cbCost2, cbTerminal, cbThinner}},
+        {
+            "name": "Moat",
+            "types": {Action, Reaction, cbBlocker, cbCost2, cbDraw2, cbTerminal},
+        },
+        {"name": "Harbinger", "types": {Action, cbCantrip, cbCost3, cbDeckSeeder}},
+        {"name": "Merchant", "types": {Action, cbPeddler, cbCost3, cbMoney1}},
+        {"name": "Village", "types": {Action, cbCost3, cbVillage}},
+        {"name": "Workshop", "types": {Action, cbCost3, cbGainer4, cbTerminal}},
+        {
+            "name": "Vassal",
+            "types": {Action, cbCost3, cbMoney2, cbTerminal, cbTwin},
+        },
+        {
+            "name": "Bureaucrat",
+            "types": {Action, Attack, cbCost4, cbDeckSeeder, cbTerminal},
+        },
+        {"name": "Gardens", "types": {Victory, cbCost4}},
+        {
+            "name": "Militia",
+            "types": {Action, Attack, cbDiscard, cbCost4, cbMoney2, cbTerminal},
+        },
+        {
+            "name": "Moneylender",
+            "types": {Action, cbCost4, cbMoney3, cbTerminal, cbThinner},
+        },
+        {
+            "name": "Poacher",
+            "types": {Action, cbCost4, cbDiscard, cbEmpty, cbPeddler},
+        },
+        {
+            "name": "Remodel",
+            "types": {Action, cbCost4, cbTerminal, cbTrasher, cbUpgrader},
+        },
+        {"name": "Smithy", "types": {Action, cbCost4, cbDraw3, cbTerminal}},
+        {"name": "Throne Room", "types": {Action, cbCost4, cbSplitter}},
+        {
+            "name": "Bandit",
+            "types": {Action, Attack, cbBadSifter, cbBadThinner, cbCost5, cbTerminal},
+        },
+        {
+            "name": "Council Room",
+            "types": {Action, cbBuys, cbCost5, cbDraw4, cbInteractive, cbTerminal},
+        },
+        {"name": "Festival", "types": {Action, cbBuys, cbBuys, cbMoney2}},
+        {"name": "Laboratory", "types": {Action, cbCantrip, cbCost5, cbDraw2}},
+        {"name": "Library", "types": {Action, cbCost5, cbFiller, cbSifter, cbTerminal}},
+        {"name": "Market", "types": {Action, cbBuys, cbCost5, cbPeddler}},
+        {"name": "Mine", "types": {Action, cbCost5, cbTerminal, cbTrasher, cbUpgrader}},
+        {"name": "Sentry", "types": {Action, cbCantrip, cbCost5, cbSifter, cbThinner}},
+        {"name": "Witch", "types": {Action, cbCost5, cbCurser, cbTerminal}},
+        {
+            "name": "Artisan",
+            "types": {
+                Action,
+                cbCost6,
+                cbDeckSeeder,
+                cbGainer5,
+                cbTerminal,
+            },
+        },
     ]
 )
 Base.firstEdition = [
