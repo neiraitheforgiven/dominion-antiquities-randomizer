@@ -206,20 +206,22 @@ Potion = CardType("Potion")
 Ally = CardType("Ally")
 Trait = CardType("Trait")
 Action = CardType("Action")
+Treasure = CardType("Treasure")
 Victory = CardType("Victory")
 Reaction = CardType("Reaction")
 Attack = CardType("Attack")
 # for enhanced randomizer
+cbAttackResponse = CardType(
+    "cbAttackResponse"
+)  # allows you to respond to attacks. Wants for Attacks
 cbBadSifter = CardType("cbBadSifter")  # attacks by messing up your deck
 cbBadThinner = CardType("cbBadThinner")  # attacks by messing up your deck
-cbBlocker = CardType(
-    "cbBlocker"
-)  # allows you to be immune to attacks. Wants for Attacks
 cbBuys = CardType("cbBuys")  # allow you to buy more cards in a turn.
 cbCantrip = CardType(
     "cbCantrip"
 )  # card draws and chains, which essentially makes it a free bonus card
 cbChainer = CardType("cbChainer")  # allows you to play another action after it is done
+cbChoice = CardType("cbChoice")  # gives you a set of choices
 cbCost2 = CardType("cbCost2")  # card costs 2
 cbCost3 = CardType("cbCost3")  # card costs 3
 cbCost4 = CardType("cbCost4")  # card costs 4
@@ -238,6 +240,7 @@ cbDeckSeeder = CardType(
 cbDiscard = CardType(
     "cbDiscard"
 )  # discards cards because sometimes you want to do that
+cbDowngrader = CardType("cbDowngrader")  # attack card that does upgrades in reverse
 cbDraw2 = CardType("cbDraw2")  # draws 2 cards
 cbDraw3 = CardType("cbDraw3")  # draws 3 cards
 cbDraw4 = CardType("cbDraw4")  # draws 4 cards
@@ -258,6 +261,12 @@ cbInteractive = CardType(
 cbMoney1 = CardType("cbMoney1")  # gives +1 Money
 cbMoney2 = CardType("cbMoney2")  # gives +2 Money
 cbMoney3 = CardType("cbMoney3")  # gives +3 Money
+cbMoney4 = CardType("cbMoney4")  # gives +4 Money
+cbMultiType = CardType("cbMultiType")  # has more than two types
+cbMultiTypeLove = CardType("cbMultiTypeLove")  # Wants cards with more than two types
+cbPayload = CardType(
+    "cbPayload"
+)  # a card that adds variable, potentially infinite money.
 cbPeddler = CardType(
     "cbPeddler"
 )  # cantrip that give +1 Money; seperate class for randomizer reasons
@@ -275,12 +284,16 @@ cbThinner = CardType(
 cbTrasher = CardType(
     "cbTrasher"
 )  # Puts cards into the trash, but doesn't thin your deck
+cbTrashGainer = CardType(
+    "cbTrashGainer"
+)  # Gets cards out of the trash. Wants for cbTrasher
 cbTwin = CardType(
     "cbTwin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
 cbUpgrader = CardType(
     "cbUpgrader"
 )  # allows you to trash cards and replace them with better cards
+cbVictory = CardType("cbVictory")  # gains you victory cards or points
 cbVillage = CardType(
     "cbVillage"
 )  # replaces itself and allows multiple terminals to be played
@@ -321,7 +334,7 @@ Base.AddCards(
         {"name": "Mine", "types": {Action, cbCost5, cbTerminal, cbTrasher, cbUpgrader}},
         {
             "name": "Moat",
-            "types": {Action, Reaction, cbBlocker, cbCost2, cbDraw2, cbTerminal},
+            "types": {Action, Reaction, cbAttackResponse, cbCost2, cbDraw2, cbTerminal},
         },
         {
             "name": "Moneylender",
@@ -371,41 +384,117 @@ Base.secondEdition = Base.cards(
 Intrigue = Set("Intrigue")
 Intrigue.AddCards(
     [
-        "Harem",
-        {"name": "Courtyard", "types": {Action}},
-        {"name": "Lurker", "types": {Action}},
-        {"name": "Pawn", "types": {Action}},
-        {"name": "Masquerade", "types": {Action}},
-        {"name": "Shanty Town", "types": {Action}},
-        {"name": "Steward", "types": {Action}},
-        {"name": "Swindler", "types": {Action}},
-        {"name": "Wishing Well", "types": {Action}},
-        {"name": "Baron", "types": {Action}},
-        {"name": "Bridge", "types": {Action}},
-        {"name": "Conspirator", "types": {Action}},
-        {"name": "Diplomat", "types": {Action}},
-        {"name": "Ironworks", "types": {Action}},
-        {"name": "Mill", "types": {Action}},
-        {"name": "Mining Village", "types": {Action}},
-        {"name": "Secret Passage", "types": {Action}},
-        {"name": "Courtier", "types": {Action}},
-        {"name": "Duke", "types": {Action}},
-        {"name": "Minion", "types": {Action}},
-        {"name": "Patrol", "types": {Action}},
-        {"name": "Replace", "types": {Action}},
-        {"name": "Torturer", "types": {Action}},
-        {"name": "Trading Post", "types": {Action}},
-        {"name": "Upgrade", "types": {Action}},
-        {"name": "Nobles", "types": {Action}},
+        {
+            "name": "Baron",
+            "types": {Action, cbBuys, cbCost4, cbMoney4, cbTerminal, cbVictory},
+        },
+        {
+            "name": "Bridge",
+            "types": {Action, cbBuys, cbCost4, cbCostReducer, cbMoney1, cbTerminal},
+        },
+        {"name": "Conspirator", "types": {Action, cbCost4, cbCantrip, cbMoney2}},
+        {"name": "Courtier", "types": {Action, cbChoice, cbCost5, cbMultiTypeLove}},
+        {
+            "name": "Courtyard",
+            "types": {Action, cbCost2, cbDeckSeeder, cbDraw2, cbTerminal},
+        },  # draws 2 and seeds 1
+        {
+            "name": "Diplomat",
+            "types": {Action, Reaction, cbAttackResponse, cbCost4, cbDraw2},
+        },
+        {"name": "Duke", "types": {Victory, cbCost5}},
+        {"name": "Harem", "types": {Treasure, Victory, cbCost6, cbMoney2}},
+        {"name": "Ironworks", "types": {Action, cbChoice, cbCost4, cbGainer4}},
+        {
+            "name": "Lurker",
+            "types": {Action, cbCost2, cbChainer, cbTrasher, cbTrashGainer},
+        },
+        {
+            "name": "Masquerade",
+            "types": {Action, cbCost3, cbDraw2, cbInteractive, cbTerminal, cbThinner},
+        },
+        {
+            "name": "Mill",
+            "types": {Action, Victory, cbCantrip, cbCost4, cbDiscard, cbMoney2},
+        },
+        {
+            "name": "Mining Village",
+            "types": {Action, cbCost4, cbMoney2, cbTrasher, cbVillage},
+        },
+        {
+            "name": "Minion",
+            "types": {Action, Attack, cbChainer, cbChoice, cbCost5, cbMoney2, cbSifter},
+        },
+        {"name": "Nobles", "types": {Action, Victory, cbChoice, cbCost6}},
+        {"name": "Patrol", "types": {Action, cbCost5, cbDraw3, cbSifter, cbTerminal}},
+        {"name": "Pawn", "types": {Action, cbChoice, cbCost2}},
+        {
+            "name": "Replace",
+            "types": {
+                Action,
+                Attack,
+                cbCost5,
+                cbCurser,
+                cbDeckSeeder,
+                cbTerminal,
+                cbTrasher,
+                cbUpgrader,
+            },
+        },
+        {"name": "Secret Passage", "types": {Action, cbCantrip, cbCost4, cbDeckSeeder}},
+        {"name": "Shanty Town", "types": {Action, cbCost3, cbTwin, cbVillage}},
+        {"name": "Steward", "types": {Action, cbChoice, cbCost3, cbTerminal}},
+        {
+            "name": "Swindler",
+            "types": {
+                Action,
+                Attack,
+                cbBadSifter,
+                cbCost3,
+                cbMoney2,
+                cbTerminal,
+                cbTrasher,
+            },
+        },
+        {
+            "name": "Torturer",
+            "types": {Action, Attack, cbCost5, cbCurser, cbDraw3, cbTerminal},
+        },
+        {
+            "name": "Trading Post",
+            "types": {Action, cbCost5, cbMoney2, cbTerminal, cbThinner},
+        },
+        {
+            "name": "Upgrade",
+            "types": {Action, cbCantrip, cbCost5, cbTrasher, cbUpgrader},
+        },
+        {"name": "Wishing Well", "types": {Action, cbCantrip, cbCost3, cbDeckGuesser}},
     ]
 )
 Intrigue.firstEdition = [
-    {"name": "Coppersmith", "types": {Action}},
-    {"name": "Great Hall", "types": {Action}},
-    {"name": "Saboteur", "types": {Action}},
-    {"name": "Scout", "types": {Action}},
-    {"name": "Secret Chamber", "types": {Action}},
-    {"name": "Tribute", "types": {Action}},
+    {"name": "Coppersmith", "types": {Action, cbCost4, cbPayload, cbTerminal}},
+    {"name": "Great Hall", "types": {Action, Victory, cbCantrip, cbCost3}},
+    {
+        "name": "Saboteur",
+        "types": {
+            Action,
+            Attack,
+            cbDowngrader,
+            cbCost5,
+            cbTrasher,
+            cbUpgrader,
+            cbTerminal,
+        },
+    },
+    {"name": "Scout", "types": {Action, cbChainer, cbCost4, cbSifter}},
+    {
+        "name": "Secret Chamber",
+        "types": {Action, Reaction, cbAttackResponse, cbCost2, cbDeckSeeder, cbDiscard},
+    },
+    {
+        "name": "Tribute",
+        "types": {Action, cbChoice, cbCost5, cbDiscard, cbMultiTypeLove},
+    },
 ]
 Intrigue.secondEdition = Intrigue.cards(
     "Courtier", "Diplomat", "Lurker", "Mill", "Patrol", "Replace", "Secret Passage"
