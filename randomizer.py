@@ -192,7 +192,7 @@ class Set(object):
     def potionCards(self):
         if self._potionCards is None:
             self._potionCards = CardList(
-                card for card in self._cards if card.types & {Potion}
+                card for card in self._cards if card.types & {_Potion}
             )
         return self._potionCards
 
@@ -202,7 +202,8 @@ Event = CardType("Event")
 Landmark = CardType("Landmark")
 Project = CardType("Project")
 Way = CardType("Way")
-Potion = CardType("Potion")
+# Potion isn't written on the card
+_Potion = CardType("_Potion")
 Ally = CardType("Ally")
 Trait = CardType("Trait")
 Action = CardType("Action")
@@ -244,7 +245,11 @@ _Draw2 = CardType("_Draw2")  # draws 2 cards
 _Draw3 = CardType("_Draw3")  # draws 3 cards
 _Draw4 = CardType("_Draw4")  # draws 4 cards
 _Draw5 = CardType("_Draw5")  # draws 5 cards
+_Drawload = CardType("_Drawload")  # draws potentially infinite numbers of cards
 _Empty = CardType("_Empty")  # cares about empty supply piles
+_ExtraCost = CardType(
+    "_ExtraCost"
+)  # has an extra cost, preventing gainers from gaining it. Bad synnergy with gainers
 _Filler = CardType(
     "_Filler"
 )  # fills hand up to a certain point; synnergizes with _Discard
@@ -548,7 +553,7 @@ Seaside.AddCards(
         },
         {
             "name": "Sailor",
-            "types": {Action, Duration, _Village, _Cost4, _Money2, _SpeedUp, _Thinner},
+            "types": {Action, Duration, _Cost4, _Money2, _SpeedUp, _Thinner, _Village},
         },
         {
             "name": "Salvager",
@@ -639,18 +644,64 @@ Seaside.secondEdition = Seaside.cards(
 Alchemy = Set("Alchemy")
 Alchemy.AddCards(
     [
-        {"name": "Herbalist", "types": {Action}},
-        {"name": "Apprentice", "types": {Action}},
-        {"name": "Transmute", "types": {Action, Potion}},
-        {"name": "Vineyard", "types": {Potion}},
-        {"name": "Apothecary", "types": {Action, Potion}},
-        {"name": "Scrying Pool", "types": {Action, Potion}},
-        {"name": "University", "types": {Action, Potion}},
-        {"name": "Alchemist", "types": {Action, Potion}},
-        {"name": "Familiar", "types": {Action, Potion}},
-        {"name": "Philosopher's Stone", "types": {Potion}},
-        {"name": "Golem", "types": {Action, Potion}},
-        {"name": "Possession", "types": {Action, Potion}},
+        # the main point of _Cost# is synnergy with _Gainer#, so cards that can't be
+        # gained don't have cost
+        {
+            "name": "Alchemist",
+            "types": {Action, _Potion, _Cantrip, _DeckSeeder, _ExtraCost},
+        },
+        {
+            "name": "Apothecary",
+            "types": {Action, _Potion, _Cantrip, _ExtraCost, _Sifter},
+        },
+        {
+            "name": "Apprentice",
+            "types": {Action, _Chainer, _Cost5, _Drawload, _Thinner},
+        },
+        {
+            "name": "Familiar",
+            "types": {Action, Attack, _Potion, _Cantrip, _Curser, _ExtraCost},
+        },
+        {"name": "Golem", "types": {Action, _Potion, _ExtraCost, _Village}},
+        {"name": "Herbalist", "types": {Action, _Buys, _Cost2, _DeckSeeder, _Money1}},
+        {
+            "name": "Philosopher's Stone",
+            "types": {Treasure, _Potion, _ExtraCost, _Payload},
+        },
+        {
+            "name": "Possession",
+            "types": {Action, _Potion, _Buys, _Draw5, _ExtraCost, _Terminal},
+        },
+        {
+            "name": "Scrying Pool",
+            "types": {
+                Action,
+                Attack,
+                _Potion,
+                _BadSifter,
+                _Chainer,
+                _Drawload,
+                _ExtraCost,
+                _Sifter,
+            },
+        },
+        {
+            "name": "Transmute",
+            "types": {
+                Action,
+                _Potion,
+                _ExtraCost,
+                _MultiTypeLove,
+                _Terminal,
+                _Trasher,
+                _Victory,
+            },
+        },
+        {
+            "name": "University",
+            "types": {Action, _Potion, _ExtraCost, _Gainer5, _Village},
+        },
+        {"name": "Vineyard", "types": {Victory, _Potion, _ExtraCost}},
     ]
 )
 
@@ -1322,7 +1373,7 @@ LandscapeCards = Events | Landmarks | Projects | Ways | Traits
 Actions = set().union(*(cardSet.actions for cardSet in AllSets.values()))
 
 # Define cards requiring potions
-PotionCards = Alchemy.potionCards
+_PotionCards = Alchemy.potionCards
 
 # Define Ally cards
 AllyCards = Allies.allyCards
@@ -2060,8 +2111,8 @@ def RandomizeDominion(setNames=None, options=None):
         random.sample(fullResults, 2)
     )
 
-    # Check for Potions
-    includePotions = Alchemy.potionCards & resultSet
+    # Check for _Potions
+    include_Potions = Alchemy.potionCards & resultSet
 
     # Check for Prizes
     includePrizes = Cornucopia.cards("Tournament") & resultSet
@@ -2115,8 +2166,8 @@ def RandomizeDominion(setNames=None, options=None):
     # Create final list
     additionalCards = set()
 
-    if includePotions:
-        additionalCards.add("Alchemy: Potions")
+    if include_Potions:
+        additionalCards.add("Alchemy: _Potions")
     if includeShelters:
         additionalCards.add("Dark Ages: Shelters")
     if includeRuins:
