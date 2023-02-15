@@ -211,91 +211,97 @@ Victory = CardType("Victory")
 Reaction = CardType("Reaction")
 Attack = CardType("Attack")
 # for enhanced randomizer
-cbAttackResponse = CardType(
-    "cbAttackResponse"
+_AttackResponse = CardType(
+    "_AttackResponse"
 )  # allows you to respond to attacks. Wants for Attacks
-cbBadSifter = CardType("cbBadSifter")  # attacks by messing up your deck
-cbBadThinner = CardType("cbBadThinner")  # attacks by messing up your deck
-cbBuys = CardType("cbBuys")  # allow you to buy more cards in a turn.
-cbCantrip = CardType(
-    "cbCantrip"
+_BadSifter = CardType("_BadSifter")  # attacks by messing up your deck
+_BadThinner = CardType("_BadThinner")  # attacks by trashing good things
+_Buys = CardType("_Buys")  # allow you to buy more cards in a turn.
+_Cantrip = CardType(
+    "_Cantrip"
 )  # card draws and chains, which essentially makes it a free bonus card
-cbChainer = CardType("cbChainer")  # allows you to play another action after it is done
-cbChoice = CardType("cbChoice")  # gives you a set of choices
-cbCost2 = CardType("cbCost2")  # card costs 2
-cbCost3 = CardType("cbCost3")  # card costs 3
-cbCost4 = CardType("cbCost4")  # card costs 4
-cbCost5 = CardType("cbCost5")  # card costs 5
-cbCost6 = CardType("cbCost6")  # card costs 6
-cbCostReducer = CardType(
-    "cbCostReducer"
-)  # reduces the cost of cards. synnergizes with cbBuys and cbGainer
-cbCurser = CardType("cbCurser")  # gives other players curses
-cbDeckGuesser = CardType(
-    "cbDeckGuesser"
-)  # allows you to guess cards from the top of your deck. wants for cbDeckSeeder
-cbDeckSeeder = CardType(
-    "cbDeckSeeder"
-)  # allows you to manipulate your deck; synnergizes with cbDeckGuesser
-cbDiscard = CardType(
-    "cbDiscard"
-)  # discards cards because sometimes you want to do that
-cbDowngrader = CardType("cbDowngrader")  # attack card that does upgrades in reverse
-cbDraw2 = CardType("cbDraw2")  # draws 2 cards
-cbDraw3 = CardType("cbDraw3")  # draws 3 cards
-cbDraw4 = CardType("cbDraw4")  # draws 4 cards
-cbEmpty = CardType("cbEmpty")  # cares about empty supply piles
-cbFiller = CardType(
-    "cbFiller"
-)  # fills hand up to a certain point; synnergizes with cbDiscard
-cbGainer4 = CardType(
-    "cbGainer4"
-)  # allows you to gain cards from the supply costing up to 4; synnergizes with cbCostReducer, cbCost4
-cbGainer5 = CardType(
-    "cbGainer5"
-)  # allows you to gain cards from the supply costing up to 5; synnergizes with cbCostReducer, cbCost5
-cbInteractive = CardType(
-    "cbInteractive"
+_Chainer = CardType("_Chainer")  # allows you to play another action after it is done
+_Choice = CardType("_Choice")  # gives you a set of choices
+_Cost2 = CardType("_Cost2")  # card costs 2
+_Cost3 = CardType("_Cost3")  # card costs 3
+_Cost4 = CardType("_Cost4")  # card costs 4
+_Cost5 = CardType("_Cost5")  # card costs 5
+_Cost6 = CardType("_Cost6")  # card costs 6
+_CostReducer = CardType(
+    "_CostReducer"
+)  # reduces the cost of cards. synnergizes with _Buys and _Gainer
+_Curser = CardType("_Curser")  # gives other players curses
+_DeckGuesser = CardType(
+    "_DeckGuesser"
+)  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
+_DeckSeeder = CardType(
+    "_DeckSeeder"
+)  # allows you to manipulate your deck; synnergizes with _DeckGuesser
+_Discard = CardType("_Discard")  # discards cards because sometimes you want to do that
+_Downgrader = CardType("_Downgrader")  # attack card that does upgrades in reverse
+_Draw2 = CardType("_Draw2")  # draws 2 cards
+_Draw3 = CardType("_Draw3")  # draws 3 cards
+_Draw4 = CardType("_Draw4")  # draws 4 cards
+_Draw5 = CardType("_Draw5")  # draws 5 cards
+_Empty = CardType("_Empty")  # cares about empty supply piles
+_Filler = CardType(
+    "_Filler"
+)  # fills hand up to a certain point; synnergizes with _Discard
+_FutureAction = CardType(
+    "_FutureAction"
+)  # gives a bonus action at the start of next turn
+_Gainer4 = CardType(
+    "_Gainer4"
+)  # allows you to gain cards from the supply costing up to 4; synnergizes with _CostReducer, _Cost4
+_Gainer5 = CardType(
+    "_Gainer5"
+)  # allows you to gain cards from the supply costing up to 5; synnergizes with _CostReducer, _Cost5
+_Gainer6 = CardType(
+    "_Gainer6"
+)  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
+_Interactive = CardType(
+    "_Interactive"
 )  # does something to other players that is not an attack
-
-cbMoney1 = CardType("cbMoney1")  # gives +1 Money
-cbMoney2 = CardType("cbMoney2")  # gives +2 Money
-cbMoney3 = CardType("cbMoney3")  # gives +3 Money
-cbMoney4 = CardType("cbMoney4")  # gives +4 Money
-cbMultiType = CardType("cbMultiType")  # has more than two types
-cbMultiTypeLove = CardType("cbMultiTypeLove")  # Wants cards with more than two types
-cbPayload = CardType(
-    "cbPayload"
+_Junker = CardType("_Junker")  # attacker gives opponents bad cards
+_Money1 = CardType("_Money1")  # gives +1 Money
+_Money2 = CardType("_Money2")  # gives +2 Money
+_Money3 = CardType("_Money3")  # gives +3 Money
+_Money4 = CardType("_Money4")  # gives +4 Money
+_MultiType = CardType("_MultiType")  # has more than two types
+_MultiTypeLove = CardType("_MultiTypeLove")  # Wants cards with more than two types
+_Payload = CardType(
+    "_Payload"
 )  # a card that adds variable, potentially infinite money.
-cbPeddler = CardType(
-    "cbPeddler"
+_Peddler = CardType(
+    "_Peddler"
 )  # cantrip that give +1 Money; seperate class for randomizer reasons
-cbShuffler = CardType("cbShuffler")  # allows you to shuffle your deck immediately
-cbSifter = CardType("cbSifter")  # draws and discards cards to improve hands
-cbSplitter = CardType(
-    "cbSplitter"
-)  # allows you to play cards multiple times. Synnergizes with cbCantrip, cbChainer, and cbPeddler
-cbTerminal = CardType(
-    "cbTerminal"
-)  # doesn't allow more actions to be played. synnergizes with cbSplitter and cbVillage
-cbThinner = CardType(
-    "cbThinner"
+_Saver = CardType(
+    "_Saver"
+)  # puts cards from this hand into future hands, without discards or draws
+_Sifter = CardType("_Sifter")  # draws and discards cards to improve future hands
+_SpeedUp = CardType("_SpeedUp")  # allows you to get gained cards into play faster
+_Splitter = CardType(
+    "_Splitter"
+)  # allows you to play cards multiple times. Synnergizes with _Cantrip, _Chainer, and _Peddler
+_Terminal = CardType(
+    "_Terminal"
+)  # doesn't allow more actions to be played. synnergizes with _Splitter and _Village
+_Thinner = CardType(
+    "_Thinner"
 )  # Puts cards into the trash and leaves you with a smaller deck
-cbTrasher = CardType(
-    "cbTrasher"
-)  # Puts cards into the trash, but doesn't thin your deck
-cbTrashGainer = CardType(
-    "cbTrashGainer"
-)  # Gets cards out of the trash. Wants for cbTrasher
-cbTwin = CardType(
-    "cbTwin"
+_Trasher = CardType("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
+_TrashGainer = CardType(
+    "_TrashGainer"
+)  # Gets cards out of the trash. Wants for _Trasher
+_Twin = CardType(
+    "_Twin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
-cbUpgrader = CardType(
-    "cbUpgrader"
+_Upgrader = CardType(
+    "_Upgrader"
 )  # allows you to trash cards and replace them with better cards
-cbVictory = CardType("cbVictory")  # gains you victory cards or points
-cbVillage = CardType(
-    "cbVillage"
+_Victory = CardType("_Victory")  # gains you victory cards or points
+_Village = CardType(
+    "_Village"
 )  # replaces itself and allows multiple terminals to be played
 
 # Define sets
@@ -304,72 +310,72 @@ Base.AddCards(
     [
         {
             "name": "Artisan",
-            "types": {Action, cbCost6, cbDeckSeeder, cbGainer5, cbTerminal},
+            "types": {Action, _Cost6, _DeckSeeder, _Gainer5, _Terminal},
         },
         {
             "name": "Bandit",
-            "types": {Action, Attack, cbBadSifter, cbBadThinner, cbCost5, cbTerminal},
+            "types": {Action, Attack, _BadSifter, _BadThinner, _Cost5, _Terminal},
         },
         {
             "name": "Bureaucrat",
-            "types": {Action, Attack, cbCost4, cbDeckSeeder, cbTerminal},
+            "types": {Action, Attack, _Cost4, _DeckSeeder, _Terminal},
         },
-        {"name": "Cellar", "types": {Action, cbChainer, cbCost2, cbSifter}},
-        {"name": "Chapel", "types": {Action, cbCost2, cbTerminal, cbThinner}},
+        {"name": "Cellar", "types": {Action, _Chainer, _Cost2, _Sifter}},
+        {"name": "Chapel", "types": {Action, _Cost2, _Terminal, _Thinner}},
         {
             "name": "Council Room",
-            "types": {Action, cbBuys, cbCost5, cbDraw4, cbInteractive, cbTerminal},
+            "types": {Action, _Buys, _Cost5, _Draw4, _Interactive, _Terminal},
         },
-        {"name": "Festival", "types": {Action, cbBuys, cbBuys, cbMoney2}},
-        {"name": "Gardens", "types": {Victory, cbCost4}},
-        {"name": "Harbinger", "types": {Action, cbCantrip, cbCost3, cbDeckSeeder}},
-        {"name": "Laboratory", "types": {Action, cbCantrip, cbCost5, cbDraw2}},
-        {"name": "Library", "types": {Action, cbCost5, cbFiller, cbSifter, cbTerminal}},
-        {"name": "Market", "types": {Action, cbBuys, cbCost5, cbPeddler}},
-        {"name": "Merchant", "types": {Action, cbPeddler, cbCost3, cbMoney1}},
+        {"name": "Festival", "types": {Action, _Buys, _Buys, _Money2}},
+        {"name": "Gardens", "types": {Victory, _Cost4}},
+        {"name": "Harbinger", "types": {Action, _Cantrip, _Cost3, _DeckSeeder}},
+        {"name": "Laboratory", "types": {Action, _Cantrip, _Cost5, _Draw2}},
+        {"name": "Library", "types": {Action, _Cost5, _Filler, _Sifter, _Terminal}},
+        {"name": "Market", "types": {Action, _Buys, _Cost5, _Peddler}},
+        {"name": "Merchant", "types": {Action, _Peddler, _Cost3, _Money1}},
         {
             "name": "Militia",
-            "types": {Action, Attack, cbDiscard, cbCost4, cbMoney2, cbTerminal},
+            "types": {Action, Attack, _Discard, _Cost4, _Money2, _Terminal},
         },
-        {"name": "Mine", "types": {Action, cbCost5, cbTerminal, cbTrasher, cbUpgrader}},
+        {"name": "Mine", "types": {Action, _Cost5, _Terminal, _Trasher, _Upgrader}},
         {
             "name": "Moat",
-            "types": {Action, Reaction, cbAttackResponse, cbCost2, cbDraw2, cbTerminal},
+            "types": {Action, Reaction, _AttackResponse, _Cost2, _Draw2, _Terminal},
         },
         {
             "name": "Moneylender",
-            "types": {Action, cbCost4, cbMoney3, cbTerminal, cbThinner},
+            "types": {Action, _Cost4, _Money3, _Terminal, _Thinner},
         },
         {
             "name": "Poacher",
-            "types": {Action, cbCost4, cbDiscard, cbEmpty, cbPeddler},
+            "types": {Action, _Cost4, _Discard, _Empty, _Peddler},
         },
         {
             "name": "Remodel",
-            "types": {Action, cbCost4, cbTerminal, cbTrasher, cbUpgrader},
+            "types": {Action, _Cost4, _Terminal, _Trasher, _Upgrader},
         },
-        {"name": "Sentry", "types": {Action, cbCantrip, cbCost5, cbSifter, cbThinner}},
-        {"name": "Smithy", "types": {Action, cbCost4, cbDraw3, cbTerminal}},
-        {"name": "Throne Room", "types": {Action, cbCost4, cbSplitter}},
-        {"name": "Workshop", "types": {Action, cbCost3, cbGainer4, cbTerminal}},
+        {"name": "Sentry", "types": {Action, _Cantrip, _Cost5, _Sifter, _Thinner}},
+        {"name": "Smithy", "types": {Action, _Cost4, _Draw3, _Terminal}},
+        {"name": "Throne Room", "types": {Action, _Cost4, _Splitter}},
+        {"name": "Workshop", "types": {Action, _Cost3, _Gainer4, _Terminal}},
         {
             "name": "Vassal",
-            "types": {Action, cbCost3, cbMoney2, cbTerminal, cbTwin},
+            "types": {Action, _Cost3, _Money2, _Terminal, _Twin},
         },
-        {"name": "Village", "types": {Action, cbCost3, cbVillage}},
-        {"name": "Witch", "types": {Action, cbCost5, cbCurser, cbTerminal}},
+        {"name": "Village", "types": {Action, _Cost3, _Village}},
+        {"name": "Witch", "types": {Action, _Cost5, _Curser, _Terminal}},
     ]
 )
 Base.firstEdition = [
-    {"name": "Adventurer", "types": {Action, cbCost6, cbSifter, cbTerminal}},
+    {"name": "Adventurer", "types": {Action, _Cost6, _Sifter, _Terminal}},
     {
         "name": "Chancellor",
-        "types": {Action, cbCost3, cbMoney2, cbShuffler, cbTerminal},
+        "types": {Action, _Cost3, _Money2, _SpeedUp, _Terminal},
     },
-    {"name": "Feast", "types": {Action, cbCost4, cbTerminal, cbTrasher, cbUpgrader}},
-    {"name": "Spy", "types": {Action, Attack, cbBadSifter, cbCost4, cbSifter}},
-    {"name": "Thief", "types": {Action, Attack, cbBadThinner, cbCost4, cbTerminal}},
-    {"name": "Woodcutter", "types": {Action, cbBuys, cbCost3, cbMoney2, cbTerminal}},
+    {"name": "Feast", "types": {Action, _Cost4, _Terminal, _Trasher, _Upgrader}},
+    {"name": "Spy", "types": {Action, Attack, _BadSifter, _Cost4, _Sifter}},
+    {"name": "Thief", "types": {Action, Attack, _BadThinner, _Cost4, _Terminal}},
+    {"name": "Woodcutter", "types": {Action, _Buys, _Cost3, _Money2, _Terminal}},
 ]
 Base.secondEdition = Base.cards(
     "Artisan",
@@ -386,114 +392,98 @@ Intrigue.AddCards(
     [
         {
             "name": "Baron",
-            "types": {Action, cbBuys, cbCost4, cbMoney4, cbTerminal, cbVictory},
+            "types": {Action, _Buys, _Cost4, _Money4, _Terminal, _Victory},
         },
         {
             "name": "Bridge",
-            "types": {Action, cbBuys, cbCost4, cbCostReducer, cbMoney1, cbTerminal},
+            "types": {Action, _Buys, _Cost4, _CostReducer, _Money1, _Terminal},
         },
-        {"name": "Conspirator", "types": {Action, cbCost4, cbCantrip, cbMoney2}},
-        {"name": "Courtier", "types": {Action, cbChoice, cbCost5, cbMultiTypeLove}},
+        {"name": "Conspirator", "types": {Action, _Cost4, _Cantrip, _Money2}},
+        {"name": "Courtier", "types": {Action, _Choice, _Cost5, _MultiTypeLove}},
         {
             "name": "Courtyard",
-            "types": {Action, cbCost2, cbDeckSeeder, cbDraw2, cbTerminal},
+            "types": {Action, _Cost2, _DeckSeeder, _Draw2, _Terminal},
         },  # draws 2 and seeds 1
         {
             "name": "Diplomat",
-            "types": {Action, Reaction, cbAttackResponse, cbCost4, cbDraw2},
+            "types": {Action, Reaction, _AttackResponse, _Cost4, _Draw2},
         },
-        {"name": "Duke", "types": {Victory, cbCost5}},
-        {"name": "Harem", "types": {Treasure, Victory, cbCost6, cbMoney2}},
-        {"name": "Ironworks", "types": {Action, cbChoice, cbCost4, cbGainer4}},
+        {"name": "Duke", "types": {Victory, _Cost5}},
+        {"name": "Harem", "types": {Treasure, Victory, _Cost6, _Money2}},
+        {"name": "Ironworks", "types": {Action, _Choice, _Cost4, _Gainer4}},
         {
             "name": "Lurker",
-            "types": {Action, cbCost2, cbChainer, cbTrasher, cbTrashGainer},
+            "types": {Action, _Cost2, _Chainer, _Trasher, _TrashGainer},
         },
         {
             "name": "Masquerade",
-            "types": {Action, cbCost3, cbDraw2, cbInteractive, cbTerminal, cbThinner},
+            "types": {Action, _Cost3, _Draw2, _Interactive, _Terminal, _Thinner},
         },
         {
             "name": "Mill",
-            "types": {Action, Victory, cbCantrip, cbCost4, cbDiscard, cbMoney2},
+            "types": {Action, Victory, _Cantrip, _Cost4, _Discard, _Money2},
         },
         {
             "name": "Mining Village",
-            "types": {Action, cbCost4, cbMoney2, cbTrasher, cbVillage},
+            "types": {Action, _Cost4, _Money2, _Trasher, _Village},
         },
         {
             "name": "Minion",
-            "types": {Action, Attack, cbChainer, cbChoice, cbCost5, cbMoney2, cbSifter},
+            "types": {Action, Attack, _Chainer, _Choice, _Cost5, _Money2, _Sifter},
         },
-        {"name": "Nobles", "types": {Action, Victory, cbChoice, cbCost6}},
-        {"name": "Patrol", "types": {Action, cbCost5, cbDraw3, cbSifter, cbTerminal}},
-        {"name": "Pawn", "types": {Action, cbChoice, cbCost2}},
+        {"name": "Nobles", "types": {Action, Victory, _Choice, _Cost6}},
+        {"name": "Patrol", "types": {Action, _Cost5, _Draw3, _Sifter, _Terminal}},
+        {"name": "Pawn", "types": {Action, _Choice, _Cost2}},
         {
             "name": "Replace",
             "types": {
                 Action,
                 Attack,
-                cbCost5,
-                cbCurser,
-                cbDeckSeeder,
-                cbTerminal,
-                cbTrasher,
-                cbUpgrader,
+                _Cost5,
+                _Curser,
+                _DeckSeeder,
+                _Terminal,
+                _Trasher,
+                _Upgrader,
             },
         },
-        {"name": "Secret Passage", "types": {Action, cbCantrip, cbCost4, cbDeckSeeder}},
-        {"name": "Shanty Town", "types": {Action, cbCost3, cbTwin, cbVillage}},
-        {"name": "Steward", "types": {Action, cbChoice, cbCost3, cbTerminal}},
+        {"name": "Secret Passage", "types": {Action, _Cantrip, _Cost4, _DeckSeeder}},
+        {"name": "Shanty Town", "types": {Action, _Cost3, _Twin, _Village}},
+        {"name": "Steward", "types": {Action, _Choice, _Cost3, _Terminal}},
         {
             "name": "Swindler",
-            "types": {
-                Action,
-                Attack,
-                cbBadSifter,
-                cbCost3,
-                cbMoney2,
-                cbTerminal,
-                cbTrasher,
-            },
+            "types": {Action, Attack, _BadSifter, _Cost3, _Money2, _Terminal, _Trasher},
         },
         {
             "name": "Torturer",
-            "types": {Action, Attack, cbCost5, cbCurser, cbDraw3, cbTerminal},
+            "types": {Action, Attack, _Cost5, _Curser, _Draw3, _Terminal},
         },
         {
             "name": "Trading Post",
-            "types": {Action, cbCost5, cbMoney2, cbTerminal, cbThinner},
+            "types": {Action, _Cost5, _Money2, _Terminal, _Thinner},
         },
         {
             "name": "Upgrade",
-            "types": {Action, cbCantrip, cbCost5, cbTrasher, cbUpgrader},
+            "types": {Action, _Cantrip, _Cost5, _Trasher, _Upgrader},
         },
-        {"name": "Wishing Well", "types": {Action, cbCantrip, cbCost3, cbDeckGuesser}},
+        {"name": "Wishing Well", "types": {Action, _Cantrip, _Cost3, _DeckGuesser}},
     ]
 )
 Intrigue.firstEdition = [
-    {"name": "Coppersmith", "types": {Action, cbCost4, cbPayload, cbTerminal}},
-    {"name": "Great Hall", "types": {Action, Victory, cbCantrip, cbCost3}},
+    {"name": "Coppersmith", "types": {Action, _Cost4, _Payload, _Terminal}},
+    {"name": "Great Hall", "types": {Action, Victory, _Cantrip, _Cost3}},
     {
         "name": "Saboteur",
-        "types": {
-            Action,
-            Attack,
-            cbDowngrader,
-            cbCost5,
-            cbTrasher,
-            cbUpgrader,
-            cbTerminal,
-        },
+        "types": {Action, Attack, _Downgrader, _Cost5, _Trasher, _Upgrader, _Terminal},
     },
-    {"name": "Scout", "types": {Action, cbChainer, cbCost4, cbSifter}},
+    {"name": "Scout", "types": {Action, _Chainer, _Cost4, _Sifter}},
     {
         "name": "Secret Chamber",
-        "types": {Action, Reaction, cbAttackResponse, cbCost2, cbDeckSeeder, cbDiscard},
+        "types": {Action, Reaction, _AttackResponse, _Cost2, _DeckSeeder, _Discard},
     },
     {
         "name": "Tribute",
-        "types": {Action, cbChoice, cbCost5, cbDiscard, cbMultiTypeLove},
+        "types": {Action, _Choice, _Cost5, _Discard, _MultiTypeLove},
     },
 ]
 Intrigue.secondEdition = Intrigue.cards(
