@@ -206,6 +206,7 @@ Potion = CardType("Potion")
 Ally = CardType("Ally")
 Trait = CardType("Trait")
 Action = CardType("Action")
+Duration = CardType("Duration")
 Treasure = CardType("Treasure")
 Victory = CardType("Victory")
 Reaction = CardType("Reaction")
@@ -493,44 +494,135 @@ Intrigue.secondEdition = Intrigue.cards(
 Seaside = Set("Seaside")
 Seaside.AddCards(
     [
-        "Astrolabe",
-        {"name": "Bazaar", "types": {Action}},
-        {"name": "Blockade", "types": {Action}},
-        {"name": "Caravan", "types": {Action}},
-        {"name": "Corsair", "types": {Action}},
-        {"name": "Cutpurse", "types": {Action}},
-        {"name": "Fishing Village", "types": {Action}},
-        {"name": "Haven", "types": {Action}},
-        {"name": "Island", "types": {Action}},
-        {"name": "Lighthouse", "types": {Action}},
-        {"name": "Lookout", "types": {Action}},
-        {"name": "Merchant Ship", "types": {Action}},
-        {"name": "Monkey", "types": {Action}},
-        {"name": "Native Village", "types": {Action}},
-        {"name": "Outpost", "types": {Action}},
-        {"name": "Pirate", "types": {Action}},
-        {"name": "Sailor", "types": {Action}},
-        {"name": "Salvager", "types": {Action}},
-        {"name": "Sea Chart", "types": {Action}},
-        {"name": "Sea Witch", "types": {Action}},
-        {"name": "Smugglers", "types": {Action}},
-        {"name": "Tactician", "types": {Action}},
-        {"name": "Tide Pools", "types": {Action}},
-        {"name": "Treasure Map", "types": {Action}},
-        {"name": "Treasury", "types": {Action}},
-        {"name": "Warehouse", "types": {Action}},
-        {"name": "Wharf", "types": {Action}},
+        {"name": "Astrolabe", "types": {Treasure, Duration, _Buys, _Cost3, _Money2}},
+        {"name": "Bazaar", "types": {Action, _Cost5, _Peddler, _Village}},
+        {
+            "name": "Blockade",
+            "types": {Action, Duration, Attack, _Cost4, _Curser, _Gainer4, _MultiType},
+        },
+        {"name": "Caravan", "types": {Action, Duration, _Cantrip, _Cost4, _Draw2}},
+        {
+            "name": "Corsair",
+            "types": {
+                Action,
+                Duration,
+                Attack,
+                _BadThinner,
+                _Cost5,
+                _Draw2,
+                _Money2,
+                _MultiType,
+                _Terminal,
+            },
+        },
+        {"name": "Cutpurse", "types": {Action, Attack, _Cost4, _Discard, _Money2}},
+        {
+            "name": "Fishing Village",
+            "types": {Action, Duration, _Cost3, _FutureAction, _Money2, _Village},
+        },
+        {"name": "Haven", "types": {Action, Duration, _Cantrip, _Cost2, _Saver}},
+        {"name": "Island", "types": {Action, Victory, _Cost4, _Terminal, _Thinner}},
+        {
+            "name": "Lighthouse",
+            "types": {Action, Duration, _AttackResponse, _Chainer, _Cost2, _Money2},
+        },
+        {"name": "Lookout", "types": {Action, _Chainer, _Cost3, _Sifter, _Thinner}},
+        {
+            "name": "Merchant Ship",
+            "types": {Action, Duration, _Cost5, _Money4, _Terminal},
+        },
+        {"name": "Monkey", "types": {Action, Duration, _Cost3, _Draw2, _Terminal}},
+        {"name": "Native Village", "types": {Action, _Cost2, _Saver, _Village}},
+        {"name": "Outpost", "types": {Action, Duration, _Cost5, _Draw3, _Terminal}},
+        {
+            "name": "Pirate",
+            "types": {
+                Action,
+                Duration,
+                Reaction,
+                _Cost5,
+                _Gainer6,
+                _MultiType,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Sailor",
+            "types": {Action, Duration, _Village, _Cost4, _Money2, _SpeedUp, _Thinner},
+        },
+        {
+            "name": "Salvager",
+            "types": {Action, _Cost4, _Payload, _Terminal, _Thinner},
+        },
+        {"name": "Sea Chart", "types": {Action, _Cantrip, _Cost3, _DeckGuesser}},
+        {
+            "name": "Sea Witch",
+            "types": {
+                Action,
+                Duration,
+                Attack,
+                _Cost5,
+                _Curser,
+                _Draw2,
+                _MultiType,
+                _Sifter,
+                _Terminal,
+            },
+        },
+        {"name": "Smugglers", "types": {Action, _Cost3, _Gainer6, _Terminal}},
+        {
+            "name": "Tactician",
+            "types": {
+                Action,
+                Duration,
+                _Buys,
+                _Cost5,
+                _Discard,
+                _Draw5,
+                _FutureAction,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Tide Pools",
+            "types": {Action, Duration, _Cantrip, _Cost4, _Sifter},
+        },
+        {
+            "name": "Treasure Map",
+            "types": {Action, _Cost4, _DeckSeeder, _Trasher, _Terminal},
+        },
+        {"name": "Treasury", "types": {Action, _Cost5, _DeckSeeder, _Peddler}},
+        {
+            "name": "Warehouse",
+            "types": {Action, _Cantrip, _Cost3, _Discard, _Sifter},
+        },
+        {
+            "name": "Wharf",
+            "types": {Action, Duration, _Buys, _Cost5, _Draw4, _Terminal},
+        },
     ]
 )
 Seaside.firstEdition = [
-    {"name": "Embargo", "types": {Action}},
-    {"name": "Pearl Diver", "types": {Action}},
-    {"name": "Ambassador", "types": {Action}},
-    {"name": "Navigator", "types": {Action}},
-    {"name": "Pirate Ship", "types": {Action}},
-    {"name": "Sea Hag", "types": {Action}},
-    {"name": "Explorer", "types": {Action}},
-    {"name": "Ghost Ship", "types": {Action}},
+    {"name": "Embargo", "types": {Action, _Cost2, _Curser, _Money2, _Trasher}},
+    {"name": "Pearl Diver", "types": {Action, _Cantrip, _Cost2, _DeckSeeder}},
+    {
+        "name": "Ambassador",
+        "types": {Action, Attack, _Cost3, _Junker, _Terminal, _Thinner},
+    },
+    {"name": "Navigator", "types": {Action, _Cost4, _Money2, _Sifter, _Terminal}},
+    {
+        "name": "Pirate Ship",
+        "types": {Action, Attack, _BadSifter, _BadThinner, _Cost4, _Payload, _Terminal},
+    },
+    {
+        "name": "Sea Hag",
+        "types": {Action, Attack, _Cost4, _Curser, _Discard, _Terminal},
+    },
+    {"name": "Explorer", "types": {Action, _Cost5, _Money2, _Money3, _Terminal}},
+    {
+        "name": "Ghost Ship",
+        "types": {Action, Attack, _Cost5, _Draw2, _BadSifter, _Terminal},
+    },
 ]
 Seaside.secondEdition = Seaside.cards(
     "Astrolabe",
