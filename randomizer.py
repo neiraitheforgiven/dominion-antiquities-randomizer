@@ -229,9 +229,12 @@ _Cost3 = CardType("_Cost3")  # card costs 3
 _Cost4 = CardType("_Cost4")  # card costs 4
 _Cost5 = CardType("_Cost5")  # card costs 5
 _Cost6 = CardType("_Cost6")  # card costs 6
+_Cost7 = CardType("_Cost7")  # card costs 7
+_Cost8 = CardType("_Cost8")  # card costs 8
 _CostReducer = CardType(
     "_CostReducer"
 )  # reduces the cost of cards. synnergizes with _Buys and _Gainer
+_CostVaries = CardType("_CostVaries")  # Gets cheaper or more expensive.
 _Curser = CardType("_Curser")  # gives other players curses
 _DeckGuesser = CardType(
     "_DeckGuesser"
@@ -253,6 +256,9 @@ _ExtraCost = CardType(
 _Filler = CardType(
     "_Filler"
 )  # fills hand up to a certain point; synnergizes with _Discard
+_FreeAction = CardType(
+    "_FreeAction"
+)  # card that can play itself without expending actions
 _FutureAction = CardType(
     "_FutureAction"
 )  # gives a bonus action at the start of next turn
@@ -302,8 +308,8 @@ _TrashGainer = CardType(
 _Twin = CardType(
     "_Twin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
-_Upgrader = CardType(
-    "_Upgrader"
+_Remodeler = CardType(
+    "_Remodeler"
 )  # allows you to trash cards and replace them with better cards
 _Victory = CardType("_Victory")  # gains you victory cards or points
 _Village = CardType(
@@ -343,7 +349,7 @@ Base.AddCards(
             "name": "Militia",
             "types": {Action, Attack, _Discard, _Cost4, _Money2, _Terminal},
         },
-        {"name": "Mine", "types": {Action, _Cost5, _Terminal, _Trasher, _Upgrader}},
+        {"name": "Mine", "types": {Action, _Cost5, _Remodeler, _Terminal, _Trasher}},
         {
             "name": "Moat",
             "types": {Action, Reaction, _AttackResponse, _Cost2, _Draw2, _Terminal},
@@ -358,7 +364,7 @@ Base.AddCards(
         },
         {
             "name": "Remodel",
-            "types": {Action, _Cost4, _Terminal, _Trasher, _Upgrader},
+            "types": {Action, _Cost4, _Remodeler, _Terminal, _Trasher},
         },
         {"name": "Sentry", "types": {Action, _Cantrip, _Cost5, _Sifter, _Thinner}},
         {"name": "Smithy", "types": {Action, _Cost4, _Draw3, _Terminal}},
@@ -378,7 +384,7 @@ Base.firstEdition = [
         "name": "Chancellor",
         "types": {Action, _Cost3, _Money2, _SpeedUp, _Terminal},
     },
-    {"name": "Feast", "types": {Action, _Cost4, _Terminal, _Trasher, _Upgrader}},
+    {"name": "Feast", "types": {Action, _Cost4, _Gainer5, _Terminal, _Trasher}},
     {"name": "Spy", "types": {Action, Attack, _BadSifter, _Cost4, _Sifter}},
     {"name": "Thief", "types": {Action, Attack, _BadThinner, _Cost4, _Terminal}},
     {"name": "Woodcutter", "types": {Action, _Buys, _Cost3, _Money2, _Terminal}},
@@ -448,9 +454,9 @@ Intrigue.AddCards(
                 _Cost5,
                 _Curser,
                 _DeckSeeder,
+                _Remodeler,
                 _Terminal,
                 _Trasher,
-                _Upgrader,
             },
         },
         {"name": "Secret Passage", "types": {Action, _Cantrip, _Cost4, _DeckSeeder}},
@@ -470,7 +476,7 @@ Intrigue.AddCards(
         },
         {
             "name": "Upgrade",
-            "types": {Action, _Cantrip, _Cost5, _Trasher, _Upgrader},
+            "types": {Action, _Cantrip, _Cost5, _Remodeler, _Trasher},
         },
         {"name": "Wishing Well", "types": {Action, _Cantrip, _Cost3, _DeckGuesser}},
     ]
@@ -480,7 +486,7 @@ Intrigue.firstEdition = [
     {"name": "Great Hall", "types": {Action, Victory, _Cantrip, _Cost3}},
     {
         "name": "Saboteur",
-        "types": {Action, Attack, _Downgrader, _Cost5, _Trasher, _Upgrader, _Terminal},
+        "types": {Action, Attack, _Downgrader, _Cost5, _Remodeler, _Terminal, _Trasher},
     },
     {"name": "Scout", "types": {Action, _Chainer, _Cost4, _Sifter}},
     {
@@ -708,42 +714,106 @@ Alchemy.AddCards(
 Prosperity = Set("Prosperity")
 Prosperity.AddCards(
     [
-        "Anvil",
-        "Bank",
-        "Collection",
-        "Hoard",
-        "Investment",
-        "Quarry",
-        "Tiara",
-        "War Chest",
-        {"name": "Bishop", "types": {Action}},
-        {"name": "Charlatan", "types": {Action}},
-        {"name": "City", "types": {Action}},
-        {"name": "Clerk", "types": {Action}},
-        {"name": "Expand", "types": {Action}},
-        {"name": "Forge", "types": {Action}},
-        {"name": "Grand Market", "types": {Action}},
-        {"name": "King's Court", "types": {Action}},
-        {"name": "Magnate", "types": {Action}},
-        {"name": "Mint", "types": {Action}},
-        {"name": "Monument", "types": {Action}},
-        {"name": "Peddler", "types": {Action}},
-        {"name": "Rabble", "types": {Action}},
-        {"name": "Vault", "types": {Action}},
-        {"name": "Watchtower", "types": {Action}},
-        {"name": "Worker's Village", "types": {Action}},
+        {"name": "Anvil", "types": {Treasure, _Cost3, _Discard, _Gainer4, _Money1}},
+        {"name": "Bank", "types": {Treasure, _Cost7, _Payload}},
+        {
+            "name": "Bishop",
+            "types": {Action, _Cost4, _Interactive, _Money1, _Terminal, _Thinner},
+        },
+        {
+            "name": "Charlatan",
+            "types": {Action, Attack, _Cost5, _Curser, _Money3, _Terminal},
+        },
+        {
+            "name": "City",
+            "types": {Action, _Buys, _Cost5, _Draw2, _Empty, _Peddler, _Village},
+        },
+        {
+            "name": "Clerk",
+            "types": {
+                Action,
+                Reaction,
+                Attack,
+                _Cost4,
+                _DeckSeeder,
+                _FreeAction,
+                _Money2,
+                _Terminal,
+            },
+        },
+        {"name": "Collection", "types": {Treasure, _Buys, _Cost5, _Money2, _Victory}},
+        {
+            "name": "Crystal Ball",
+            "types": {Treasure, _Cost5, _Discard, _Money1, _Thinner},
+        },
+        {
+            "name": "Expand",
+            "types": {
+                Action,
+                _Cost7,
+                _Remodeler,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {"name": "Forge", "types": {Action, _Cost7, _Terminal, _Thinner}},
+        {"name": "Grand Market", "types": {Action, _Buys, _Cost6, _Money2, _Peddler}},
+        {"name": "Hoard", "types": {Treasure, _Cost6, _Money2}},
+        {
+            "name": "Investment",
+            "types": {Treasure, _Cost4, _Money1, _Thinner, _Victory},
+        },
+        {"name": "King's Court", "types": {Action, _Cost7, _Splitter}},
+        {"name": "Magnate", "types": {Action, _Cost5, _Drawload, _Terminal}},
+        {"name": "Mint", "types": {Action, _Cost5, _Terminal, _Thinner}},
+        {"name": "Monument", "types": {Action, _Cost4, _Money2, _Terminal, _Victory}},
+        {"name": "Peddler", "types": {Action, _Cost8, _CostVaries, _Peddler}},
+        {"name": "Quarry", "types": {Treasure, _Cost4, _CostReducer, _Money1}},
+        {
+            "name": "Rabble",
+            "types": {Action, Attack, _BadSifter, _Cost5, _Draw3, _Terminal},
+        },
+        {
+            "name": "Tiara",
+            "types": {Treasure, _Buys, _Cost4, _CostReducer, _SpeedUp, _Splitter},
+        },
+        {"name": "War Chest", "types": {Treasure, _Cost5, _Gainer5}},
+        {
+            "name": "Vault",
+            "types": {Action, _Cost5, _Draw2, _Discard, _Payload, _Terminal},
+        },
+        {
+            "name": "Watchtower",
+            "types": {Action, Reaction, _Cost3, _Filler, _SpeedUp, _Terminal, _Thinner},
+        },
+        {"name": "Worker's Village", "types": {Action, _Buys, _Cost4, _Village}},
     ]
 )
 Prosperity.firstEdition = [
-    "Contraband",
-    "Loan",
-    "Royal Seal",
-    "Talisman",
-    "Venture",
-    {"name": "Counting House", "types": {Action}},
-    {"name": "Goons", "types": {Action}},
-    {"name": "Mountebank", "types": {Action}},
-    {"name": "Trade Route", "types": {Action}},
+    {"name": "Contraband", "types": {Treasure, _Buys, _Cost5, _Money3}},
+    {"name": "Counting House", "types": {Action, _Cost5, _Payload, _Terminal}},
+    {
+        "name": "Goons",
+        "types": {
+            Action,
+            Attack,
+            _Buys,
+            _Cost6,
+            _Discard,
+            _Money2,
+            _Terminal,
+            _Victory,
+        },
+    },
+    {"name": "Loan", "types": {Treasure, _Cost3, _Discard, _Money1, _Thinner}},
+    {
+        "name": "Mountebank",
+        "types": {Action, Attack, _Cost5, _Curser, _Junker, _Money2},
+    },
+    {"name": "Royal Seal", "types": {Treasure, _Cost5, _Money2, _SpeedUp}},
+    {"name": "Talisman", "types": {Treasure, _Cost4, _Gainer4, _Money1}},
+    {"name": "Trade Route", "types": {Action, _Buys, _Cost3, _Payload, _Thinner}},
+    {"name": "Venture", "types": {Treasure, _Cost5, _Money1, _SpeedUp}},
 ]
 Prosperity.secondEdition = Prosperity.cards(
     "Anvil",
