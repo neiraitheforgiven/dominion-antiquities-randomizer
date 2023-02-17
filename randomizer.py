@@ -271,6 +271,7 @@ _Gainer5 = CardType(
 _Gainer6 = CardType(
     "_Gainer6"
 )  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
+_Kingdom = CardType("_Kingdom")  # Adds cards to the kingdom
 _Interactive = CardType(
     "_Interactive"
 )  # does something to other players that is not an attack
@@ -281,6 +282,9 @@ _Money3 = CardType("_Money3")  # gives +3 Money
 _Money4 = CardType("_Money4")  # gives +4 Money
 _MultiType = CardType("_MultiType")  # has more than two types
 _MultiTypeLove = CardType("_MultiTypeLove")  # Wants cards with more than two types
+_NamesMatter = CardType(
+    "_NamesMatter"
+)  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
 _Payload = CardType(
     "_Payload"
 )  # a card that adds variable, potentially infinite money.
@@ -831,19 +835,44 @@ Prosperity.secondEdition = Prosperity.cards(
 Cornucopia = Set("Cornucopia")
 Cornucopia.AddCards(
     [
-        "Fairgrounds",
-        "Horn of Plenty",
-        {"name": "Hamlet", "types": {Action}},
-        {"name": "Fortune Teller", "types": {Action}},
-        {"name": "Menagerie", "types": {Action}},
-        {"name": "Farming Village", "types": {Action}},
-        {"name": "Horse Traders", "types": {Action}},
-        {"name": "Remake", "types": {Action}},
-        {"name": "Tournament", "types": {Action}},
-        {"name": "Young Witch", "types": {Action}},
-        {"name": "Harvest", "types": {Action}},
-        {"name": "Hunting Party", "types": {Action}},
-        {"name": "Jester", "types": {Action}},
+        {"name": "Fairgrounds", "types": {Victory, _Cost6, _NamesMatter}},
+        {
+            "name": "Fortune Teller",
+            "types": {Action, Attack, _BadSifter, _Cost3, _Discard, _Money2, _Terminal},
+        },
+        {"name": "Hamlet", "types": {Action, _Buys, _Cost2, _Discard, _Village}},
+        {"name": "Horn of Plenty", "types": {Treasure, _Cost5, _NamesMatter, _Trasher}},
+        {
+            "name": "Menagerie",
+            "types": {Action, _Cantrip, _Cost3, _Draw2, _NamesMatter},
+        },
+        {"name": "Farming Village", "types": {Action, _Cost4, _Sifter, _Village}},
+        {
+            "name": "Harvest",
+            "types": {Action, _Cost5, _Discard, _Money1, _NamesMatter, _Terminal},
+        },
+        {
+            "name": "Horse Traders",
+            "types": {
+                Action,
+                Reaction,
+                _AttackResponse,
+                _Buys,
+                _Cost4,
+                _Discard,
+                _Draw2,
+                _Money3,
+                _Terminal,
+            },
+        },
+        {"name": "Hunting Party", "types": {Action, _Cantrip, _Cost5, _Draw2}},
+        {"name": "Jester", "types": {Action, Attack, _Cost5, _Curser, _Money2}},
+        {"name": "Remake", "types": {Action, _Cost4, _Remodeler, _Terminal, _Trasher}},
+        {"name": "Tournament", "types": {Action, _Cost4, _Interactive, _Peddler}},
+        {
+            "name": "Young Witch",
+            "types": {Action, Attack, _Cost4, _Curser, _Kingdom, _Sifter, _Terminal},
+        },
     ]
 )
 
