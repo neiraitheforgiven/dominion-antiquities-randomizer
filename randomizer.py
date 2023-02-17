@@ -243,6 +243,9 @@ _DeckSeeder = CardType(
     "_DeckSeeder"
 )  # allows you to manipulate your deck; synnergizes with _DeckGuesser
 _Discard = CardType("_Discard")  # discards cards because sometimes you want to do that
+_DiscardResponse = CardType(
+    "_DiscardResponse"
+)  # Reaction triggered by discards other than cleanup. Wants _Discard
 _Downgrader = CardType("_Downgrader")  # attack card that does upgrades in reverse
 _Draw2 = CardType("_Draw2")  # draws 2 cards
 _Draw3 = CardType("_Draw3")  # draws 3 cards
@@ -879,44 +882,139 @@ Cornucopia.AddCards(
 Hinterlands = Set("Hinterlands")
 Hinterlands.AddCards(
     [
-        "Cauldron",
-        "Farmland",
-        "Fool's Gold",
-        "Tunnel",
-        {"name": "Berserker", "types": {Action}},
-        {"name": "Border Village", "types": {Action}},
-        {"name": "Cartographer", "types": {Action}},
-        {"name": "Crossroads", "types": {Action}},
-        {"name": "Develop", "types": {Action}},
-        {"name": "Guard Dog", "types": {Action}},
-        {"name": "Haggler", "types": {Action}},
-        {"name": "Highway", "types": {Action}},
-        {"name": "Inn", "types": {Action}},
-        {"name": "Jack of All Trades", "types": {Action}},
-        {"name": "Margrave", "types": {Action}},
-        {"name": "Nomads", "types": {Action}},
-        {"name": "Oasis", "types": {Action}},
-        {"name": "Scheme", "types": {Action}},
-        {"name": "Souk", "types": {Action}},
-        {"name": "Spice Merchant", "types": {Action}},
-        {"name": "Stables", "types": {Action}},
-        {"name": "Trader", "types": {Action}},
-        {"name": "Trail", "types": {Action}},
-        {"name": "Weaver", "types": {Action}},
-        {"name": "Wheelwright", "types": {Action}},
-        {"name": "Witch's Hut", "types": {Action}},
+        {
+            "name": "Berserker",
+            "types": {Action, Attack, _Discard, _FreeAction, _Gainer4, _Terminal},
+        },
+        {"name": "Border Village", "types": {Action, _Cost6, _Gainer5, _Village}},
+        {"name": "Cartographer", "types": {Action, _Cantrip, _Discard, _Sifter}},
+        {
+            "name": "Cauldron",
+            "types": {Treasure, Attack, _Buys, _Cost5, _Curser, _Money2},
+        },
+        {"name": "Crossroads", "types": {Action, _Cost2, _Drawload, _Village}},
+        {"name": "Develop", "types": {Action, _Cost3, _Remodeler, _Terminal}},
+        {"name": "Farmland", "types": {Victory, _Cost6, _Remodeler, _Trasher}},
+        {
+            "name": "Fool's Gold",
+            "types": {
+                Treasure,
+                Reaction,
+                _Cost2,
+                _DeckSeeder,
+                _Money1,
+                _Money4,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Guard Dog",
+            "types": {
+                Action,
+                Reaction,
+                _AttackResponse,
+                _Cost3,
+                _Draw2,
+                _Draw4,
+                _Terminal,
+            },
+        },
+        {"name": "Haggler", "types": {Action, _Cost5, _Money2, _Terminal}},
+        {
+            "name": "Tunnel",
+            "types": {
+                Victory,
+                Reaction,
+                _Cost3,
+                _DiscardResponse,
+                _Remodeler,
+                _Trasher,
+            },
+        },
+        {"name": "Highway", "types": {Action, _Cantrip, _Cost5, _CostReducer}},
+        {"name": "Inn", "types": {Action, _Cost5, _DeckSeeder, _Sifter, _Village}},
+        {
+            "name": "Jack of All Trades",
+            "types": {Action, _Cost4, _Discard, _Filler, _Sifter, _Terminal, _Thinner},
+        },
+        {
+            "name": "Margrave",
+            "types": {
+                Action,
+                Attack,
+                _Buys,
+                _Cost5,
+                _Discard,
+                _Draw3,
+                _Interactive,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Nomads",
+            "types": {Action, _Buys, _Cost4, _Money2, _Money4, _Terminal},
+        },
+        {"name": "Oasis", "types": {Action, _Cost3, _Discard, _Peddler}},
+        {"name": "Scheme", "types": {Action, _Cantrip, _Cost3, _DeckSeeder}},
+        # since this is terminal, I'm calling it a Money3
+        {
+            "name": "Souk",
+            "types": {Action, _Buys, _Cost5, _Money3, _Terminal, _Thinner},
+        },
+        {
+            "name": "Spice Merchant",
+            "types": {Action, _Buys, _Choice, _Cost4, _Draw2, _Money2},
+        },
+        {"name": "Stables", "types": {Action, _Cantrip, _Cost5, _Discard, _Draw3}},
+        {
+            "name": "Trader",
+            "types": {Action, Reaction, _Cost4, _Terminal, _Thinner, _Trasher},
+        },
+        {
+            "name": "Trail",
+            "types": {Action, Reaction, _Cost4, _FreeAction},
+        },
+        {
+            "name": "Weaver",
+            "types": {
+                Action,
+                Reaction,
+                _DiscardResponse,
+                _Cost4,
+                _FreeAction,
+                _Gainer4,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Wheelwright",
+            "types": {Action, _Cantrip, _Cost5, _Discard, _Gainer5},
+        },
+        {
+            "name": "Witch's Hut",
+            "types": {Action, Attack, _Cost5, _Curser, _Discard, _Sifter, _Terminal},
+        },
     ]
 )
 Hinterlands.firstEdition = [
-    "Cache",
-    "Ill-gotten Gains",
-    "Silk Road",
-    {"name": "Duchess", "types": {Action}},
-    {"name": "Embassy", "types": {Action}},
-    {"name": "Mandarin", "types": {Action}},
-    {"name": "Noble Brigand", "types": {Action}},
-    {"name": "Nomad Camp", "types": {Action}},
-    {"name": "Oracle", "types": {Action}},
+    {"name": "Cache", "types": {Treasure, _Cost5, _Money3}},
+    {"name": "Duchess", "types": {Action, _Cost2, _Interactive, _Money2, _Sifter}},
+    {
+        "name": "Embassy",
+        "types": {Action, _Cost5, _Draw2, _Interactive, _Sifter, _Terminal},
+    },
+    {"name": "Ill-gotten Gains", "types": {Treasure, _Cost5, _Curser, _Money2}},
+    {"name": "Mandarin", "types": {Action, _Cost5, _DeckSeeder, _Money3, _Terminal}},
+    {
+        "name": "Noble Brigand",
+        "types": {Action, Attack, _BadThinner, _Cost4, _FreeAction, _Money1},
+    },
+    {"name": "Nomad Camp", "types": {Action, _Buys, _Cost4, _DeckSeeder, _Money2}},
+    {
+        "name": "Oracle",
+        "types": {Action, Attack, _BadSifter, _Cost3, _Draw2, _Sifter, _Terminal},
+    },
+    {"name": "Silk Road", "types": {Victory, _Cost4}},
 ]
 Hinterlands.secondEdition = Hinterlands.cards(
     "Berserker",
