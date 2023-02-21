@@ -198,20 +198,24 @@ class Set(object):
 
 
 # Define card types
+# Landmarky Things
 Event = CardType("Event")
 Landmark = CardType("Landmark")
 Project = CardType("Project")
 Way = CardType("Way")
-# Potion isn't written on the card
-_Potion = CardType("_Potion")
 Ally = CardType("Ally")
 Trait = CardType("Trait")
+# Potion isn't written on the card
 Action = CardType("Action")
+Attack = CardType("Attack")
+Command = CardType("Command")
 Duration = CardType("Duration")
+Knight = CardType("Knight")
+Looter = CardType("Looter")
+_Potion = CardType("_Potion")
+Reaction = CardType("Reaction")
 Treasure = CardType("Treasure")
 Victory = CardType("Victory")
-Reaction = CardType("Reaction")
-Attack = CardType("Attack")
 # for enhanced randomizer
 _AttackResponse = CardType(
     "_AttackResponse"
@@ -224,6 +228,10 @@ _Cantrip = CardType(
 )  # card draws and chains, which essentially makes it a free bonus card
 _Chainer = CardType("_Chainer")  # allows you to play another action after it is done
 _Choice = CardType("_Choice")  # gives you a set of choices
+_Command4 = CardType(
+    "_Command4"
+)  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
+_Cost1 = CardType("_Cost1")  # card costs 1
 _Cost2 = CardType("_Cost2")  # card costs 2
 _Cost3 = CardType("_Cost3")  # card costs 3
 _Cost4 = CardType("_Cost4")  # card costs 4
@@ -265,6 +273,9 @@ _FreeAction = CardType(
 _FutureAction = CardType(
     "_FutureAction"
 )  # gives a bonus action at the start of next turn
+_Gainer3 = CardType(
+    "_Gainer3"
+)  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
 _Gainer4 = CardType(
     "_Gainer4"
 )  # allows you to gain cards from the supply costing up to 4; synnergizes with _CostReducer, _Cost4
@@ -283,6 +294,7 @@ _Money1 = CardType("_Money1")  # gives +1 Money
 _Money2 = CardType("_Money2")  # gives +2 Money
 _Money3 = CardType("_Money3")  # gives +3 Money
 _Money4 = CardType("_Money4")  # gives +4 Money
+_Money5 = CardType("_Money5")  # gives +5 Money
 _MultiType = CardType("_MultiType")  # has more than two types
 _MultiTypeLove = CardType("_MultiTypeLove")  # Wants cards with more than two types
 _NamesMatter = CardType(
@@ -294,11 +306,15 @@ _Payload = CardType(
 _Peddler = CardType(
     "_Peddler"
 )  # cantrip that give +1 Money; seperate class for randomizer reasons
+_Random = CardType(
+    "_Random"
+)  # a card with seemly random effects (as opposed to _Choice)
 _Saver = CardType(
     "_Saver"
 )  # puts cards from this hand into future hands, without discards or draws
 _Sifter = CardType("_Sifter")  # draws and discards cards to improve future hands
 _SpeedUp = CardType("_SpeedUp")  # allows you to get gained cards into play faster
+_SplitPile = CardType("_SplitPile")  # There's more than one named thing in here!
 _Splitter = CardType(
     "_Splitter"
 )  # allows you to play cards multiple times. Synnergizes with _Cantrip, _Chainer, and _Peddler
@@ -309,9 +325,10 @@ _Thinner = CardType(
     "_Thinner"
 )  # Puts cards into the trash and leaves you with a smaller deck
 _Trasher = CardType("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
+_TrashBenefit = CardType("_TrashBenefit")  # Wants to be trashed
 _TrashGainer = CardType(
     "_TrashGainer"
-)  # Gets cards out of the trash. Wants for _Trasher
+)  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
 _Twin = CardType(
     "_Twin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
@@ -1031,41 +1048,200 @@ Hinterlands.secondEdition = Hinterlands.cards(
 DarkAges = Set("Dark Ages")
 DarkAges.AddCards(
     [
-        "Counterfeit",
-        "Feodum",
-        {"name": "Poor House", "types": {Action}},
-        {"name": "Beggar", "types": {Action}},
-        {"name": "Squire", "types": {Action}},
-        {"name": "Vagrant", "types": {Action}},
-        {"name": "Forager", "types": {Action}},
-        {"name": "Hermit", "types": {Action}},
-        {"name": "Market Square", "types": {Action}},
-        {"name": "Sage", "types": {Action}},
-        {"name": "Storeroom", "types": {Action}},
-        {"name": "Urchin", "types": {Action}},
-        {"name": "Armory", "types": {Action}},
-        {"name": "Death Cart", "types": {Action}},
-        {"name": "Fortress", "types": {Action}},
-        {"name": "Ironmonger", "types": {Action}},
-        {"name": "Marauder", "types": {Action}},
-        {"name": "Procession", "types": {Action}},
-        {"name": "Rats", "types": {Action}},
-        {"name": "Scavenger", "types": {Action}},
-        {"name": "Wandering Minstrel", "types": {Action}},
-        {"name": "Band of Misfits", "types": {Action}},
-        {"name": "Bandit Camp", "types": {Action}},
-        {"name": "Catacombs", "types": {Action}},
-        {"name": "Count", "types": {Action}},
-        {"name": "Cultist", "types": {Action}},
-        {"name": "Graverobber", "types": {Action}},
-        {"name": "Junk Dealer", "types": {Action}},
-        {"name": "Knights", "types": {Action}},
-        {"name": "Mystic", "types": {Action}},
-        {"name": "Pillage", "types": {Action}},
-        {"name": "Rebuild", "types": {Action}},
-        {"name": "Rogue", "types": {Action}},
-        {"name": "Altar", "types": {Action}},
-        {"name": "Hunting Grounds", "types": {Action}},
+        {"name": "Altar", "types": {Action, _Cost6, _Gainer5, _Trasher, _Terminal}},
+        {"name": "Armory", "types": {Action, _Cost4, _DeckSeeder, _Gainer4, _Terminal}},
+        {
+            "name": "Beggar",
+            "types": {
+                Action,
+                Reaction,
+                _AttackResponse,
+                _Cost2,
+                _DeckSeeder,
+                _Money3,
+                _Terminal,
+            },
+        },
+        {"name": "Band of Misfits", "types": {Action, Command, _Command4, _Cost5}},
+        {"name": "Bandit Camp", "types": {Action, _Cost5, _Village}},
+        {
+            "name": "Catacombs",
+            "types": {Action, _Cost5, _Draw3, _Sifter, _TrashGainer, _Terminal},
+        },
+        {
+            "name": "Count",
+            "types": {
+                Action,
+                _Cost5,
+                _Choice,
+                _DeckSeeder,
+                _Discard,
+                _Junker,
+                _Money3,
+                _Terminal,
+                _Thinner,
+                _Victory,
+            },
+        },
+        {
+            "name": "Counterfeit",
+            "types": {Treasure, _Buys, _Cost5, _Money1, _Splitter, _Thinner},
+        },
+        {
+            "name": "Cultist",
+            "types": {Action, Attack, _Cost5, _Draw2, _Terminal, _TrashGainer},
+        },
+        {
+            "name": "Death Cart",
+            "types": {Action, Looter, _Cost4, _Junker, _Money5, _Terminal, _Thinner},
+        },
+        {"name": "Feodum", "types": {Victory, _Cost4, _TrashBenefit}},
+        {
+            "name": "Forager",
+            "types": {Action, _Buys, _Chainer, _Cost3, _Payload, _Thinner},
+        },
+        {"name": "Fortress", "types": {Action, _Cost4, _TrashGainer, _Village}},
+        {
+            "name": "Hermit",
+            "types": {
+                Action,
+                _Cost3,
+                _Drawload,
+                _Gainer3,
+                _Terminal,
+                _Trasher,
+                _Village,
+            },
+        },
+        {
+            "name": "Graverobber",
+            "types": {Action, _Cost5, _Remodeler, _Terminal, _Trasher, _TrashGainer},
+        },
+        {
+            "name": "Hunting Grounds",
+            "types": {Action, _Cost6, _Draw4, _Terminal, _TrashGainer, _Victory},
+        },
+        {
+            "name": "Ironmonger",
+            "types": {
+                Action,
+                _Cost4,
+                _DeckGuesser,
+                _Discard,
+                _Draw2,
+                _Money1,
+                _Village,
+            },
+        },
+        {"name": "Junk Dealer", "types": {Action, _Cost5, _Peddler, _Thinner}},
+        {
+            "name": "Knights",
+            "types": {
+                Action,
+                Attack,
+                Knight,
+                _BadThinner,
+                _Buys,
+                _Cantrip,
+                _Cost4,
+                _Cost5,
+                _Discard,
+                _Draw2,
+                _Gainer3,
+                _Money2,
+                _MultiType,
+                _SplitPile,
+                _Terminal,
+                _Thinner,
+                _TrashGainer,
+                _Village,
+            },
+        },
+        {
+            "name": "Marauder",
+            "types": {Action, Attack, Looter, _Cost4, _Junker, _MultiType, _Terminal},
+        },
+        {
+            "name": "Market Square",
+            "types": {Action, Reaction, _Buys, _Cantrip, _Cost3, _TrashGainer},
+        },
+        {"name": "Mystic", "types": {Action, _Chainer, _Cost5, _DeckGuesser, _Money2}},
+        {
+            "name": "Pillage",
+            "types": {Action, Attack, _Cost5, _Discard, _Terminal, _Trasher},
+        },
+        {"name": "Poor House", "types": {Action, _Cost1, _Money4, _Terminal}},
+        {
+            "name": "Procession",
+            "types": {Action, _Cost4, _Splitter, _Remodeler, _Terminal, _Trasher},
+        },
+        {
+            "name": "Rats",
+            "types": {Action, _Cantrip, _Cost4, _Trasher, _TrashGainer},
+        },
+        {
+            "name": "Rebuild",
+            "types": {Action, _Cantrip, _Cost5, _Remodeler, _Trasher, _Victory},
+        },
+        {
+            "name": "Rogue",
+            "types": {
+                Action,
+                Attack,
+                _BadThinner,
+                _Cost5,
+                _Money2,
+                _Terminal,
+                _TrashGainer,
+            },
+        },
+        {"name": "Sage", "types": {Action, _Cantrip, _Cost3, _Sifter}},
+        {
+            "name": "Scavenger",
+            "types": {Action, _Cost4, _Money2, _DeckSeeder, _SpeedUp, _Terminal},
+        },
+        {
+            "name": "Squire",
+            "types": {
+                Action,
+                _AttackResponse,
+                _Buys,
+                _Choice,
+                _Cost2,
+                _Money1,
+                _TrashGainer,
+                _Village,
+            },
+        },
+        {
+            "name": "Storeroom",
+            "types": {
+                Action,
+                _Buys,
+                _Cost3,
+                _Discard,
+                _Drawload,
+                _Payload,
+                _Sifter,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Urchin",
+            "types": {
+                Action,
+                Attack,
+                _Cantrip,
+                _Cost3,
+                _Discard,
+                _Draw2,
+                _Money2,
+                _Thinner,
+                _Terminal,
+            },
+        },
+        {"name": "Vagrant", "types": {Action, _Cantrip, _Cost2, _Sifter}},
+        {"name": "Wandering Minstrel", "types": {Action, _Cost4, _Sifter, _Village}},
     ]
 )
 
