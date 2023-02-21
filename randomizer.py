@@ -228,6 +228,8 @@ _Cantrip = CardType(
 )  # card draws and chains, which essentially makes it a free bonus card
 _Chainer = CardType("_Chainer")  # allows you to play another action after it is done
 _Choice = CardType("_Choice")  # gives you a set of choices
+_Coffer1 = CardType("_Coffer1")  # gives you future money
+_Coffer2 = CardType("_Coffer2")  # gives you future money
 _Command4 = CardType(
     "_Command4"
 )  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
@@ -300,6 +302,9 @@ _MultiTypeLove = CardType("_MultiTypeLove")  # Wants cards with more than two ty
 _NamesMatter = CardType(
     "_NamesMatter"
 )  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
+_Overpay = CardType(
+    "_Overpay"
+)  # Allows you to pay more for more functionality. Synnergizes with _Money3, _Money4, _Money5, _Payload.
 _Payload = CardType(
     "_Payload"
 )  # a card that adds variable, potentially infinite money.
@@ -1248,19 +1253,55 @@ DarkAges.AddCards(
 Guilds = Set("Guilds")
 Guilds.AddCards(
     [
-        "Masterpiece",
-        {"name": "Candlestick Maker", "types": {Action}},
-        {"name": "Stonemason", "types": {Action}},
-        {"name": "Doctor", "types": {Action}},
-        {"name": "Advisor", "types": {Action}},
-        {"name": "Plaza", "types": {Action}},
-        {"name": "Taxman", "types": {Action}},
-        {"name": "Herald", "types": {Action}},
-        {"name": "Baker", "types": {Action}},
-        {"name": "Butcher", "types": {Action}},
-        {"name": "Journeyman", "types": {Action}},
-        {"name": "Merchant Guild", "types": {Action}},
-        {"name": "Soothsayer", "types": {Action}},
+        {
+            "name": "Advisor",
+            "types": {Action, _BadSifter, _Cantrip, _Cost4, _Discard, _Draw2},
+        },
+        {"name": "Baker", "types": {Action, _Cantrip, _Coffer1, _Cost5}},
+        {
+            "name": "Candlestick Maker",
+            "types": {Action, _Buys, _Chainer, _Coffer1, _Cost2},
+        },
+        {
+            "name": "Butcher",
+            "types": {Action, _Cost5, _Coffer2, _Remodeler, _Terminal, _Trasher},
+        },
+        {"name": "Doctor", "types": {Action, _Cost3, _Overpay, _Terminal, _Thinner}},
+        {
+            "name": "Herald",
+            "types": {Action, _Cantrip, _Cost4, _DeckGuesser, _DeckSeeder, _Overpay},
+        },
+        {
+            "name": "Journeyman",
+            "types": {Action, _Cost5, _DeckGuesser, _Draw3, _Sifter, _Terminal},
+        },
+        {"name": "Masterpiece", "types": {Treasure, _Cost3, _Money1, _Overpay}},
+        {
+            "name": "Merchant Guild",
+            "types": {Action, _Buys, _Cost5, _Money1, _Payload, _Terminal},
+        },
+        {"name": "Plaza", "types": {Action, _Coffer1, _Cost4, _Discard, _Village}},
+        {
+            "name": "Stonemason",
+            "types": {Action, _Cost2, _Overpay, _Remodeler, _Trasher},
+        },
+        {
+            "name": "Soothsayer",
+            "types": {Action, Attack, _Cost5, _Curser, _Interactive, _Terminal},
+        },
+        {
+            "name": "Taxman",
+            "types": {
+                Action,
+                Attack,
+                _BadSifter,
+                _Cost4,
+                _Discard,
+                _Remodeler,
+                _Terminal,
+                _Trasher,
+            },
+        },
     ]
 )
 
