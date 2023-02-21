@@ -507,7 +507,10 @@ Intrigue.AddCards(
             "name": "Upgrade",
             "types": {Action, _Cantrip, _Cost5, _Remodeler, _Trasher},
         },
-        {"name": "Wishing Well", "types": {Action, _Cantrip, _Cost3, _DeckGuesser}},
+        {
+            "name": "Wishing Well",
+            "types": {Action, _Cantrip, _Cost3, _DeckGuesser, _Twin},
+        },
     ]
 )
 Intrigue.firstEdition = [
@@ -594,7 +597,7 @@ Seaside.AddCards(
             "name": "Salvager",
             "types": {Action, _Cost4, _Payload, _Terminal, _Thinner},
         },
-        {"name": "Sea Chart", "types": {Action, _Cantrip, _Cost3, _DeckGuesser}},
+        {"name": "Sea Chart", "types": {Action, _Cantrip, _Cost3, _DeckGuesser, _Twin}},
         {
             "name": "Sea Witch",
             "types": {
@@ -915,7 +918,7 @@ Hinterlands.AddCards(
             "types": {Treasure, Attack, _Buys, _Cost5, _Curser, _Money2},
         },
         {"name": "Crossroads", "types": {Action, _Cost2, _Drawload, _Village}},
-        {"name": "Develop", "types": {Action, _Cost3, _Remodeler, _Terminal}},
+        {"name": "Develop", "types": {Action, _Cost3, _Remodeler, _Terminal, _Twin}},
         {"name": "Farmland", "types": {Victory, _Cost6, _Remodeler, _Trasher}},
         {
             "name": "Fool's Gold",
@@ -977,7 +980,7 @@ Hinterlands.AddCards(
             "types": {Action, _Buys, _Cost4, _Money2, _Money4, _Terminal},
         },
         {"name": "Oasis", "types": {Action, _Cost3, _Discard, _Peddler}},
-        {"name": "Scheme", "types": {Action, _Cantrip, _Cost3, _DeckSeeder}},
+        {"name": "Scheme", "types": {Action, _Cantrip, _Cost3, _DeckSeeder, _Twin}},
         # since this is terminal, I'm calling it a Money3
         {
             "name": "Souk",
@@ -1115,6 +1118,7 @@ DarkAges.AddCards(
                 _Gainer3,
                 _Terminal,
                 _Trasher,
+                _Twin,
                 _Village,
             },
         },
@@ -1229,6 +1233,7 @@ DarkAges.AddCards(
                 _Payload,
                 _Sifter,
                 _Terminal,
+                _Twin,
             },
         },
         {
@@ -1243,6 +1248,7 @@ DarkAges.AddCards(
                 _Money2,
                 _Thinner,
                 _Terminal,
+                _Twin,
             },
         },
         {"name": "Vagrant", "types": {Action, _Cantrip, _Cost2, _Sifter}},
