@@ -214,6 +214,8 @@ Knight = CardType("Knight")
 Looter = CardType("Looter")
 _Potion = CardType("_Potion")
 Reaction = CardType("Reaction")
+Reserve = CardType("Reserve")
+Traveller = CardType("Traveller")
 Treasure = CardType("Treasure")
 Victory = CardType("Victory")
 # for enhanced randomizer
@@ -231,6 +233,7 @@ _Choice = CardType("_Choice")  # gives you a set of choices
 _Command4 = CardType(
     "_Command4"
 )  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
+_Cost0 = CardType("_Cost0")  # card costs 0
 _Cost1 = CardType("_Cost1")  # card costs 1
 _Cost2 = CardType("_Cost2")  # card costs 2
 _Cost3 = CardType("_Cost3")  # card costs 3
@@ -270,6 +273,9 @@ _Filler = CardType(
 _FreeAction = CardType(
     "_FreeAction"
 )  # card that can play itself without expending actions
+_FreeEvent = CardType(
+    "_FreeEvent"
+)  # event that gives you one buy, and therefore essentially costs no buy.
 _FutureAction = CardType(
     "_FutureAction"
 )  # gives a bonus action at the start of next turn
@@ -279,6 +285,9 @@ _FutureMoney1 = CardType(
 _FutureMoney2 = CardType(
     "_FutureMoney2"
 )  # gives you future money, such as by giving 2 coffers or gaining a gold
+_FutureMoney4 = CardType(
+    "_FutureMoney4"
+)  # gives you future money, such as by giving gaining 2 spoils
 _Gainer3 = CardType(
     "_Gainer3"
 )  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
@@ -1388,55 +1397,172 @@ Guilds.AddCards(
 Adventures = Set("Adventures")
 Adventures.AddCards(
     [
-        "Coin of the Realm",
-        "Distant Lands",
-        "Relic",
-        "Treasure Trove",
-        {"name": "Page", "types": {Action}},
-        {"name": "Peasant", "types": {Action}},
-        {"name": "Ratcatcher", "types": {Action}},
-        {"name": "Raze", "types": {Action}},
-        {"name": "Amulet", "types": {Action}},
-        {"name": "Caravan Guard", "types": {Action}},
-        {"name": "Dungeon", "types": {Action}},
-        {"name": "Gear", "types": {Action}},
-        {"name": "Guide", "types": {Action}},
-        {"name": "Duplicate", "types": {Action}},
-        {"name": "Magpie", "types": {Action}},
-        {"name": "Messenger", "types": {Action}},
-        {"name": "Miser", "types": {Action}},
-        {"name": "Port", "types": {Action}},
-        {"name": "Ranger", "types": {Action}},
-        {"name": "Transmogrify", "types": {Action}},
-        {"name": "Artificer", "types": {Action}},
-        {"name": "Bridge Troll", "types": {Action}},
-        {"name": "Giant", "types": {Action}},
-        {"name": "Haunted Woods", "types": {Action}},
-        {"name": "Lost City", "types": {Action}},
-        {"name": "Royal Carriage", "types": {Action}},
-        {"name": "Storyteller", "types": {Action}},
-        {"name": "Swamp Hag", "types": {Action}},
-        {"name": "Wine Merchant", "types": {Action}},
-        {"name": "Hireling", "types": {Action}},
-        {"name": "Alms", "types": {Event}},
-        {"name": "Borrow", "types": {Event}},
-        {"name": "Quest", "types": {Event}},
-        {"name": "Save", "types": {Event}},
-        {"name": "Scouting Party", "types": {Event}},
-        {"name": "Travelling Fair", "types": {Event}},
-        {"name": "Bonfire", "types": {Event}},
-        {"name": "Expedition", "types": {Event}},
-        {"name": "Ferry", "types": {Event}},
-        {"name": "Plan", "types": {Event}},
-        {"name": "Mission", "types": {Event}},
-        {"name": "Pilgrimage", "types": {Event}},
-        {"name": "Ball", "types": {Event}},
-        {"name": "Raid", "types": {Event}},
-        {"name": "Seaway", "types": {Event}},
-        {"name": "Lost Arts", "types": {Event}},
-        {"name": "Training", "types": {Event}},
-        {"name": "Inheritance", "types": {Event}},
-        {"name": "Pathfinding", "types": {Event}},
+        # Kingdom
+        {
+            "name": "Amulet",
+            "types": {
+                Action,
+                Duration,
+                _Choice,
+                _Cost3,
+                _FutureMoney1,
+                _FutureMoney2,
+                _Money1,
+                _Money2,
+                _Thinner,
+            },
+        },
+        {
+            "name": "Artificer",
+            "types": {Action, _Cost5, _Discard, _Peddler, _Remodeler},
+        },
+        {
+            "name": "Bridge Troll",
+            "types": {Action, Duration, Attack, _Buys, _Cost5, _CostReducer, _Terminal},
+        },
+        {
+            "name": "Caravan Guard",
+            "types": {
+                Action,
+                Duration,
+                Reaction,
+                _AttackResponse,
+                _Cantrip,
+                _Cost3,
+                _FutureMoney1,
+                _MultiType,
+            },
+        },
+        {
+            "name": "Coin of the Realm",
+            "types": {Treasure, Reserve, _Cost2, _Money1, _Village},
+        },
+        {
+            "name": "Distant Lands",
+            "types": {Action, Victory, Reserve, _Cost5, _MultiType},
+        },
+        {"name": "Dungeon", "types": {Action, Duration, _Chainer, _Cost3, _Sifter}},
+        {
+            "name": "Gear",
+            "types": {Action, Duration, _Cost3, _DeckSeeder, _Draw2, _Terminal, _Twin},
+        },
+        {"name": "Duplicate", "types": {Action, Reserve, _Cost4, _Gainer6, _Terminal}},
+        {
+            "name": "Giant",
+            "types": {
+                Action,
+                Attack,
+                _BadThinner,
+                _Cost5,
+                _Curser,
+                _Discard,
+                _Money1,
+                _Money5,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Guide",
+            "types": {Action, Reserve, _Cantrip, _Cost3, _Discard, _Draw5},
+        },
+        {
+            "name": "Haunted Woods",
+            "types": {
+                Action,
+                Duration,
+                Attack,
+                _BadSifter,
+                _Cost5,
+                _Draw3,
+                _MultiType,
+                _Terminal,
+            },
+        },
+        {"name": "Hireling", "types": {Action, Duration, _Cost6, _Terminal}},
+        {
+            "name": "Lost City",
+            "types": {Action, _Cost5, _Draw2, _Interactive, _Village},
+        },
+        {"name": "Magpie", "types": {Action, _Cantrip, _Cost4, _DeckGuesser}},
+        {
+            "name": "Messenger",
+            "types": {Action, _Buys, _Cost4, _Gainer4, _Money2, _SpeedUp, _Terminal},
+        },
+        {"name": "Miser", "types": {Action, _Cost4, _Payload, _Terminal, _Thinner}},
+        {
+            "name": "Page",
+            "types": {
+                Action,
+                Traveller,
+                _BadSifter,
+                _BadThinner,
+                _Cantrip,
+                _Cost2,
+                _Draw2,
+                _FutureMoney1,
+                _FutureMoney2,
+                _Money1,
+                _Money2,
+                _SplitPile,
+                _Village,
+            },
+        },
+        {
+            "name": "Peasant",
+            "types": {
+                Action,
+                Traveller,
+                _Buys,
+                _Cost2,
+                _Discard,
+                _Draw2,
+                _Money1,
+                _Money2,
+                _Payload,
+                _Splitter,
+                _Terminal,
+            },
+        },
+        {"name": "Port", "types": {Action, _Cost4, _Village}},
+        {"name": "Ranger", "types": {Action, _Buys, _Cost4, _Draw5, _Terminal}},
+        {"name": "Ratcatcher", "types": {Action, Reserve, _Cantrip, _Cost2, _Thinner}},
+        {"name": "Raze", "types": {Action, _Cantrip, _Cost2, _Sifter, _Thinner}},
+        {"name": "Relic", "types": {Treasure, Attack, _Cost5, _Money2}},
+        {
+            "name": "Royal Carriage",
+            "types": {Action, Reserve, _Chainer, _Cost5, _Splitter},
+        },
+        {"name": "Storyteller", "types": {Action, _Cantrip, _Cost5, _Drawload}},
+        {
+            "name": "Swamp Hag",
+            "types": {Action, Duration, Attack, _Cost5, _Curser, _Money3, _Terminal},
+        },
+        {
+            "name": "Transmogrify",
+            "types": {Action, Reserve, _Chainer, _Cost4, _Remodeler, _Trasher},
+        },
+        {"name": "Treasure Trove", "types": {Treasure, _Cost5, _FutureMoney2, _Junker}},
+        {"name": "Wine Merchant", "types": {Action, _Buys, _Cost5, _Money4, _Terminal}},
+        # Landscapes
+        {"name": "Alms", "types": {Event, _Cost0, _Gainer4}},
+        {"name": "Ball", "types": {Event, _Cost5, _Gainer4}},
+        {"name": "Bonfire", "types": {Event, _Cost3, _Thinner}},
+        {"name": "Borrow", "types": {Event, _Cost0, _FreeEvent, _Money1}},
+        {"name": "Expedition", "types": {Event, _Cost3, _Draw2}},
+        {"name": "Ferry", "types": {Event, _Cost3, _CostReducer}},
+        {"name": "Inheritance", "types": {Event, _Command4, _Cost7}},
+        {"name": "Lost Arts", "types": {Event, _Chainer, _Cost6}},
+        {"name": "Mission", "types": {Event, _Cost4, _Draw5}},
+        {"name": "Quest", "types": {Event, _Cost0, _Discard, _FutureMoney2}},
+        {"name": "Pathfinding", "types": {Event, _Cost8, _Drawload}},
+        {"name": "Pilgrimage", "types": {Event, _Cost4, _Gainer6}},
+        {"name": "Plan", "types": {Event, _Cost3, _Thinner}},
+        {"name": "Raid", "types": {Event, _Cost5, _Payload}},
+        {"name": "Save", "types": {Event, _Cost1, _DeckSeeder, _FreeEvent}},
+        {"name": "Scouting Party", "types": {Event, _Cost2, _FreeEvent, _Sifter}},
+        {"name": "Seaway", "types": {Event, _Buys, _Cost5, _Gainer4}},
+        {"name": "Training", "types": {Event, _Cost6, _FutureMoney1}},
+        {"name": "Travelling Fair", "types": {Event, _Buys, _Cost2, _DeckSeeder}},
     ]
 )
 
