@@ -1615,6 +1615,7 @@ Empires.AddCards(
                 _Terminal,
                 _Thinner,
                 _TrashGainer,
+                _Twin,
             },
         },
         {
@@ -1654,7 +1655,16 @@ Empires.AddCards(
         },
         {
             "name": "Farmers' Market",
-            "types": {Action, Gathering, _Buys, _Cost3, _Money2, _Terminal, _Victory},
+            "types": {
+                Action,
+                Gathering,
+                _Buys,
+                _Cost3,
+                _Money2,
+                _Terminal,
+                _Twin,
+                _Victory,
+            },
         },
         {"name": "Forum", "types": {Action, _Buys, _Cantrip, _Cost5, _Sifter}},
         {
@@ -1671,6 +1681,7 @@ Empires.AddCards(
                 _Payload,
                 _SplitPile,
                 _Terminal,
+                _Twin,
                 _Trasher,
             },
         },
