@@ -208,8 +208,10 @@ Trait = CardType("Trait")
 # Potion isn't written on the card
 Action = CardType("Action")
 Attack = CardType("Attack")
+Castle = CardType("Castle")
 Command = CardType("Command")
 Duration = CardType("Duration")
+Gathering = CardType("Gathering")
 Knight = CardType("Knight")
 Looter = CardType("Looter")
 _Potion = CardType("_Potion")
@@ -233,6 +235,9 @@ _Choice = CardType("_Choice")  # gives you a set of choices
 _Command4 = CardType(
     "_Command4"
 )  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
+_Command5 = CardType(
+    "_Command5"
+)  # allows you to play cards costing up to 5. Synnergizes with _Cost5.
 _Cost0 = CardType("_Cost0")  # card costs 0
 _Cost1 = CardType("_Cost1")  # card costs 1
 _Cost2 = CardType("_Cost2")  # card costs 2
@@ -242,11 +247,14 @@ _Cost5 = CardType("_Cost5")  # card costs 5
 _Cost6 = CardType("_Cost6")  # card costs 6
 _Cost7 = CardType("_Cost7")  # card costs 7
 _Cost8 = CardType("_Cost8")  # card costs 8
+_Cost14 = CardType("_Cost14")  # card costs 14
+_Cost16 = CardType("_Cost16")  # card costs 16
 _CostReducer = CardType(
     "_CostReducer"
 )  # reduces the cost of cards. synnergizes with _Buys and _Gainer
 _CostVaries = CardType("_CostVaries")  # Gets cheaper or more expensive.
 _Curser = CardType("_Curser")  # gives other players curses
+_Debt = CardType("_Debt")  # using this card gives you debt
 _DeckGuesser = CardType(
     "_DeckGuesser"
 )  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
@@ -287,7 +295,10 @@ _FutureMoney2 = CardType(
 )  # gives you future money, such as by giving 2 coffers or gaining a gold
 _FutureMoney4 = CardType(
     "_FutureMoney4"
-)  # gives you future money, such as by giving gaining 2 spoils
+)  # gives you future money, such as by gaining 2 spoils
+_FutureMoney6 = CardType(
+    "_FutureMoney6"
+)  # gives you future money, such as by gaining 3 golds
 _Gainer3 = CardType(
     "_Gainer3"
 )  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
@@ -310,6 +321,7 @@ _Money2 = CardType("_Money2")  # gives +2 Money
 _Money3 = CardType("_Money3")  # gives +3 Money
 _Money4 = CardType("_Money4")  # gives +4 Money
 _Money5 = CardType("_Money5")  # gives +5 Money
+_Money6 = CardType("_Money6")  # gives +6 Money
 _MultiType = CardType("_MultiType")  # has more than two types
 _MultiTypeLove = CardType("_MultiTypeLove")  # Wants cards with more than two types
 _NamesMatter = CardType(
@@ -1569,65 +1581,185 @@ Adventures.AddCards(
 Empires = Set("Empires")
 Empires.AddCards(
     [
-        "Castles",
-        "Capital",
-        "Charm",
-        {"name": "Engineer", "types": {Action}},
-        {"name": "City Quarter", "types": {Action}},
-        {"name": "Overlord", "types": {Action}},
-        {"name": "Royal Blacksmith", "types": {Action}},
-        {"name": "Encampment/Plunder", "types": {Action}},
-        {"name": "Patrician/Emporium", "types": {Action}},
-        {"name": "Settlers/Bustling Village", "types": {Action}},
-        {"name": "Catapult/Rocks", "types": {Action}},
-        {"name": "Chariot Race", "types": {Action}},
-        {"name": "Enchantress", "types": {Action}},
-        {"name": "Farmers' Market", "types": {Action}},
-        {"name": "Gladiator/Fortune", "types": {Action}},
-        {"name": "Sacrifice", "types": {Action}},
-        {"name": "Temple", "types": {Action}},
-        {"name": "Villa", "types": {Action}},
-        {"name": "Archive", "types": {Action}},
-        {"name": "Crown", "types": {Action}},
-        {"name": "Forum", "types": {Action}},
-        {"name": "Groundskeeper", "types": {Action}},
-        {"name": "Legionary", "types": {Action}},
-        {"name": "Wild Hunt", "types": {Action}},
-        {"name": "Advance", "types": {Event}},
-        {"name": "Annex", "types": {Event}},
-        {"name": "Banquet", "types": {Event}},
-        {"name": "Conquest", "types": {Event}},
-        {"name": "Delve", "types": {Event}},
-        {"name": "Dominate", "types": {Event}},
-        {"name": "Donate", "types": {Event}},
-        {"name": "Salt the Earth", "types": {Event}},
-        {"name": "Ritual", "types": {Event}},
-        {"name": "Tax", "types": {Event}},
-        {"name": "Trade", "types": {Event}},
-        {"name": "Triumph", "types": {Event}},
-        {"name": "Wedding", "types": {Event}},
-        {"name": "Windfall", "types": {Event}},
-        {"name": "Aqueduct", "types": {Landmark}},
-        {"name": "Arena", "types": {Landmark}},
-        {"name": "Bandit Fort", "types": {Landmark}},
-        {"name": "Basilica", "types": {Landmark}},
-        {"name": "Baths", "types": {Landmark}},
-        {"name": "Battlefield", "types": {Landmark}},
-        {"name": "Colonnade", "types": {Landmark}},
-        {"name": "Defiled Shrine", "types": {Landmark}},
-        {"name": "Fountain", "types": {Landmark}},
-        {"name": "Keep", "types": {Landmark}},
-        {"name": "Labyrinth", "types": {Landmark}},
-        {"name": "Mountain Pass", "types": {Landmark}},
-        {"name": "Museum", "types": {Landmark}},
-        {"name": "Obelisk", "types": {Landmark}},
-        {"name": "Orchard", "types": {Landmark}},
-        {"name": "Palace", "types": {Landmark}},
-        {"name": "Tomb", "types": {Landmark}},
-        {"name": "Tower", "types": {Landmark}},
-        {"name": "Triumphal Arch", "types": {Landmark}},
-        {"name": "Wall", "types": {Landmark}},
-        {"name": "Wolf Den", "types": {Landmark}},
+        {"name": "Archive", "types": {Action, Duration, _Cantrip, _Cost5, _Draw3}},
+        {"name": "Capital", "types": {Treasure, _Cost5, _Buys, _Debt, _Money6}},
+        {
+            "name": "Castles",
+            "types": {
+                Action,
+                Treasure,
+                Victory,
+                Castle,
+                _CostVaries,
+                _FutureMoney1,
+                _Money1,
+                _Payload,
+                _SplitPile,
+                _Trasher,
+                _Victory,
+            },
+        },
+        {
+            "name": "Catapult/Rocks",
+            "types": {
+                Action,
+                Attack,
+                Treasure,
+                _Cost3,
+                _Cost4,
+                _Curser,
+                _Discard,
+                _FutureMoney1,
+                _Money1,
+                _SplitPile,
+                _Terminal,
+                _Thinner,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Chariot Race",
+            "types": {Action, _Cantrip, _Cost3, _Money1, _Victory},
+        },
+        {
+            "name": "Charm",
+            "types": {Treasure, _Buys, _Choice, _Cost5, _Gainer6, _Money2},
+        },
+        {
+            "name": "City Quarter",
+            "types": {Action, _Cost8, _Debt, _Drawload, _ExtraCost, _Village},
+        },
+        {
+            "name": "Encampment/Plunder",
+            "types": {
+                Action,
+                Treasure,
+                _Cost2,
+                _Cost5,
+                _Draw2,
+                _Money2,
+                _SplitPile,
+                _Victory,
+                _Village,
+            },
+        },
+        {"name": "Crown", "types": {Action, Treasure, _Cost5, _Splitter, _Terminal}},
+        {
+            "name": "Enchantress",
+            "types": {Action, Attack, Duration, _Cost3, _Draw2, _Terminal},
+        },
+        {
+            "name": "Engineer",
+            "types": {Action, _Cost4, _Debt, _ExtraCost, _Gainer4, _Trasher},
+        },
+        {
+            "name": "Farmers' Market",
+            "types": {Action, Gathering, _Buys, _Cost3, _Money2, _Terminal, _Victory},
+        },
+        {"name": "Forum", "types": {Action, _Buys, _Cantrip, _Cost5, _Sifter}},
+        {
+            "name": "Gladiator/Fortune",
+            "types": {
+                Action,
+                Treasure,
+                _Buys,
+                _Cost3,
+                _Cost16,
+                _Debt,
+                _ExtraCost,
+                _Money3,
+                _Payload,
+                _SplitPile,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {"name": "Groundskeeper", "types": {Action, _Cantrip, _Cost5, _Victory}},
+        {
+            "name": "Legionary",
+            "types": {Action, Attack, _Cost5, _Discard, _Money3, _Terminal},
+        },
+        {
+            "name": "Overlord",
+            "types": {Action, Command, _Command5, _Cost8, _Debt, _ExtraCost, _Terminal},
+        },
+        {
+            "name": "Patrician/Emporium",
+            "types": {Action, _Cantrip, _Cost2, _Cost5, _Draw2, _Peddler, _Victory},
+        },
+        {
+            "name": "Royal Blacksmith",
+            "types": {Action, _Cost8, _Debt, _Discard, _Draw5, _Terminal},
+        },
+        {
+            "name": "Sacrifice",
+            "types": {
+                Action,
+                _Choice,
+                _Cost4,
+                _Draw2,
+                _Money2,
+                _Trasher,
+                _TrashGainer,
+                _Victory,
+            },
+        },
+        {
+            "name": "Settlers/Bustling Village",
+            "types": {Action, _Cantrip, _Cost2, _Cost5, _Money1, _SplitPile, _Village},
+        },
+        {
+            "name": "Temple",
+            "types": {Action, Gathering, _Cost4, _Terminal, _Thinner, _Victory},
+        },
+        {"name": "Villa", "types": {Action, _Buys, _Cost4, _Money1, _Village}},
+        {"name": "Wild Hunt", "types": {Action, _Cost5, _Draw3, _Terminal, _Victory}},
+        # Event cards
+        {"name": "Advance", "types": {Event, _Cost0, _Gainer6, _Trasher}},
+        {
+            "name": "Annex",
+            "types": {Event, _Cost8, _Debt, _ExtraCost, _Sifter, _Victory},
+        },
+        {"name": "Banquet", "types": {Event, _Cost3, _Gainer5, _Junker}},
+        {"name": "Conquest", "types": {Event, _Cost6, _FutureMoney2, _Victory}},
+        {"name": "Delve", "types": {Event, _Cost2, _FreeEvent, _FutureMoney1}},
+        {"name": "Dominate", "types": {Event, _Cost14, _Victory}},
+        {
+            "name": "Donate",
+            "types": {Event, _Cost8, _Debt, _ExtraCost, _SpeedUp, _Thinner},
+        },
+        {"name": "Salt the Earth", "types": {Event, _Cost4, _Trasher, _Victory}},
+        {"name": "Ritual", "types": {Event, _Cost4, _Curser, _Trasher, _Victory}},
+        {"name": "Tax", "types": {Event, _Cost2, _Debt}},
+        {"name": "Trade", "types": {Event, _Cost5, _FutureMoney2, _Trasher}},
+        {"name": "Triumph", "types": {Event, _Cost5, _Debt, _ExtraCost, _Victory}},
+        {
+            "name": "Wedding",
+            "types": {Event, _Cost7, _Debt, _ExtraCost, _FutureMoney2, _Victory},
+        },
+        {"name": "Windfall", "types": {Event, _Cost5, _FutureMoney6}},
+        # Landmark Cards
+        {"name": "Aqueduct", "types": {Landmark, _Victory}},
+        {"name": "Arena", "types": {Landmark, _Discard, _Victory}},
+        {"name": "Bandit Fort", "types": {Landmark, _Curser}},
+        {"name": "Basilica", "types": {Landmark, _Victory}},
+        {"name": "Baths", "types": {Landmark, _Victory}},
+        {"name": "Battlefield", "types": {Landmark, _Victory}},
+        {"name": "Colonnade", "types": {Landmark, _Victory}},
+        {"name": "Defiled Shrine", "types": {Landmark, _Curser, _Victory}},
+        {"name": "Fountain", "types": {Landmark, _Junker, _Victory}},
+        {"name": "Keep", "types": {Landmark, _Victory}},
+        {"name": "Labyrinth", "types": {Landmark, _Victory}},
+        {"name": "Mountain Pass", "types": {Landmark, _Debt, _Victory}},
+        {"name": "Museum", "types": {Landmark, _NamesMatter, _Victory}},
+        {"name": "Obelisk", "types": {Landmark, _Victory}},
+        {"name": "Orchard", "types": {Landmark, _NamesMatter, _Victory}},
+        {"name": "Palace", "types": {Landmark, _Victory}},
+        {"name": "Tomb", "types": {Landmark, _TrashGainer, _Victory}},
+        {"name": "Tower", "types": {Landmark, _Empty, _Victory}},
+        {"name": "Triumphal Arch", "types": {Landmark, _Victory}},
+        {"name": "Wall", "types": {Landmark, _Curser}},
+        {"name": "Wolf Den", "types": {Landmark, _Curser}},
     ]
 )
 
