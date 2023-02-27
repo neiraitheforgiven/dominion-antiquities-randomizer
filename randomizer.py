@@ -210,10 +210,14 @@ Action = CardType("Action")
 Attack = CardType("Attack")
 Castle = CardType("Castle")
 Command = CardType("Command")
+Doom = CardType("Doom")
 Duration = CardType("Duration")
+Fate = CardType("Fate")
 Gathering = CardType("Gathering")
+Heirloom = CardType("Heirloom")
 Knight = CardType("Knight")
 Looter = CardType("Looter")
+Night = CardType("Night")
 _Potion = CardType("_Potion")
 Reaction = CardType("Reaction")
 Reserve = CardType("Reserve")
@@ -1777,42 +1781,198 @@ Empires.AddCards(
 Nocturne = Set("Nocturne")
 Nocturne.AddCards(
     [
-        "Cemetary + Haunted Mirror (Heirloom)",
-        "Changeling",
-        "Cobbler",
-        "Crypt",
-        "Den of Sin",
-        "Devil's Workshop",
-        "Exorcist",
-        "Guardian",
-        "Ghost Town",
-        "Idol",
-        "Monastery",
-        "Night Watchman",
-        "Raider",
-        "Vampire",
-        {"name": "Bard", "types": {Action}},
-        {"name": "Blessed Village", "types": {Action}},
-        {"name": "Conclave", "types": {Action}},
-        {"name": "Cursed Village", "types": {Action}},
-        {"name": "Druid", "types": {Action}},
-        {"name": "Faithful Hound", "types": {Action}},
+        {"name": "Bard", "types": {Action, Fate, _Cost4, _Money2, _Terminal}},
+        {"name": "Blessed Village", "types": {Action, Fate, _Cost4, _Village}},
+        {
+            "name": "Cemetery + Haunted Mirror (Heirloom)",
+            "types": {
+                Victory,
+                Treasure,
+                Heirloom,
+                _Cost4,
+                _Money1,
+                _Thinner,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Changeling",
+            "types": {Night, _Cost3, _Trasher, _TrashGainer},
+        },
+        {
+            "name": "Cobbler",
+            "types": {Night, Duration, _Cost4, _Gainer4, _SpeedUp},
+        },
+        {"name": "Conclave", "types": {Action, _Cost4, _Money2, _Village}},
+        {"name": "Crypt", "types": {Night, Duration, _Cost5, _DeckSeeder, _Payload}},
+        {"name": "Cursed Village", "types": {Action, Doom, _Cost5, _Filler, _Village}},
+        {"name": "Den of Sin", "types": {Night, Duration, _Cost5, _Draw2}},
+        {"name": "Devil's Workshop", "types": {Night, _Cost4, _FutureMoney2, _Gainer4}},
+        {"name": "Druid", "types": {Action, Fate, _Buys, _Cost2, _Terminal}},
+        {"name": "Exorcist", "types": {Night, _Cost4, _Trasher, _TrashGainer}},
+        {
+            "name": "Faithful Hound",
+            "types": {
+                Action,
+                Reaction,
+                _Cost2,
+                _DeckSeeder,
+                _DiscardResponse,
+                _Draw2,
+                _Terminal,
+            },
+        },
         {
             "name": "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
-            "types": {Action},
+            "types": {
+                Action,
+                Fate,
+                Treasure,
+                Heirloom,
+                _Cost3,
+                _Discard,
+                _FutureMoney1,
+                _Money1,
+                _Terminal,
+            },
         },
-        {"name": "Leprechaun", "types": {Action}},
-        {"name": "Necromancer + Zombies", "types": {Action}},
-        {"name": "Pixie + Goat (Heirloom)", "types": {Action}},
-        {"name": "Pooka + Cursed Gold (Heirloom)", "types": {Action}},
-        {"name": "Sacred Grove", "types": {Action}},
-        {"name": "Secret Cave + Magic Lamp (Heirloom)", "types": {Action}},
-        {"name": "Shepherd + Pasture (Heirloom)", "types": {Action}},
-        {"name": "Skulk", "types": {Action}},
-        {"name": "Tormentor", "types": {Action}},
-        {"name": "Tracker + Pouch (Heirloom)", "types": {Action}},
-        {"name": "Tragic Hero", "types": {Action}},
-        {"name": "Werewolf", "types": {Action}},
+        {
+            "name": "Guardian",
+            "types": {Night, Duration, _AttackResponse, _Cost2, _Money1},
+        },
+        {"name:": "Ghost Town", "types": {Night, _Cantrip, _Cost3}},
+        {
+            "name:": "Idol",
+            "types": {Treasure, Attack, Fate, _Cost5, _Curser, _Money2, _MultiType},
+        },
+        {
+            "name": "Leprechaun",
+            "types": {Action, Doom, _Cost3, _FutureMoney2, _Terminal},
+        },
+        {"name": "Monastery", "types": {Night, _Cost2, _Thinner}},
+        {
+            "name": "Necromancer + Zombies",
+            "types": {Action, _Choice, _Cost4, _Discard, _Draw3, _Remodeler, _Trasher},
+        },
+        {"name": "Night Watchman", "types": {Night, _Cost3, _Sifter}},
+        {
+            "name": "Pixie + Goat (Heirloom)",
+            "types": {
+                Action,
+                Fate,
+                Treasure,
+                Heirloom,
+                _Cantrip,
+                _Cost2,
+                _Money1,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Pooka + Cursed Gold (Heirloom)",
+            "types": {
+                Action,
+                Treasure,
+                Heirloom,
+                _Cost5,
+                _Curser,
+                _Draw4,
+                _Money3,
+                _Thinner,
+            },
+        },
+        {
+            "name": "Raider",
+            "types": {Night, Duration, Attack, _Cost6, _Discard, _Money3, _MultiType},
+        },
+        {
+            "name": "Sacred Grove",
+            "types": {Action, Fate, _Buys, _Cost5, _Interactive, _Money3, _Terminal},
+        },
+        {
+            "name": "Secret Cave + Magic Lamp (Heirloom)",
+            "types": {
+                Action,
+                Duration,
+                Treasure,
+                Heirloom,
+                _Cantrip,
+                _Cost3,
+                _Discard,
+                _Money1,
+                _Money3,
+                _TrashGainer,
+                _Twin,
+            },
+        },
+        {
+            "name": "Shepherd + Pasture (Heirloom)",
+            "types": {
+                Action,
+                Treasure,
+                Victory,
+                Heirloom,
+                _Chainer,
+                _Cost4,
+                _Discard,
+                _Drawload,
+                _Money1,
+                _MultiType,
+            },
+        },
+        {
+            "name": "Skulk",
+            "types": {
+                Action,
+                Attack,
+                Doom,
+                _Buys,
+                _Cost4,
+                _FutureMoney2,
+                _MultiType,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Tormentor",
+            "types": {Action, Attack, Doom, _Cost5, _Money2, _MultiType, _Terminal},
+        },
+        {
+            "name": "Tracker + Pouch (Heirloom)",
+            "types": {
+                Action,
+                Fate,
+                Treasure,
+                Heirloom,
+                _Buys,
+                _Cost2,
+                _DeckSeeder,
+                _Money1,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Tragic Hero",
+            "types": {Action, _Buys, _Cost5, _Draw3, _Terminal, _Trasher, _TrashGainer},
+        },
+        {
+            "name": "Vampire",
+            "types": {Night, Attack, Doom, _Cost5, _Gainer5, _MultiType, _Thinner},
+        },
+        {
+            "name": "Werewolf",
+            "types": {
+                Action,
+                Night,
+                Attack,
+                Doom,
+                _Cost5,
+                _Draw3,
+                _MultiType,
+                _Terminal,
+            },
+        },
     ]
 )
 
