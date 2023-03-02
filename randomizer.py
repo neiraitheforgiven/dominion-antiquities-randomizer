@@ -274,6 +274,7 @@ _Draw2 = CardType("_Draw2")  # draws 2 cards
 _Draw3 = CardType("_Draw3")  # draws 3 cards
 _Draw4 = CardType("_Draw4")  # draws 4 cards
 _Draw5 = CardType("_Draw5")  # draws 5 cards
+_Draw7 = CardType("_Draw7")  # draws 7 cards
 _Drawload = CardType("_Drawload")  # draws potentially infinite numbers of cards
 _Empty = CardType("_Empty")  # cares about empty supply piles
 _ExtraCost = CardType(
@@ -343,6 +344,12 @@ _Peddler = CardType(
 _Random = CardType(
     "_Random"
 )  # a card with seemly random effects (as opposed to _Choice)
+_Reveal = CardType(
+    "_Reveal"
+)  # a card that makes you reveal other cards, explicitly using the word reveal
+_RevealResponse = CardType(
+    "_RevealResponse"
+)  # a card that reacts to being revealed, Wants _Reveal or Doom
 _Saver = CardType(
     "_Saver"
 )  # puts cards from this hand into future hands, without discards or draws
@@ -391,12 +398,21 @@ Base.AddCards(
                 _BadThinner,
                 _Cost5,
                 _FutureMoney2,
+                _Reveal,
                 _Terminal,
             },
         },
         {
             "name": "Bureaucrat",
-            "types": {Action, Attack, _Cost4, _DeckSeeder, _FutureMoney1, _Terminal},
+            "types": {
+                Action,
+                Attack,
+                _Cost4,
+                _DeckSeeder,
+                _FutureMoney1,
+                _Reveal,
+                _Terminal,
+            },
         },
         {"name": "Cellar", "types": {Action, _Chainer, _Cost2, _Sifter}},
         {"name": "Chapel", "types": {Action, _Cost2, _Terminal, _Thinner}},
@@ -445,16 +461,24 @@ Base.AddCards(
     ]
 )
 Base.firstEdition = [
-    {"name": "Adventurer", "types": {Action, _Cost6, _Sifter, _Terminal}},
+    {"name": "Adventurer", "types": {Action, _Cost6, _Reveal, _Sifter, _Terminal}},
     {
         "name": "Chancellor",
         "types": {Action, _Cost3, _Money2, _SpeedUp, _Terminal},
     },
     {"name": "Feast", "types": {Action, _Cost4, _Gainer5, _Terminal, _Trasher}},
-    {"name": "Spy", "types": {Action, Attack, _BadSifter, _Cost4, _Sifter}},
+    {"name": "Spy", "types": {Action, Attack, _BadSifter, _Cost4, _Reveal, _Sifter}},
     {
         "name": "Thief",
-        "types": {Action, Attack, _BadThinner, _Cost4, _FutureMoney2, _Terminal},
+        "types": {
+            Action,
+            Attack,
+            _BadThinner,
+            _Cost4,
+            _FutureMoney2,
+            _Reveal,
+            _Terminal,
+        },
     },
     {"name": "Woodcutter", "types": {Action, _Buys, _Cost3, _Money2, _Terminal}},
 ]
@@ -482,7 +506,15 @@ Intrigue.AddCards(
         {"name": "Conspirator", "types": {Action, _Cost4, _Cantrip, _Money2}},
         {
             "name": "Courtier",
-            "types": {Action, _Choice, _Cost5, _FutureMoney2, _Money3, _MultiTypeLove},
+            "types": {
+                Action,
+                _Choice,
+                _Cost5,
+                _FutureMoney2,
+                _Money3,
+                _MultiTypeLove,
+                _Reveal,
+            },
         },
         {
             "name": "Courtyard",
@@ -516,7 +548,10 @@ Intrigue.AddCards(
             "types": {Action, Attack, _Chainer, _Choice, _Cost5, _Money2, _Sifter},
         },
         {"name": "Nobles", "types": {Action, Victory, _Choice, _Cost6}},
-        {"name": "Patrol", "types": {Action, _Cost5, _Draw3, _Sifter, _Terminal}},
+        {
+            "name": "Patrol",
+            "types": {Action, _Cost5, _Draw3, _Reveal, _Sifter, _Terminal},
+        },
         {"name": "Pawn", "types": {Action, _Choice, _Cost2}},
         {
             "name": "Replace",
@@ -532,7 +567,7 @@ Intrigue.AddCards(
             },
         },
         {"name": "Secret Passage", "types": {Action, _Cantrip, _Cost4, _DeckSeeder}},
-        {"name": "Shanty Town", "types": {Action, _Cost3, _Twin, _Village}},
+        {"name": "Shanty Town", "types": {Action, _Cost3, _Reveal, _Twin, _Village}},
         {"name": "Steward", "types": {Action, _Choice, _Cost3, _Terminal}},
         {
             "name": "Swindler",
@@ -552,7 +587,7 @@ Intrigue.AddCards(
         },
         {
             "name": "Wishing Well",
-            "types": {Action, _Cantrip, _Cost3, _DeckGuesser, _Twin},
+            "types": {Action, _Cantrip, _Cost3, _DeckGuesser, _Reveal, _Twin},
         },
     ]
 )
@@ -561,16 +596,24 @@ Intrigue.firstEdition = [
     {"name": "Great Hall", "types": {Action, Victory, _Cantrip, _Cost3}},
     {
         "name": "Saboteur",
-        "types": {Action, Attack, _Downgrader, _Cost5, _Remodeler, _Terminal, _Trasher},
+        "types": {
+            Action,
+            Attack,
+            _Downgrader,
+            _Cost5,
+            _Reveal,
+            _Terminal,
+            _Trasher,
+        },
     },
-    {"name": "Scout", "types": {Action, _Chainer, _Cost4, _Sifter}},
+    {"name": "Scout", "types": {Action, _Chainer, _Cost4, _Reveal, _Sifter}},
     {
         "name": "Secret Chamber",
         "types": {Action, Reaction, _AttackResponse, _Cost2, _DeckSeeder, _Discard},
     },
     {
         "name": "Tribute",
-        "types": {Action, _Choice, _Cost5, _Discard, _MultiTypeLove},
+        "types": {Action, _Choice, _Cost5, _Discard, _MultiTypeLove, _Reveal},
     },
 ]
 Intrigue.secondEdition = Intrigue.cards(
@@ -601,7 +644,10 @@ Seaside.AddCards(
                 _Terminal,
             },
         },
-        {"name": "Cutpurse", "types": {Action, Attack, _Cost4, _Discard, _Money2}},
+        {
+            "name": "Cutpurse",
+            "types": {Action, Attack, _Cost4, _Discard, _Reveal, _Money2},
+        },
         {
             "name": "Fishing Village",
             "types": {Action, Duration, _Cost3, _FutureAction, _Money2, _Village},
@@ -640,7 +686,10 @@ Seaside.AddCards(
             "name": "Salvager",
             "types": {Action, _Cost4, _Payload, _Terminal, _Thinner},
         },
-        {"name": "Sea Chart", "types": {Action, _Cantrip, _Cost3, _DeckGuesser, _Twin}},
+        {
+            "name": "Sea Chart",
+            "types": {Action, _Cantrip, _Cost3, _DeckGuesser, _Reveal, _Twin},
+        },
         {
             "name": "Sea Witch",
             "types": {
@@ -691,12 +740,12 @@ Seaside.AddCards(
 Seaside.firstEdition = [
     {
         "name": "Ambassador",
-        "types": {Action, Attack, _Cost3, _Junker, _Terminal, _Thinner},
+        "types": {Action, Attack, _Cost3, _Junker, _Reveal, _Terminal, _Thinner},
     },
     {"name": "Embargo", "types": {Action, _Cost2, _Curser, _Money2, _Trasher}},
     {
         "name": "Explorer",
-        "types": {Action, _Cost5, _FutureMoney1, _FutureMoney2, _Terminal},
+        "types": {Action, _Cost5, _FutureMoney1, _FutureMoney2, _Reveal, _Terminal},
     },
     {
         "name": "Ghost Ship",
@@ -736,7 +785,7 @@ Alchemy.AddCards(
         },
         {
             "name": "Apothecary",
-            "types": {Action, _Potion, _Cantrip, _ExtraCost, _Sifter},
+            "types": {Action, _Potion, _Cantrip, _ExtraCost, _Reveal, _Sifter},
         },
         {
             "name": "Apprentice",
@@ -746,7 +795,7 @@ Alchemy.AddCards(
             "name": "Familiar",
             "types": {Action, Attack, _Potion, _Cantrip, _Curser, _ExtraCost},
         },
-        {"name": "Golem", "types": {Action, _Potion, _ExtraCost, _Village}},
+        {"name": "Golem", "types": {Action, _Potion, _ExtraCost, _Reveal, _Village}},
         {"name": "Herbalist", "types": {Action, _Buys, _Cost2, _DeckSeeder, _Money1}},
         {
             "name": "Philosopher's Stone",
@@ -766,6 +815,7 @@ Alchemy.AddCards(
                 _Chainer,
                 _Drawload,
                 _ExtraCost,
+                _Reveal,
                 _Sifter,
             },
         },
@@ -840,17 +890,17 @@ Prosperity.AddCards(
         {"name": "Hoard", "types": {Treasure, _Cost6, _Money2, _Payload}},
         {
             "name": "Investment",
-            "types": {Treasure, _Cost4, _Money1, _Thinner, _Victory},
+            "types": {Treasure, _Cost4, _Money1, _Reveal, _Thinner, _Victory},
         },
         {"name": "King's Court", "types": {Action, _Cost7, _Splitter}},
-        {"name": "Magnate", "types": {Action, _Cost5, _Drawload, _Terminal}},
+        {"name": "Magnate", "types": {Action, _Cost5, _Drawload, _Reveal, _Terminal}},
         {"name": "Mint", "types": {Action, _Cost5, _FutureMoney2, _Terminal, _Thinner}},
         {"name": "Monument", "types": {Action, _Cost4, _Money2, _Terminal, _Victory}},
         {"name": "Peddler", "types": {Action, _Cost8, _CostVaries, _Peddler}},
         {"name": "Quarry", "types": {Treasure, _Cost4, _CostReducer, _Money1}},
         {
             "name": "Rabble",
-            "types": {Action, Attack, _BadSifter, _Cost5, _Draw3, _Terminal},
+            "types": {Action, Attack, _BadSifter, _Cost5, _Draw3, _Reveal, _Terminal},
         },
         {
             "name": "Tiara",
@@ -863,7 +913,16 @@ Prosperity.AddCards(
         },
         {
             "name": "Watchtower",
-            "types": {Action, Reaction, _Cost3, _Filler, _SpeedUp, _Terminal, _Thinner},
+            "types": {
+                Action,
+                Reaction,
+                _Cost3,
+                _Filler,
+                _Reveal,
+                _SpeedUp,
+                _Terminal,
+                _Thinner,
+            },
         },
         {"name": "Worker's Village", "types": {Action, _Buys, _Cost4, _Village}},
     ]
@@ -884,7 +943,7 @@ Prosperity.firstEdition = [
             _Victory,
         },
     },
-    {"name": "Loan", "types": {Treasure, _Cost3, _Discard, _Money1, _Thinner}},
+    {"name": "Loan", "types": {Treasure, _Cost3, _Discard, _Money1, _Reveal, _Thinner}},
     {
         "name": "Mountebank",
         "types": {Action, Attack, _Cost5, _Curser, _Junker, _Money2},
@@ -892,7 +951,7 @@ Prosperity.firstEdition = [
     {"name": "Royal Seal", "types": {Treasure, _Cost5, _Money2, _SpeedUp}},
     {"name": "Talisman", "types": {Treasure, _Cost4, _Gainer4, _Money1}},
     {"name": "Trade Route", "types": {Action, _Buys, _Cost3, _Payload, _Thinner}},
-    {"name": "Venture", "types": {Treasure, _Cost5, _Money1, _SpeedUp}},
+    {"name": "Venture", "types": {Treasure, _Cost5, _Money1, _Reveal, _SpeedUp}},
 ]
 Prosperity.secondEdition = Prosperity.cards(
     "Anvil",
@@ -913,18 +972,38 @@ Cornucopia.AddCards(
         {"name": "Fairgrounds", "types": {Victory, _Cost6, _NamesMatter}},
         {
             "name": "Fortune Teller",
-            "types": {Action, Attack, _BadSifter, _Cost3, _Discard, _Money2, _Terminal},
+            "types": {
+                Action,
+                Attack,
+                _BadSifter,
+                _Cost3,
+                _Discard,
+                _Money2,
+                _Reveal,
+                _Terminal,
+            },
         },
         {"name": "Hamlet", "types": {Action, _Buys, _Cost2, _Discard, _Village}},
         {"name": "Horn of Plenty", "types": {Treasure, _Cost5, _NamesMatter, _Trasher}},
         {
             "name": "Menagerie",
-            "types": {Action, _Cantrip, _Cost3, _Draw2, _NamesMatter},
+            "types": {Action, _Cantrip, _Cost3, _Draw2, _NamesMatter, _Reveal},
         },
-        {"name": "Farming Village", "types": {Action, _Cost4, _Sifter, _Village}},
+        {
+            "name": "Farming Village",
+            "types": {Action, _Cost4, _Sifter, _Reveal, _Village},
+        },
         {
             "name": "Harvest",
-            "types": {Action, _Cost5, _Discard, _Money1, _NamesMatter, _Terminal},
+            "types": {
+                Action,
+                _Cost5,
+                _Discard,
+                _Money1,
+                _NamesMatter,
+                _Reveal,
+                _Terminal,
+            },
         },
         {
             "name": "Horse Traders",
@@ -940,13 +1019,22 @@ Cornucopia.AddCards(
                 _Terminal,
             },
         },
-        {"name": "Hunting Party", "types": {Action, _Cantrip, _Cost5, _Draw2}},
+        {"name": "Hunting Party", "types": {Action, _Cantrip, _Cost5, _Draw2, _Reveal}},
         {"name": "Jester", "types": {Action, Attack, _Cost5, _Curser, _Money2}},
         {"name": "Remake", "types": {Action, _Cost4, _Remodeler, _Terminal, _Trasher}},
         {"name": "Tournament", "types": {Action, _Cost4, _Interactive, _Peddler}},
         {
             "name": "Young Witch",
-            "types": {Action, Attack, _Cost4, _Curser, _Kingdom, _Sifter, _Terminal},
+            "types": {
+                Action,
+                Attack,
+                _Cost4,
+                _Curser,
+                _Kingdom,
+                _Reveal,
+                _Sifter,
+                _Terminal,
+            },
         },
     ]
 )
@@ -964,7 +1052,7 @@ Hinterlands.AddCards(
             "name": "Cauldron",
             "types": {Treasure, Attack, _Buys, _Cost5, _Curser, _Money2},
         },
-        {"name": "Crossroads", "types": {Action, _Cost2, _Drawload, _Village}},
+        {"name": "Crossroads", "types": {Action, _Cost2, _Drawload, _Reveal, _Village}},
         {"name": "Develop", "types": {Action, _Cost3, _Remodeler, _Terminal, _Twin}},
         {"name": "Farmland", "types": {Victory, _Cost6, _Remodeler, _Trasher}},
         {
@@ -1006,7 +1094,10 @@ Hinterlands.AddCards(
             },
         },
         {"name": "Highway", "types": {Action, _Cantrip, _Cost5, _CostReducer}},
-        {"name": "Inn", "types": {Action, _Cost5, _DeckSeeder, _Sifter, _Village}},
+        {
+            "name": "Inn",
+            "types": {Action, _Cost5, _DeckSeeder, _Reveal, _Sifter, _Village},
+        },
         {
             "name": "Jack of All Trades",
             "types": {
@@ -1088,7 +1179,16 @@ Hinterlands.AddCards(
         },
         {
             "name": "Witch's Hut",
-            "types": {Action, Attack, _Cost5, _Curser, _Discard, _Sifter, _Terminal},
+            "types": {
+                Action,
+                Attack,
+                _Cost5,
+                _Curser,
+                _Discard,
+                _Reveal,
+                _Sifter,
+                _Terminal,
+            },
         },
     ]
 )
@@ -1103,12 +1203,21 @@ Hinterlands.firstEdition = [
     {"name": "Mandarin", "types": {Action, _Cost5, _DeckSeeder, _Money3, _Terminal}},
     {
         "name": "Noble Brigand",
-        "types": {Action, Attack, _BadThinner, _Cost4, _FreeAction, _Money1},
+        "types": {Action, Attack, _BadThinner, _Cost4, _FreeAction, _Money1, _Reveal},
     },
     {"name": "Nomad Camp", "types": {Action, _Buys, _Cost4, _DeckSeeder, _Money2}},
     {
         "name": "Oracle",
-        "types": {Action, Attack, _BadSifter, _Cost3, _Draw2, _Sifter, _Terminal},
+        "types": {
+            Action,
+            Attack,
+            _BadSifter,
+            _Cost3,
+            _Draw2,
+            _Reveal,
+            _Sifter,
+            _Terminal,
+        },
     },
     {"name": "Silk Road", "types": {Victory, _Cost4}},
 ]
@@ -1211,6 +1320,7 @@ DarkAges.AddCards(
                 _Discard,
                 _Draw2,
                 _Money1,
+                _Reveal,
                 _Village,
             },
         },
@@ -1232,6 +1342,7 @@ DarkAges.AddCards(
                 _Gainer3,
                 _Money2,
                 _MultiType,
+                _Reveal,
                 _SplitPile,
                 _Terminal,
                 _Thinner,
@@ -1264,7 +1375,10 @@ DarkAges.AddCards(
                 _TrashGainer,
             },
         },
-        {"name": "Mystic", "types": {Action, _Chainer, _Cost5, _DeckGuesser, _Money2}},
+        {
+            "name": "Mystic",
+            "types": {Action, _Chainer, _Cost5, _DeckGuesser, _Reveal, _Money2},
+        },
         {
             "name": "Pillage",
             "types": {
@@ -1273,11 +1387,12 @@ DarkAges.AddCards(
                 _Cost5,
                 _Discard,
                 _FutureMoney4,
+                _Reveal,
                 _Terminal,
                 _Trasher,
             },
         },
-        {"name": "Poor House", "types": {Action, _Cost1, _Money4, _Terminal}},
+        {"name": "Poor House", "types": {Action, _Cost1, _Money4, _Reveal, _Terminal}},
         {
             "name": "Procession",
             "types": {Action, _Cost4, _Splitter, _Remodeler, _Terminal, _Trasher},
@@ -1298,11 +1413,12 @@ DarkAges.AddCards(
                 _BadThinner,
                 _Cost5,
                 _Money2,
+                _Reveal,
                 _Terminal,
                 _TrashGainer,
             },
         },
-        {"name": "Sage", "types": {Action, _Cantrip, _Cost3, _Sifter}},
+        {"name": "Sage", "types": {Action, _Cantrip, _Cost3, _Reveal, _Sifter}},
         {
             "name": "Scavenger",
             "types": {Action, _Cost4, _Money2, _DeckSeeder, _SpeedUp, _Terminal},
@@ -1350,8 +1466,11 @@ DarkAges.AddCards(
                 _Twin,
             },
         },
-        {"name": "Vagrant", "types": {Action, _Cantrip, _Cost2, _Sifter}},
-        {"name": "Wandering Minstrel", "types": {Action, _Cost4, _Sifter, _Village}},
+        {"name": "Vagrant", "types": {Action, _Cantrip, _Cost2, _Reveal, _Sifter}},
+        {
+            "name": "Wandering Minstrel",
+            "types": {Action, _Cost4, _Reveal, _Sifter, _Village},
+        },
     ]
 )
 
@@ -1360,7 +1479,7 @@ Guilds.AddCards(
     [
         {
             "name": "Advisor",
-            "types": {Action, _BadSifter, _Cantrip, _Cost4, _Discard, _Draw2},
+            "types": {Action, _BadSifter, _Cantrip, _Cost4, _Discard, _Draw2, _Reveal},
         },
         {"name": "Baker", "types": {Action, _Cantrip, _FutureMoney2, _Cost5}},
         {
@@ -1371,14 +1490,33 @@ Guilds.AddCards(
             "name": "Butcher",
             "types": {Action, _Cost5, _FutureMoney2, _Remodeler, _Terminal, _Trasher},
         },
-        {"name": "Doctor", "types": {Action, _Cost3, _Overpay, _Terminal, _Thinner}},
+        {
+            "name": "Doctor",
+            "types": {Action, _Cost3, _Overpay, _Reveal, _Terminal, _Thinner},
+        },
         {
             "name": "Herald",
-            "types": {Action, _Cantrip, _Cost4, _DeckGuesser, _DeckSeeder, _Overpay},
+            "types": {
+                Action,
+                _Cantrip,
+                _Cost4,
+                _DeckGuesser,
+                _DeckSeeder,
+                _Overpay,
+                _Reveal,
+            },
         },
         {
             "name": "Journeyman",
-            "types": {Action, _Cost5, _DeckGuesser, _Draw3, _Sifter, _Terminal},
+            "types": {
+                Action,
+                _Cost5,
+                _DeckGuesser,
+                _Draw3,
+                _Reveal,
+                _Sifter,
+                _Terminal,
+            },
         },
         {"name": "Masterpiece", "types": {Treasure, _Cost3, _Money1, _Overpay}},
         {
@@ -1403,6 +1541,7 @@ Guilds.AddCards(
                 _Cost4,
                 _Discard,
                 _Remodeler,
+                _Reveal,
                 _Terminal,
                 _Trasher,
             },
@@ -1474,6 +1613,7 @@ Adventures.AddCards(
                 _Discard,
                 _Money1,
                 _Money5,
+                _Reveal,
                 _Terminal,
             },
         },
@@ -1499,7 +1639,7 @@ Adventures.AddCards(
             "name": "Lost City",
             "types": {Action, _Cost5, _Draw2, _Interactive, _Village},
         },
-        {"name": "Magpie", "types": {Action, _Cantrip, _Cost4, _DeckGuesser}},
+        {"name": "Magpie", "types": {Action, _Cantrip, _Cost4, _DeckGuesser, _Reveal}},
         {
             "name": "Messenger",
             "types": {Action, _Buys, _Cost4, _Gainer4, _Money2, _SpeedUp, _Terminal},
@@ -1598,6 +1738,7 @@ Empires.AddCards(
                 _FutureMoney1,
                 _Money1,
                 _Payload,
+                _Reveal,
                 _SplitPile,
                 _Trasher,
                 _Victory,
@@ -1624,7 +1765,7 @@ Empires.AddCards(
         },
         {
             "name": "Chariot Race",
-            "types": {Action, _Cantrip, _Cost3, _Money1, _Victory},
+            "types": {Action, _Cantrip, _Cost3, _Money1, _Reveal, _Victory},
         },
         {
             "name": "Charm",
@@ -1632,7 +1773,7 @@ Empires.AddCards(
         },
         {
             "name": "City Quarter",
-            "types": {Action, _Cost8, _Debt, _Drawload, _ExtraCost, _Village},
+            "types": {Action, _Cost8, _Debt, _Drawload, _ExtraCost, _Reveal, _Village},
         },
         {
             "name": "Encampment/Plunder",
@@ -1643,6 +1784,7 @@ Empires.AddCards(
                 _Cost5,
                 _Draw2,
                 _Money2,
+                _Reveal,
                 _SplitPile,
                 _Victory,
                 _Village,
@@ -1683,6 +1825,7 @@ Empires.AddCards(
                 _ExtraCost,
                 _Money3,
                 _Payload,
+                _Reveal,
                 _SplitPile,
                 _Terminal,
                 _Twin,
@@ -1700,11 +1843,20 @@ Empires.AddCards(
         },
         {
             "name": "Patrician/Emporium",
-            "types": {Action, _Cantrip, _Cost2, _Cost5, _Draw2, _Peddler, _Victory},
+            "types": {
+                Action,
+                _Cantrip,
+                _Cost2,
+                _Cost5,
+                _Draw2,
+                _Peddler,
+                _Reveal,
+                _Victory,
+            },
         },
         {
             "name": "Royal Blacksmith",
-            "types": {Action, _Cost8, _Debt, _Discard, _Draw5, _Terminal},
+            "types": {Action, _Cost8, _Debt, _Discard, _Draw5, _Reveal, _Terminal},
         },
         {
             "name": "Sacrifice",
@@ -1884,7 +2036,16 @@ Nocturne.AddCards(
         },
         {
             "name": "Raider",
-            "types": {Night, Duration, Attack, _Cost6, _Discard, _Money3, _MultiType},
+            "types": {
+                Night,
+                Duration,
+                Attack,
+                _Cost6,
+                _Discard,
+                _Money3,
+                _MultiType,
+                _Reveal,
+            },
         },
         {
             "name": "Sacred Grove",
@@ -1979,51 +2140,144 @@ Nocturne.AddCards(
 Renaissance = Set("Renaissance")
 Renaissance.AddCards(
     [
-        "Ducat",
-        "Scepter",
-        "Spices",
-        {"name": "Border Guard", "types": {Action}},
-        {"name": "Lackeys", "types": {Action}},
-        {"name": "Acting Troupe", "types": {Action}},
-        {"name": "Cargo Ship", "types": {Action}},
-        {"name": "Experiment", "types": {Action}},
-        {"name": "Improve", "types": {Action}},
-        {"name": "Flag Bearer", "types": {Action}},
-        {"name": "Hideout", "types": {Action}},
-        {"name": "Inventor", "types": {Action}},
-        {"name": "Mountain Village", "types": {Action}},
-        {"name": "Patron", "types": {Action}},
-        {"name": "Priest", "types": {Action}},
-        {"name": "Research", "types": {Action}},
-        {"name": "Silk Merchant", "types": {Action}},
-        {"name": "Old Witch", "types": {Action}},
-        {"name": "Recruiter", "types": {Action}},
-        {"name": "Scholar", "types": {Action}},
-        {"name": "Sculptor", "types": {Action}},
-        {"name": "Seer", "types": {Action}},
-        {"name": "Swashbuckler", "types": {Action}},
-        {"name": "Treasurer", "types": {Action}},
-        {"name": "Villain", "types": {Action}},
-        {"name": "Cathedral", "types": {Project}},
-        {"name": "City Gate", "types": {Project}},
-        {"name": "Pageant", "types": {Project}},
-        {"name": "Sewers", "types": {Project}},
-        {"name": "Star Chart", "types": {Project}},
-        {"name": "Exploration", "types": {Project}},
-        {"name": "Fair", "types": {Project}},
-        {"name": "Silos", "types": {Project}},
-        {"name": "Sinister Plot", "types": {Project}},
-        {"name": "Academy", "types": {Project}},
-        {"name": "Capitalism", "types": {Project}},
-        {"name": "Fleet", "types": {Project}},
-        {"name": "Guildhall", "types": {Project}},
-        {"name": "Piazza", "types": {Project}},
-        {"name": "Road Network", "types": {Project}},
-        {"name": "Barracks", "types": {Project}},
-        {"name": "Crop Rotation", "types": {Project}},
-        {"name": "Innovation", "types": {Project}},
-        {"name": "Canal", "types": {Project}},
-        {"name": "Citadel", "types": {Project}},
+        {
+            "name": "Acting Troupe",
+            "types": {Action, _Cost3, _Trasher, _TrashGainer, _Terminal, _Village},
+        },
+        {
+            "name": "Border Guard",
+            "types": {
+                Action,
+                _Cantrip,
+                _Cost2,
+                _Cantrip,
+                _DeckSeeder,
+                _Reveal,
+                _Sifter,
+            },
+        },
+        {
+            "name": "Cargo Ship",
+            "types": {Action, Duration, _Cost3, _DeckSeeder, _Money2, _Terminal},
+        },
+        {"name": "Ducat", "types": {Treasure, _Buys, _Cost2, _FutureMoney1, _Trasher}},
+        {"name": "Experiment", "types": {Action, _Cantrip, _Cost3, _Draw2}},
+        {
+            "name": "Flag Bearer",
+            "types": {Action, _Cost4, _Money2, _Terminal, _TrashGainer},
+        },
+        {"name": "Hideout", "types": {Action, _Cost4, _Curser, _Thinner, _Village}},
+        {
+            "name": "Improve",
+            "types": {Action, _Cost3, _Money2, _Remodeler, _Terminal, _Trasher},
+        },
+        {
+            "name": "Inventor",
+            "types": {Action, _Cost4, _CostReducer, _Gainer4, _Terminal},
+        },
+        {"name": "Lackeys", "types": {Action, _Cost2, _Draw2, _Terminal, _Village}},
+        {"name": "Mountain Village", "types": {Action, _Cost4, _Village}},
+        {
+            "name": "Patron",
+            "types": {
+                Action,
+                Reaction,
+                _Chainer,
+                _FutureMoney1,
+                _Money2,
+                _RevealResponse,
+            },
+        },
+        {
+            "name": "Priest",
+            "types": {Action, _Cost4, _Payload, _Money2, _Terminal, _Thinner},
+        },
+        {
+            "name": "Old Witch",
+            "types": {Action, Attack, _Cost5, _Curser, _Draw3, _Interactive, _Trasher},
+        },
+        {
+            "name": "Recruiter",
+            "types": {Action, _Cost5, _Draw2, _Terminal, _Thinner, _Village},
+        },
+        {
+            "name": "Research",
+            "types": {Action, Duration, _Chainer, _Cost4, _Filler, _Thinner},
+        },
+        {"name": "Scepter", "types": {Treasure, _Choice, _Cost5, _Money2, _Splitter}},
+        {"name": "Scholar", "types": {Action, _Cost5, _Discard, _Draw7, _Terminal}},
+        {"name": "Sculptor", "types": {Action, _Cantrip, _Cost5, _Gainer4, _Terminal}},
+        {"name": "Seer", "types": {Action, _Cantrip, _Cost5, _Draw4, _Reveal}},
+        {
+            "name": "Silk Merchant",
+            "types": {
+                Action,
+                _Buys,
+                _Cantrip,
+                _Draw2,
+                _FutureMoney1,
+                _Terminal,
+                _TrashGainer,
+            },
+        },
+        {"name": "Spices", "types": {Treasure, _Buys, _Cost5, _FutureMoney2, _Money2}},
+        {
+            "name": "Swashbuckler",
+            "types": {
+                Action,
+                _Cost5,
+                _Discard,
+                _Draw3,
+                _FutureMoney1,
+                _Payload,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Treasurer",
+            "types": {
+                Action,
+                _Cost5,
+                _Money3,
+                _Payload,
+                _Terminal,
+                _Thinner,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Villain",
+            "types": {
+                Action,
+                Attack,
+                _Cost5,
+                _Discard,
+                _FutureMoney2,
+                _Reveal,
+                _Terminal,
+            },
+        },
+        # Project
+        {"name": "Academy", "types": {Project, _Chainer, _Cost4}},
+        {"name": "Barracks", "types": {Project, _Cost6, _Village}},
+        {"name": "Capitalism", "types": {Project, _Cost5}},
+        {"name": "Cathedral", "types": {Project, _Cost3, _Thinner}},
+        {"name": "Canal", "types": {Project, _Cost7, _CostReducer}},
+        {"name": "Citadel", "types": {Project, _Cost8, _Splitter}},
+        {"name": "City Gate", "types": {Project, _Cost3, _DeckSeeder}},
+        {"name": "Crop Rotation", "types": {Project, _Cost6, _Draw2}},
+        {"name": "Exploration", "types": {Project, _Chainer, _Cost4, _FutureMoney1}},
+        {"name": "Fair", "types": {Project, _Buys, _Cost4}},
+        {"name": "Fleet", "types": {Project, _Cost5, _Draw5}},
+        {"name": "Guildhall", "types": {Project, _Cost5, _FutureMoney1}},
+        {"name": "Innovation", "types": {Project, _Chainer, _Cost6}},
+        {"name": "Pageant", "types": {Project, _Cost3, _FutureMoney1}},
+        {"name": "Piazza", "types": {Project, _Chainer, _Cost5}},
+        {"name": "Road Network", "types": {Project, _Cost5, _Drawload}},
+        {"name": "Sewers", "types": {Project, _Cost3, _Thinner}},
+        {"name": "Silos", "types": {Project, _Cost4, _Sifter}},
+        {"name": "Sinister Plot", "types": {Project, _Cost4, _Drawload}},
+        {"name": "Star Chart", "types": {Project, _Cost3, _DeckSeeder}},
     ]
 )
 
