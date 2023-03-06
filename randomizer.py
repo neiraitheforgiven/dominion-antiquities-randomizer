@@ -198,38 +198,47 @@ class Set(object):
 
 
 # Define card types
-# Landmarky Things
+# Donald X Landmarky Things
 Event = CardType("Event")
 Landmark = CardType("Landmark")
 Project = CardType("Project")
 Way = CardType("Way")
 Ally = CardType("Ally")
 Trait = CardType("Trait")
+# Donald X types
 # Potion isn't written on the card
 Action = CardType("Action")
 Attack = CardType("Attack")
+Augur = CardType("Augur")
 Castle = CardType("Castle")
+Castle = CardType("Castle")
+Clash = CardType("Clash")
 Command = CardType("Command")
 Doom = CardType("Doom")
 Duration = CardType("Duration")
 Fate = CardType("Fate")
+Fort = CardType("Fort")
 Gathering = CardType("Gathering")
 Heirloom = CardType("Heirloom")
 Knight = CardType("Knight")
+Liaison = CardType("Liaison")
 Looter = CardType("Looter")
 Night = CardType("Night")
 _Potion = CardType("_Potion")
 Reaction = CardType("Reaction")
 Reserve = CardType("Reserve")
+Townsfolk = CardType("Townsfolk")
 Traveller = CardType("Traveller")
 Treasure = CardType("Treasure")
 Victory = CardType("Victory")
+Wizard = CardType("Wizard")
 # for enhanced randomizer
 _AttackResponse = CardType(
     "_AttackResponse"
 )  # allows you to respond to attacks. Wants for Attacks
 _BadSifter = CardType("_BadSifter")  # attacks by messing up your deck
 _BadThinner = CardType("_BadThinner")  # attacks by trashing good things
+_BottomSeeder = CardType("_BottomSeeder")  # puts cards on the bottom of your deck.
 _Buys = CardType("_Buys")  # allow you to buy more cards in a turn.
 _Cantrip = CardType(
     "_Cantrip"
@@ -245,6 +254,7 @@ _Command5 = CardType(
 _Cost0 = CardType("_Cost0")  # card costs 0
 _Cost1 = CardType("_Cost1")  # card costs 1
 _Cost2 = CardType("_Cost2")  # card costs 2
+_Cost2Response = CardType("_Cost2Response")  # Wants cards that cost 2
 _Cost3 = CardType("_Cost3")  # card costs 3
 _Cost4 = CardType("_Cost4")  # card costs 4
 _Cost5 = CardType("_Cost5")  # card costs 5
@@ -275,6 +285,7 @@ _Draw2 = CardType("_Draw2")  # draws 2 cards
 _Draw3 = CardType("_Draw3")  # draws 3 cards
 _Draw4 = CardType("_Draw4")  # draws 4 cards
 _Draw5 = CardType("_Draw5")  # draws 5 cards
+_Draw6 = CardType("_Draw6")  # draws 6 cards
 _Draw7 = CardType("_Draw7")  # draws 7 cards
 _Drawload = CardType("_Drawload")  # draws potentially infinite numbers of cards
 _Empty = CardType("_Empty")  # cares about empty supply piles
@@ -2478,72 +2489,246 @@ Menagerie.AddCards(
 Allies = Set("Allies")
 Allies.AddCards(
     [
-        "Bauble",
-        "Contract",
-        {"name": "Sycophant", "types": {Action}},
-        {
-            "name": "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
-            "types": {Action},
-        },
         {
             "name": "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
-            "types": {Action},
+            "types": {
+                Action,
+                Attack,
+                Augur,
+                _BottomSeeder,
+                _Buys,
+                _CostVaries,
+                _Curser,
+                _DeckGuesser,
+                _DeckSeeder,
+                _Draw2,
+                _Money3,
+                _MultiTypeLove,
+                _SpeedUp,
+                _Thinner,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Barbarian",
+            "types": {Action, Attack, _Cost5, _Curser, _Downgrader, _Money2, _Trasher},
+        },
+        {
+            "name": "Bauble",
+            "types": {Treasure, Liaison, _Buys, _Choice, _Cost2, _DeckSeeder, _Money1},
+        },
+        {
+            "name": "Broker",
+            "types": {
+                Action,
+                Liaison,
+                _Cost4,
+                _Drawload,
+                _Payload,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+                _TrashGainer,
+                _Village,
+            },
+        },
+        {
+            "name": "Capital City",
+            "types": {Action, _Cost5, _Discard, _Draw2, _Money2, _Village},
+        },
+        {
+            "name": "Carpenter",
+            "types": {
+                Action,
+                _Chainer,
+                _Cost4,
+                _Gainer4,
+                _Remodeler,
+                _Terminal,
+                _Trasher,
+            },
         },
         {
             "name": "Clashes: Battle Plan + Archer + Warlord + Territory",
-            "types": {Action},
+            "types": {
+                Action,
+                Attack,
+                Duration,
+                Victory,
+                Clash,
+                _BadSifter,
+                _Cantrip,
+                _CostVaries,
+                _Draw2,
+                _Empty,
+                _Money2,
+                _MultiType,
+                _Payload,
+            },
         },
-        {"name": "Forts: Tent + Garrison + Hill Fort + Stronghold", "types": {Action}},
-        {"name": "Merchant Camp", "types": {Action}},
-        {"name": "Importer", "types": {Action}},
+        {
+            "name": "Contract",
+            "types": {
+                Treasure,
+                Duration,
+                Liaison,
+                _Chainer,
+                _Cost5,
+                _Money2,
+                _MultiType,
+                _Saver,
+            },
+        },
+        {"name": "Courier", "types": {Action, _Chainer, _Cost4, _Discard, _Money1}},
+        {
+            "name": "Forts: Tent + Garrison + Hill Fort + Stronghold",
+            "types": {
+                Action,
+                Victory,
+                Duration,
+                Fort,
+                _Cantrip,
+                _CostVaries,
+                _DeckSeeder,
+                _Draw3,
+                _Drawload,
+                _Gainer4,
+                _Money2,
+                _Money3,
+                _MultiType,
+                _Terminal,
+            },
+        },
+        {"name": "Emissary", "types": {Action, Liaison, _Cantrip, _Draw3, _Terminal}},
+        {
+            "name": "Importer",
+            "types": {
+                Action,
+                Duration,
+                Liaison,
+                _Cost3,
+                _Gainer5,
+                _MultiType,
+                _Terminal,
+            },
+        },
+        {"name": "Galleria", "types": {Action, _Buys, _Cost5, _Money3}},
+        {
+            "name": "Guildmaster",
+            "types": {Action, Liaison, _Cost5, _Discard, _Money3, _Terminal},
+        },
+        {
+            "name": "Highwayman",
+            "types": {Action, Duration, Attack, _Cost5, _Draw3, _MultiType, _Terminal},
+        },
+        {"name": "Hunter", "types": {Action, _Cantrip, _Cost5, _Reveal, _Sifter}},
+        {"name": "Innkeeper", "types": {Action, _Cantrip, _Choice, _Cost4, _Sifter}},
+        {
+            "name": "Marquis",
+            "types": {Action, _Buys, _Cost6, _Discard, _Drawload, _Terminal},
+        },
+        {
+            "name": "Merchant Camp",
+            "types": {Action, _Cost3, _DeckSeeder, _Money1, _Village},
+        },
+        {
+            "name": "Modify",
+            "types": {Action, _Choice, _Cost5, _Remodeler, _Thinner, _Trasher},
+        },
         {
             "name": "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
             "types": {Action},
         },
-        {"name": "Sentinel", "types": {Action}},
-        {"name": "Underling", "types": {Action}},
-        {"name": "Wizards: Student, Conjurer, Sorcerer, Lich", "types": {Action}},
-        {"name": "Broker", "types": {Action}},
-        {"name": "Carpenter", "types": {Action}},
-        {"name": "Courier", "types": {Action}},
-        {"name": "Innkeeper", "types": {Action}},
-        {"name": "Royal Galley", "types": {Action}},
-        {"name": "Town", "types": {Action}},
-        {"name": "Barbarian", "types": {Action}},
-        {"name": "Capital City", "types": {Action}},
-        {"name": "Emissary", "types": {Action}},
-        {"name": "Galleria", "types": {Action}},
-        {"name": "Guildmaster", "types": {Action}},
-        {"name": "Highwayman", "types": {Action}},
-        {"name": "Hunter", "types": {Action}},
-        {"name": "Modify", "types": {Action}},
-        {"name": "Skirmisher", "types": {Action}},
-        {"name": "Specialist", "types": {Action}},
-        {"name": "Swap", "types": {Action}},
-        {"name": "Marquis", "types": {Action}},
-        {"name": "Architects' Guild", "types": {Ally}},
-        {"name": "Band of Nomads", "types": {Ally}},
-        {"name": "Cave Dwellers", "types": {Ally}},
-        {"name": "Circle of Witches", "types": {Ally}},
-        {"name": "City-state", "types": {Ally}},
-        {"name": "Coastal Haven", "types": {Ally}},
-        {"name": "Crafters' Guild", "types": {Ally}},
-        {"name": "Desert Guides", "types": {Ally}},
-        {"name": "Family of Inventors", "types": {Ally}},
-        {"name": "Fellowship of Scribes", "types": {Ally}},
-        {"name": "Forest Dwellers", "types": {Ally}},
-        {"name": "Gang of Pickpockets", "types": {Ally}},
-        {"name": "Island Folk", "types": {Ally}},
-        {"name": "League of Bankers", "types": {Ally}},
-        {"name": "League of Shopkeepers", "types": {Ally}},
-        {"name": "Market Towns", "types": {Ally}},
-        {"name": "Mountain Folk", "types": {Ally}},
-        {"name": "Order of Astrologers", "types": {Ally}},
-        {"name": "Order of Masons", "types": {Ally}},
-        {"name": "Peaceful Cult", "types": {Ally}},
-        {"name": "Plateau Shepherds", "types": {Ally}},
-        {"name": "Trappers' Lodge", "types": {Ally}},
-        {"name": "Woodworkers' Guild", "types": {Ally}},
+        {
+            "name": "Royal Galley",
+            "types": {Action, Duration, _Chainer, _Cost4, _Splitter},
+        },
+        {"name": "Sentinel", "types": {Action, _Cost3, _Sifter, _Terminal, _Thinner}},
+        {
+            "name": "Sycophant",
+            "types": {
+                Action,
+                Liaison,
+                _Chainer,
+                _Cost2,
+                _Discard,
+                _Money3,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Skirmisher",
+            "types": {Action, Attack, _AttackResponse, _Cost5, _Discard, _Peddler},
+        },
+        {
+            "name": "Specialist",
+            "types": {Action, _Cost5, _Gainer6, _Splitter, _Terminal},
+        },
+        {"name": "Swap", "types": {Action, _Cantrip, _Cost5, _Gainer5, _Remodeler}},
+        {"name": "Town", "types": {Action, _Buys, _Choice, _Cost4, _Money2, _Village}},
+        {
+            "name": "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+            "types": {
+                Action,
+                Townsfolk,
+                _Choice,
+                _CostVaries,
+                _Discard,
+                _Draw2,
+                _Filler,
+                _FutureMoney1,
+                _Money2,
+                _Sifter,
+            },
+        },
+        {"name": "Underling", "types": {Action, Liaison, _Cantrip, _Cost3}},
+        {
+            "name": "Wizards: Student, Conjurer, Sorcerer, Lich",
+            "types": {
+                Action,
+                Duration,
+                Liaison,
+                Attack,
+                Wizard,
+                _Cantrip,
+                _Chainer,
+                _CostVaries,
+                _Curser,
+                _DeckGuesser,
+                _DeckSeeder,
+                _Draw6,
+                _Gainer4,
+                _Gainer5,
+                _Saver,
+                _Thinner,
+                _TrashGainer,
+                _Village,
+            },
+        },
+        # Allies
+        {"name": "Architects' Guild", "types": {Ally, _Gainer5}},
+        {"name": "Band of Nomads", "types": {Ally, _Buys, _Choice}},
+        {"name": "Cave Dwellers", "types": {Ally, _Sifter}},
+        {"name": "Circle of Witches", "types": {Ally, _Curser}},
+        {"name": "City-state", "types": {Ally, _Chainer}},
+        {"name": "Coastal Haven", "types": {Ally, _Saver}},
+        {"name": "Crafters' Guild", "types": {Ally, _DeckSeeder, _Gainer4}},
+        {"name": "Desert Guides", "types": {Ally, _Sifter}},
+        {"name": "Family of Inventors", "types": {Ally, _CostReducer}},
+        {"name": "Fellowship of Scribes", "types": {Ally, _Filler}},
+        {"name": "Forest Dwellers", "types": {Ally, _DeckSeeder, _Discard, _Sifter}},
+        {"name": "Gang of Pickpockets", "types": {Ally, _Discard}},
+        {"name": "Island Folk", "types": {Ally, _Draw5}},
+        {"name": "League of Bankers", "types": {Ally, _Payload}},
+        {"name": "League of Shopkeepers", "types": {Ally, _Buys, _Chainer, _Payload}},
+        {"name": "Market Towns", "types": {Ally, _Chainer}},
+        {"name": "Mountain Folk", "types": {Ally, _Draw3}},
+        {"name": "Order of Astrologers", "types": {Ally, _DeckSeeder}},
+        {"name": "Order of Masons", "types": {Ally, _Discard}},
+        {"name": "Peaceful Cult", "types": {Ally, _Thinner}},
+        {"name": "Plateau Shepherds", "types": {Ally, _Cost2Response, _Victory}},
+        {"name": "Trappers' Lodge", "types": {Ally, _DeckSeeder}},
+        {"name": "Woodworkers' Guild", "types": {Ally, _Trasher, _TrashGainer}},
     ]
 )
 
