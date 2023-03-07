@@ -368,6 +368,7 @@ _RevealResponse = CardType(
 _Saver = CardType(
     "_Saver"
 )  # puts cards from this hand into future hands, without discards or draws
+_ShuffleIn = CardType("_ShuffleIn")  # shuffles cards into other piles
 _Sifter = CardType("_Sifter")  # draws and discards cards to improve future hands
 _SpeedUp = CardType("_SpeedUp")  # allows you to get gained cards into play faster
 _SplitPile = CardType("_SplitPile")  # There's more than one named thing in here!
@@ -2990,33 +2991,202 @@ Plunder.AddCards(
 Antiquities = Set("Antiquities")
 Antiquities.AddCards(
     [
-        "Curio",
-        "Discovery",
-        "Gamepiece",
-        {"name": "Inscription", "types": {Action}},
-        {"name": "Agora", "types": {Action}},
-        {"name": "Aquifer", "types": {Action}},
-        {"name": "Tomb Raider", "types": {Action}},
-        {"name": "Dig", "types": {Action}},
-        {"name": "Moundbuilder Village", "types": {Action}},
-        {"name": "Encroach", "types": {Action}},
-        {"name": "Stoneworks", "types": {Action}},
-        {"name": "Graveyard", "types": {Action}},
-        {"name": "Inspector", "types": {Action}},
-        {"name": "Archaeologist", "types": {Action}},
-        {"name": "Mission House", "types": {Action}},
-        {"name": "Mendicant", "types": {Action}},
-        {"name": "Profiteer", "types": {Action}},
-        {"name": "Miner", "types": {Action}},
-        {"name": "Pyramid", "types": {Action}},
-        {"name": "Mastermind", "types": {Action}},
-        {"name": "Mausoleum", "types": {Action}},
-        {"name": "Shipwreck", "types": {Action}},
-        {"name": "Collector", "types": {Action}},
-        {"name": "Pharaoh", "types": {Action}},
-        {"name": "Grave Watcher", "types": {Action}},
-        {"name": "Stronghold", "types": {Action}},
-        {"name": "Snake Charmer", "types": {Action}},
+        {
+            "name": "Agora",
+            "types": {
+                Action,
+                Reaction,
+                _Cost5,
+                _Discard,
+                _FutureMoney1,
+                _Money2,
+                _Village,
+            },
+        },
+        {
+            "name": "Aquifer",
+            "types": {Action, _Choice, _Cantrip, _Cost4, _Gainer4, _Money1, _Terminal},
+        },
+        {
+            "name": "Archaeologist",
+            "types": {
+                Action,
+                _Cost7,
+                _DeckSeeder,
+                _Discard,
+                _Draw3,
+                _Sifter,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Collector",
+            "types": {
+                Action,
+                _Cost4,
+                _DeckSeeder,
+                _Interactive,
+                _Remodeler,
+                _Sifter,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {"name": "Curio", "types": {Treasure, _Cost4, _Money1, _Payload}},
+        {"name": "Dig", "types": {Action, _Cost8, _Discard, _Reveal, _Victory}},
+        {
+            "name": "Discovery",
+            "types": {Treasure, _Cost2, _FutureMoney2, _ShuffleIn, _Thinner},
+        },
+        {
+            "name": "Encroach",
+            "types": {
+                Action,
+                _Cost6,
+                _Discard,
+                _Filler,
+                _Remodeler,
+                _Terminal,
+                _Victory,
+            },
+        },
+        {
+            "name": "Gamepiece",
+            "types": {Treasure, Reaction, _Cost3, _Discard, _DiscardResponse, _Money1},
+        },
+        {
+            "name": "Graveyard",
+            "types": {Action, _Cost1, _Gainer6, _TrashGainer, _Village},
+        },
+        {
+            "name": "Grave Watcher",
+            "types": {
+                Action,
+                Attack,
+                _BadSifter,
+                _Chainer,
+                _Choice,
+                _Cost3,
+                _Curser,
+                _Discard,
+                _Junker,
+                _Money2,
+                _Money3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Inscription",
+            "types": {
+                Action,
+                Reaction,
+                _Cost3,
+                _Discard,
+                _DiscardResponse,
+                _Filler,
+                _Sifter,
+            },
+        },
+        {
+            "name": "Inspector",
+            "types": {Action, Attack, _BadSifter, _Cost3, _Discard, _Reveal, _Sifter},
+        },
+        {
+            "name": "Mastermind",
+            "types": {Action, _BottomSeeder, _Cantrip, _Cost5, _Discard, _FreeAction},
+        },
+        {
+            "name": "Mausoleum",
+            "types": {Action, _Choice, _Cost6, _Draw2, _Saver, _Village},
+        },
+        {
+            "name": "Mendicant",
+            "types": {Action, _Cantrip, _Cost4, _Discard, _Junker, _Victory},
+        },
+        {"name": "Miner", "types": {Action, _Cantrip, _Cost3, _Discard, _Remodeler}},
+        {
+            "name": "Mission House",
+            "types": {Action, _Cost5, _Discard, _Draw2, _Victory, _Village},
+        },
+        {
+            "name": "Moundbuilder Village",
+            "types": {Action, _Cost5, _Money3, _Peddler, _Thinner, _Village},
+        },
+        {
+            "name": "Pharaoh",
+            "types": {Action, Attack, _Cost8, _Curser, _Payload, _Terminal, _Trasher},
+        },
+        {"name": "Profiteer", "types": {Action, _Buys, _Chainer, _Cost3, _CostReducer}},
+        {
+            "name": "Pyramid",
+            "types": {Action, _Buys, _Cost5, _Terminal, _Thinner, _Trasher, _Victory},
+        },
+        {
+            "name": "Shipwreck",
+            "types": {
+                Action,
+                _BottomSeeder,
+                _Buys,
+                _Cost3,
+                _Draw2,
+                _FutureMoney1,
+                _FutureMoney2,
+                _Terminal,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Stoneworks",
+            "types": {
+                Action,
+                _Buys,
+                _DeckSeeder,
+                _FutureMoney1,
+                _Trasher,
+                _TrashGainer,
+                _Victory,
+            },
+        },
+        {
+            "name": "Stronghold",
+            "types": {
+                Action,
+                Reaction,
+                _AttackResponse,
+                _Cost5,
+                _SpeedUp,
+                _Trasher,
+                _Terminal,
+                _Thinner,
+            },
+        },
+        {
+            "name": "Tomb Raider",
+            "types": {
+                Action,
+                Attack,
+                _AttackResponse,
+                _Chainer,
+                _Cost3,
+                _Discard,
+                _Gainer6,
+            },
+        },
+        {
+            "name": "Snake Charmer",
+            "types": {
+                Action,
+                Attack,
+                _BottomSeeder,
+                _Chainer,
+                _Cost4,
+                _Curser,
+                _Money1,
+                _Money4,
+                _Thinner,
+                _Trasher,
+            },
+        },
     ]
 )
 
