@@ -3771,6 +3771,26 @@ CannotHaveTraits = set().union(
 )
 
 
+def AdvancedRandomize(cards):
+    """Sketch some thoughts here:
+    1. Get all the Card Types (visible and _internal) and put them in a dict.
+    2. Weight each of the card types based on two things:
+        a.  1 if 5 or more examples in pool
+        b.  0.2 * # if 4 or less in pool
+    3. Randomly pull a Card Type.
+    4. Randomly select a card with that Card Type.
+    5. Remove that Card Type from the list of Card Types so we cannot get it again.
+    6. Rebalance the weight of each Card Type:
+        a.  If it's already in the Results, -0.1 for each card with that type in the Results.
+        b.  For each Card Type in the Results that synnergizes with this card, increase
+            the weight by +0.2, unless there is another example of this Card Type in the
+            Results.
+        c.  For each Card Type in the Results that wants this card, increase the weight by +1
+    7. Repeat steps 3-6 until results are done. Do the same for landscapes.
+    """
+    pass
+
+
 def RandomizeDominion(setNames=None, options=None):
     # Make full list + Events + Landmarks to determine landmarks
     sets = set()
@@ -3838,6 +3858,8 @@ def RandomizeDominion(setNames=None, options=None):
                 Hinterlands.AddCards(Hinterlands.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
+    if options and options.get("advanced-randomization"):
+        return AdvancedRandomize(completeSet)
     # Allies are not randomized
     completeSet = completeSet - AllyCards
     landscapeSet = set()
