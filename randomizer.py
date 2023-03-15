@@ -251,7 +251,9 @@ _Choice = CardType("_Choice")  # gives you a set of choices
 _Cost0 = CardType("_Cost0")  # card costs 0
 _Cost1 = CardType("_Cost1")  # card costs 1
 _Cost2 = CardType("_Cost2")  # card costs 2
-_Cost2Response = CardType("_Cost2Response")  # Wants cards that cost 2
+_Cost2Response = CardType(
+    "_Cost2Response", wantsTypes=[_Cost2]
+)  # Wants cards that cost 2
 _Cost3 = CardType("_Cost3")  # card costs 3
 _Cost4 = CardType("_Cost4")  # card costs 4
 _Command4 = CardType(
@@ -277,7 +279,7 @@ _DeckSeeder = CardType(
     "_DeckSeeder",
 )  # allows you to manipulate your deck; synnergizes with _DeckGuesser
 _DeckGuesser = CardType(
-    "_DeckGuesser",
+    "_DeckGuesser", bonusToTypes=["_DeckSeeder"]
 )  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
 _Discard = CardType("_Discard")  # discards cards because sometimes you want to do that
 _DiscardResponse = CardType(
@@ -371,25 +373,27 @@ _Saver = CardType(
     "_Saver"
 )  # puts cards from this hand into future hands, without discards or draws
 _ShuffleIn = CardType("_ShuffleIn")  # shuffles cards into other piles
-_Sifter = CardType("_Sifter")  # draws and discards cards to improve future hands
+_Sifter = CardType(
+    "_Sifter", bonusToTypes=[_Discard]
+)  # draws and discards cards to improve future hands
 _SpeedUp = CardType("_SpeedUp")  # allows you to get gained cards into play faster
 _SplitPile = CardType("_SplitPile")  # There's more than one named thing in here!
 _NamesMatter = CardType(
     "_NamesMatter", [Looter, _FutureMoney2, _Kingdom, _SplitPile]
 )  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
-_Splitter = CardType(
-    "_Splitter"
-)  # allows you to play cards multiple times. Synnergizes with _Cantrip, _Chainer, and _Peddler
 _Terminal = CardType(
     "_Terminal"
 )  # doesn't allow more actions to be played. synnergizes with _Splitter and _Village
+_Splitter = CardType(
+    "_Splitter", bonusToTypes=[_Terminal]
+)  # allows you to play cards multiple times.
 _Thinner = CardType(
     "_Thinner"
 )  # Puts cards into the trash and leaves you with a smaller deck
 _Trasher = CardType("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
 _TrashBenefit = CardType("_TrashBenefit")  # Wants to be trashed
 _TrashGainer = CardType(
-    "_TrashGainer"
+    "_TrashGainer", wantsTypes=[_Trasher]
 )  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
 _Twin = CardType(
     "_Twin"
@@ -399,7 +403,7 @@ _Remodeler = CardType(
 )  # allows you to trash cards and replace them with better cards
 _Victory = CardType("_Victory")  # gains you victory cards or points
 _Village = CardType(
-    "_Village"
+    "_Village", bonusToTypes=[_Terminal]
 )  # replaces itself and allows multiple terminals to be played
 
 # Define sets
