@@ -3904,7 +3904,7 @@ def BasicRandomize(options, completeSet, landscapeSet=[]):
         return [], resultSet, []
 
 
-def RandomizeBase(setNames=None, options=None):
+def RandomizeDominion(setNames=None, options=None):
     # Make full list + landscape cards to determine landscape cards
     sets = set()
     if setNames is None:
