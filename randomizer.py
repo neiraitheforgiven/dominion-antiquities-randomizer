@@ -4,8 +4,8 @@ import random
 AllSets = {}
 
 
-class CardType(object, bonusToTypes=[], wantsTypes=[], badTypes=[]):
-    def __init__(self, name):
+class CardType(object):
+    def __init__(self, name, bonusToTypes=[], wantsTypes=[], badTypes=[]):
         self.name = name
         self.bonusToTypes = bonusToTypes
         self.wantsTypes = wantsTypes
