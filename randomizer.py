@@ -3811,54 +3811,47 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                 * 0.2
             )
         counter = 0
-        while not landscapeSet and counter < 3:
-            while len(resultSet) < 10:
-                # choose a card type:
-                cardType = random.choices(
-                    list(typeDict.keys()), list(typeDict.values())
-                )
-                selectedType = typeDict.pop(cardType)
-                selectedTypes.append(selectedType)
-
-                cardsOfType = [card for card in completeSet if cardType in card.types]
-                card = random.choice(cardsOfType)
-
-                # Categorize the card from the shuffled pile
-                if card.types & {Way}:
-                    waySet.add(card)
-                elif card.types & {Event, Landmark, Project, Trait}:
-                    landscapeSet.add(card)
-                else:
-                    resultSet.add(card)
-
-                counter += 1
-
-                # Rebalance the card type weights
-                badTypes = set()
-                bonusedTypes = []
-                wantedTypes = []
-                for cardType in card.types:
-                    if cardType in typeDict:
-                        typeDict[cardType] = max(0, typeDict[cardType] - 0.1)
-                        for selectedType in selectedTypes:
-                            badTypes.add(badType for badType in selectedType.badTypes)
-                        for bonusType in cardType.bonusToTypes:
-                            if (
-                                bonusType in typeDict
-                                and bonusType not in bonusedTypes
-                                and bonusType not in badTypes
-                            ):
-                                typeDict[bonusType] = typeDict[bonusType] + 0.2
-                                bonusedTypes.append(bonusType)
-                        for wantedType in cardType.wantsTypes:
-                            if (
-                                wantedType in typeDict
-                                and wantedType not in selectedTypes
-                                and wantedType not in wantedTypes
-                                and wantedType not in badTypes
-                            ):
-                                typeDict[wantedType] = typeDict[wantedType] + 1
-                                wantedTypes.append(wantedType)
+        while len(resultSet) < 10:
+            # choose a card type:
+            cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))
+            selectedType = typeDict.pop(cardType)
+            selectedTypes.append(selectedType)
+            cardsOfType = [card for card in completeSet if cardType in card.types]
+            card = random.choice(cardsOfType)
+            # Categorize the card from the shuffled pile
+            if card.types & {Way}:
+                waySet.add(card)
+            elif card.types & {Event, Landmark, Project, Trait}:
+                landscapeSet.add(card)
+            else:
+                resultSet.add(card)
+            counter += 1
+            # Rebalance the card type weights
+            badTypes = set()
+            bonusedTypes = []
+            wantedTypes = []
+            for cardType in card.types:
+                if cardType in typeDict:
+                    typeDict[cardType] = max(0, typeDict[cardType] - 0.1)
+                    for selectedType in selectedTypes:
+                        badTypes.add(badType for badType in selectedType.badTypes)
+                    for bonusType in cardType.bonusToTypes:
+                        if (
+                            bonusType in typeDict
+                            and bonusType not in bonusedTypes
+                            and bonusType not in badTypes
+                        ):
+                            typeDict[bonusType] = typeDict[bonusType] + 0.2
+                            bonusedTypes.append(bonusType)
+                    for wantedType in cardType.wantsTypes:
+                        if (
+                            wantedType in typeDict
+                            and wantedType not in selectedTypes
+                            and wantedType not in wantedTypes
+                            and wantedType not in badTypes
+                        ):
+                            typeDict[wantedType] = typeDict[wantedType] + 1
+                            wantedTypes.append(wantedType)
 
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
