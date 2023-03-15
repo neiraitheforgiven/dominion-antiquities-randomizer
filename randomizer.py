@@ -3780,7 +3780,7 @@ CannotHaveTraits = set().union(
 )
 
 
-def AdvancedRandomize(cards):
+def AdvancedRandomize(options, completeSet, landscapeSet=[]):
     """Sketch some thoughts here:
     1. Get all the Card Types (visible and _internal) and put them in a dict.
     2. Weight each of the card types based on two things:
@@ -3801,8 +3801,44 @@ def AdvancedRandomize(cards):
     pass
 
 
-def RandomizeDominion(setNames=None, options=None):
-    # Make full list + Events + Landmarks to determine landmarks
+def BasicRandomize(options, completeSet, landscapeSet=[]):
+    if landscapeSet:
+        resultSet = set()
+        waySet = set()
+        counter = 0
+        while not landscapeSet and counter < 3:
+            # Shuffle all cards
+            cards = iter(random.sample(completeSet, len(completeSet)))
+
+            # Categorize cards from the shuffled pile
+            while len(resultSet) < 10:
+                card = next(cards)
+                if card.types & {Way}:
+                    waySet.add(card)
+                elif card.types & {Event, Landmark, Project, Trait}:
+                    landscapeSet.add(card)
+                else:
+                    resultSet.add(card)
+
+            counter += 1
+
+        # Get final list of landscape cards
+        if options and options.get("limit-landscapes"):
+            landscapeList = random.sample(waySet, len(waySet))[:1]
+            landscapeList.extend(
+                random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
+            )
+        else:
+            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+            landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+        return landscapeList, resultSet, waySet
+    else:
+        resultSet = set(random.sample(completeSet, 10))
+        return [], resultSet, []
+
+
+def RandomizeBase(setNames=None, options=None):
+    # Make full list + landscape cards to determine landscape cards
     sets = set()
     if setNames is None:
         sets.update(AllSets.values())
@@ -3868,8 +3904,6 @@ def RandomizeDominion(setNames=None, options=None):
                 Hinterlands.AddCards(Hinterlands.secondEdition)
 
     completeSet = set().union(*(cardSet.cards for cardSet in sets))
-    if options and options.get("advanced-randomization"):
-        return AdvancedRandomize(completeSet)
     # Allies are not randomized
     completeSet = completeSet - AllyCards
     landscapeSet = set()
@@ -3880,37 +3914,22 @@ def RandomizeDominion(setNames=None, options=None):
 
         resultSet = set()
         waySet = set()
-        counter = 0
-        while not landscapeSet and counter < 3:
-            # Shuffle all cards
-            cards = iter(random.sample(completeSet, len(completeSet)))
-
-            # Categorize cards from the shuffled pile
-            while len(resultSet) < 10:
-                card = next(cards)
-                if card.types & {Way}:
-                    waySet.add(card)
-                elif card.types & {Event, Landmark, Project, Trait}:
-                    landscapeSet.add(card)
-                else:
-                    resultSet.add(card)
-
-            counter += 1
-
-        # Get final list of landscape cards
-        if options and options.get("limit-landscapes"):
-            landscapeList = random.sample(waySet, len(waySet))[:1]
-            landscapeList.extend(
-                random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
+        if options and options.get("advanced-randomization"):
+            landscapeList, resultSet, waySet = AdvancedRandomize(
+                options, completeSet, landscapeSet
             )
         else:
-            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
-            landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+            landscapeList, resultSet, waySet = BasicRandomize(
+                options, completeSet, landscapeSet
+            )
     else:
         kingdomSet = completeSet
         landscapeList = []
 
-        resultSet = set(random.sample(kingdomSet, 10))
+        if options and options.get("advanced-randomization"):
+            landscapeList, resultSet, waySet = AdvancedRandomize(options, completeSet)
+        else:
+            landscapeList, resultSet, waySet = BasicRandomize(options, completeSet)
 
     # Enforce Alchemy rule
     if (options or {}).get("enforce-alchemy-rule", True):
