@@ -325,16 +325,16 @@ _FutureMoney6 = CardType(
     "_FutureMoney6"
 )  # gives you future money, such as by gaining 3 golds
 _Gainer3 = CardType(
-    "_Gainer3", [_Cost3, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer3", bonusToTypes=[_Cost3, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
 _Gainer4 = CardType(
-    "_Gainer4"[_Cost4, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer4", bonusToTypes=[_Cost4, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 4; synnergizes with _CostReducer, _Cost4
 _Gainer5 = CardType(
-    "_Gainer5"[_Cost5, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer5", bonusToTypes=[_Cost5, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 5; synnergizes with _CostReducer, _Cost5
 _Gainer6 = CardType(
-    "_Gainer6"[_Cost6, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer6", bonusToTypes=[_Cost6, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
 _Kingdom = CardType("_Kingdom")  # Adds cards to the kingdom
 _Interactive = CardType(
@@ -1953,7 +1953,7 @@ Empires.AddCards(
         {"name": "Wall", "types": {Landmark, _Curser}},
         {"name": "Wolf Den", "types": {Landmark, _Curser}},
     ]
-)
+),
 
 Nocturne = Set("Nocturne")
 Nocturne.AddCards(
@@ -2017,9 +2017,9 @@ Nocturne.AddCards(
             "name": "Guardian",
             "types": {Night, Duration, _AttackResponse, _Cost2, _Money1},
         },
-        {"name:": "Ghost Town", "types": {Night, _Cantrip, _Cost3}},
+        {"name": "Ghost Town", "types": {Night, _Cantrip, _Cost3}},
         {
-            "name:": "Idol",
+            "name": "Idol",
             "types": {Treasure, Attack, Fate, _Cost5, _Curser, _Money2, _MultiType},
         },
         {
@@ -3811,7 +3811,7 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                 * 0.2
             )
         counter = 0
-        while len(resultSet) < 10:
+        while len(resultSet) <= 10:
             # choose a card type:
             cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))
             selectedType = typeDict.pop(cardType)
@@ -3981,14 +3981,20 @@ def RandomizeDominion(setNames=None, options=None):
 
         resultSet = set()
         waySet = set()
-        if options and options.get("advanced-randomization"):
-            landscapeList, resultSet, waySet = AdvancedRandomize(
-                options, completeSet, landscapeSet
-            )
-        else:
-            landscapeList, resultSet, waySet = BasicRandomize(
-                options, completeSet, landscapeSet
-            )
+
+        # for testing only
+        landscapeList, resultSet, waySet = AdvancedRandomize(
+            options, completeSet, landscapeSet
+        )
+
+        # if options and options.get("advanced-randomization"):
+        #    landscapeList, resultSet, waySet = AdvancedRandomize(
+        #        options, completeSet, landscapeSet
+        #    )
+        # else:
+        #    landscapeList, resultSet, waySet = BasicRandomize(
+        #        options, completeSet, landscapeSet
+        #    )
     else:
         kingdomSet = completeSet
         landscapeList = []
