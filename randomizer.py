@@ -4,9 +4,12 @@ import random
 AllSets = {}
 
 
-class CardType(object):
+class CardType(object, bonusToTypes=[], wantsTypes=[], badTypes=[]):
     def __init__(self, name):
         self.name = name
+        self.bonusToTypes = bonusToTypes
+        self.wantsTypes = wantsTypes
+        self.badTypes = badTypes
 
 
 class CardList(set):
@@ -234,7 +237,7 @@ Victory = CardType("Victory")
 Wizard = CardType("Wizard")
 # for enhanced randomizer
 _AttackResponse = CardType(
-    "_AttackResponse"
+    "_AttackResponse", wantsTypes=[Attack]
 )  # allows you to respond to attacks. Wants for Attacks
 _BadSifter = CardType("_BadSifter")  # attacks by messing up your deck
 _BadThinner = CardType("_BadThinner")  # attacks by trashing good things
@@ -245,19 +248,19 @@ _Cantrip = CardType(
 )  # card draws and chains, which essentially makes it a free bonus card
 _Chainer = CardType("_Chainer")  # allows you to play another action after it is done
 _Choice = CardType("_Choice")  # gives you a set of choices
-_Command4 = CardType(
-    "_Command4"
-)  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
-_Command5 = CardType(
-    "_Command5"
-)  # allows you to play cards costing up to 5. Synnergizes with _Cost5.
 _Cost0 = CardType("_Cost0")  # card costs 0
 _Cost1 = CardType("_Cost1")  # card costs 1
 _Cost2 = CardType("_Cost2")  # card costs 2
 _Cost2Response = CardType("_Cost2Response")  # Wants cards that cost 2
 _Cost3 = CardType("_Cost3")  # card costs 3
 _Cost4 = CardType("_Cost4")  # card costs 4
+_Command4 = CardType(
+    "_Command4", [_Cost4]
+)  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
 _Cost5 = CardType("_Cost5")  # card costs 5
+_Command5 = CardType(
+    "_Command5", [_Cost5]
+)  # allows you to play cards costing up to 5. Synnergizes with _Cost5.
 _Cost6 = CardType("_Cost6")  # card costs 6
 _Cost7 = CardType("_Cost7")  # card costs 7
 _Cost8 = CardType("_Cost8")  # card costs 8
@@ -265,20 +268,20 @@ _Cost10 = CardType("_Cost10")  # card costs 10
 _Cost14 = CardType("_Cost14")  # card costs 14
 _Cost16 = CardType("_Cost16")  # card costs 16
 _CostReducer = CardType(
-    "_CostReducer"
+    "_CostReducer", [_Buys]
 )  # reduces the cost of cards. synnergizes with _Buys and _Gainer
 _CostVaries = CardType("_CostVaries")  # Gets cheaper or more expensive.
 _Curser = CardType("_Curser")  # gives other players curses
 _Debt = CardType("_Debt")  # using this card gives you debt
-_DeckGuesser = CardType(
-    "_DeckGuesser"
-)  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
 _DeckSeeder = CardType(
-    "_DeckSeeder"
+    "_DeckSeeder",
 )  # allows you to manipulate your deck; synnergizes with _DeckGuesser
+_DeckGuesser = CardType(
+    "_DeckGuesser",
+)  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
 _Discard = CardType("_Discard")  # discards cards because sometimes you want to do that
 _DiscardResponse = CardType(
-    "_DiscardResponse"
+    "_DiscardResponse", wantsTypes=["_Discard"]
 )  # Reaction triggered by discards other than cleanup. Wants _Discard
 _Downgrader = CardType("_Downgrader")  # attack card that does upgrades in reverse
 _Draw2 = CardType("_Draw2")  # draws 2 cards
@@ -293,7 +296,7 @@ _ExtraCost = CardType(
     "_ExtraCost"
 )  # has an extra cost, preventing gainers from gaining it. Bad synnergy with gainers
 _Filler = CardType(
-    "_Filler"
+    "_Filler", [_Discard]
 )  # fills hand up to a certain point; synnergizes with _Discard
 _FreeAction = CardType(
     "_FreeAction"
@@ -320,16 +323,16 @@ _FutureMoney6 = CardType(
     "_FutureMoney6"
 )  # gives you future money, such as by gaining 3 golds
 _Gainer3 = CardType(
-    "_Gainer3"
+    "_Gainer3", [_Cost3, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
 _Gainer4 = CardType(
-    "_Gainer4"
+    "_Gainer4"[_Cost4, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 4; synnergizes with _CostReducer, _Cost4
 _Gainer5 = CardType(
-    "_Gainer5"
+    "_Gainer5"[_Cost5, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 5; synnergizes with _CostReducer, _Cost5
 _Gainer6 = CardType(
-    "_Gainer6"
+    "_Gainer6"[_Cost6, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
 _Kingdom = CardType("_Kingdom")  # Adds cards to the kingdom
 _Interactive = CardType(
@@ -343,16 +346,15 @@ _Money4 = CardType("_Money4")  # gives +4 Money
 _Money5 = CardType("_Money5")  # gives +5 Money
 _Money6 = CardType("_Money6")  # gives +6 Money
 _MultiType = CardType("_MultiType")  # has more than two types
-_MultiTypeLove = CardType("_MultiTypeLove")  # Wants cards with more than two types
-_NamesMatter = CardType(
-    "_NamesMatter"
-)  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
-_Overpay = CardType(
-    "_Overpay"
-)  # Allows you to pay more for more functionality. Synnergizes with _Money3, _Money4, _Money5, _Payload.
+_MultiTypeLove = CardType(
+    "_MultiTypeLove", wantsTypes=[_MultiType]
+)  # Wants cards with more than two types
 _Payload = CardType(
     "_Payload"
 )  # a card that adds variable, potentially infinite money.
+_Overpay = CardType(
+    "_Overpay", [_FutureMoney2, _Money3, _Money4, _Money5, _Money6, _Payload]
+)  # Allows you to pay more for more functionality. Synnergizes with _Money3, _Money4, _Money5, _Payload.
 _Peddler = CardType(
     "_Peddler"
 )  # cantrip that give +1 Money; seperate class for randomizer reasons
@@ -363,7 +365,7 @@ _Reveal = CardType(
     "_Reveal"
 )  # a card that makes you reveal other cards, explicitly using the word reveal
 _RevealResponse = CardType(
-    "_RevealResponse"
+    "_RevealResponse", [Doom, _Reveal]
 )  # a card that reacts to being revealed, Wants _Reveal or Doom
 _Saver = CardType(
     "_Saver"
@@ -372,6 +374,9 @@ _ShuffleIn = CardType("_ShuffleIn")  # shuffles cards into other piles
 _Sifter = CardType("_Sifter")  # draws and discards cards to improve future hands
 _SpeedUp = CardType("_SpeedUp")  # allows you to get gained cards into play faster
 _SplitPile = CardType("_SplitPile")  # There's more than one named thing in here!
+_NamesMatter = CardType(
+    "_NamesMatter", [Looter, _FutureMoney2, _Kingdom, _SplitPile]
+)  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
 _Splitter = CardType(
     "_Splitter"
 )  # allows you to play cards multiple times. Synnergizes with _Cantrip, _Chainer, and _Peddler
@@ -3786,6 +3791,7 @@ def AdvancedRandomize(cards):
             the weight by +0.2, unless there is another example of this Card Type in the
             Results.
         c.  For each Card Type in the Results that wants this card, increase the weight by +1
+        d.  "BadTypes" stop any synnergies from being applied to this type if they are present
     7. Repeat steps 3-6 until results are done. Do the same for landscapes.
     """
     pass
