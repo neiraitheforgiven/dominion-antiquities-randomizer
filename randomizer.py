@@ -11,6 +11,9 @@ class CardType(object):
         self.wantsTypes = wantsTypes
         self.badTypes = badTypes
 
+    def __repr__(self):
+        return self.name
+
 
 class CardList(set):
     def __contains__(self, item):
@@ -3798,24 +3801,29 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
         d.  "BadTypes" stop any synnergies from being applied to this type if they are present
     7. Repeat steps 3-6 until results are done. Do the same for landscapes.
     """
+    print("Advanced Randomization!")
     if landscapeSet:
         resultSet = set()
         waySet = set()
-        typeSet = set(card.types for card in completeSet)
+        typeSet = set()
+        for card in completeSet:
+            typeSet = typeSet | card.types
         typeDict = {}
         selectedTypes = set()
         # set the initial card type weights
         for cardType in typeSet:
             typeDict[cardType] = (
                 min(5, len([card for card in completeSet if cardType in card.types]))
-                * 0.2
+                * 1
             )
+            print([(key, value) for key, value in typeDict.items()])
         counter = 0
-        while len(resultSet) <= 10:
+        while len(resultSet) < 10:
             # choose a card type:
-            cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))
-            selectedType = typeDict.pop(cardType)
-            selectedTypes.append(selectedType)
+            cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
+            print(f"card type is {cardType}")
+            selectedTypes.add(cardType)
+            typeDict.pop(cardType)
             cardsOfType = [card for card in completeSet if cardType in card.types]
             card = random.choice(cardsOfType)
             # Categorize the card from the shuffled pile
@@ -3830,9 +3838,10 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
             badTypes = set()
             bonusedTypes = []
             wantedTypes = []
+            print(f"card is {card}, with types {card.types}")
             for cardType in card.types:
                 if cardType in typeDict:
-                    typeDict[cardType] = max(0, typeDict[cardType] - 0.1)
+                    typeDict[cardType] = max(0, typeDict[cardType] - 1)
                     for selectedType in selectedTypes:
                         badTypes.add(badType for badType in selectedType.badTypes)
                     for bonusType in cardType.bonusToTypes:
@@ -3841,7 +3850,7 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                             and bonusType not in bonusedTypes
                             and bonusType not in badTypes
                         ):
-                            typeDict[bonusType] = typeDict[bonusType] + 0.2
+                            typeDict[bonusType] = typeDict[bonusType] + 2
                             bonusedTypes.append(bonusType)
                     for wantedType in cardType.wantsTypes:
                         if (
@@ -3850,12 +3859,13 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                             and wantedType not in wantedTypes
                             and wantedType not in badTypes
                         ):
-                            typeDict[wantedType] = typeDict[wantedType] + 1
+                            typeDict[wantedType] = typeDict[wantedType] + 10
                             wantedTypes.append(wantedType)
+                print([(key, value) for key, value in typeDict.items()])
 
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
-            landscapeList = random.sample(waySet, len(waySet))[:1]
+            landscapeList = random.sample([way for way in waySet], len(waySet))[:1]
             landscapeList.extend(
                 random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
             )
@@ -3868,10 +3878,11 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
         return [], resultSet, []
 
 
-def BasicRandomize(options, completeSet, landscapeSet=[]):
-    if landscapeSet:
+def BasicRandomize(options, completeSet, landscapes=False):
+    if landscapes:
         resultSet = set()
         waySet = set()
+        landscapeSet = set()
         counter = 0
         while not landscapeSet and counter < 3:
             # Shuffle all cards
@@ -3978,6 +3989,7 @@ def RandomizeDominion(setNames=None, options=None):
     if completeSet & LandscapeCards:
         # Handle sets that include landscape cards
         kingdomSet = completeSet - LandscapeCards
+        landscapeSet = completeSet & LandscapeCards
 
         resultSet = set()
         waySet = set()
