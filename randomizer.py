@@ -1,3 +1,4 @@
+import math
 import random
 
 
@@ -3816,16 +3817,35 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                 min(5, len([card for card in completeSet if cardType in card.types]))
                 * 1
             )
-            print([(key, value) for key, value in typeDict.items()])
         counter = 0
         while len(resultSet) < 10:
             # choose a card type:
             cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-            print(f"card type is {cardType}")
-            selectedTypes.add(cardType)
-            typeDict.pop(cardType)
+            print(
+                f"card type is {cardType}, it had a weight of {typeDict[cardType]} out of {sum(list(typeDict.values()))}"
+            )
             cardsOfType = [card for card in completeSet if cardType in card.types]
-            card = random.choice(cardsOfType)
+            if cardsOfType:
+                cardDict = {}
+                for cardOfType in cardsOfType:
+                    typesForCardOfType = [
+                        typeDict[cardsType]
+                        for cardsType in cardOfType.types
+                        if cardsType in typeDict and cardsType != cardType
+                    ]
+                    print(f"{cardOfType} has {typesForCardOfType}")
+                    cardDict[cardOfType] = math.ceil(
+                        sum(typesForCardOfType) / len(typesForCardOfType)
+                    )
+                selectedTypes.add(cardType)
+                typeDict.pop(cardType)
+            else:
+                typeDict.pop(cardType)
+                continue
+            card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
+            print(
+                f"card is {card}, it had a weight of {cardDict[card]} out of {sum(list(cardDict.values()))}"
+            )
             # Categorize the card from the shuffled pile
             if card.types & {Way}:
                 waySet.add(card)
@@ -3850,7 +3870,7 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                             and bonusType not in bonusedTypes
                             and bonusType not in badTypes
                         ):
-                            typeDict[bonusType] = typeDict[bonusType] + 2
+                            typeDict[bonusType] = typeDict[bonusType] + 5
                             bonusedTypes.append(bonusType)
                     for wantedType in cardType.wantsTypes:
                         if (
@@ -3859,9 +3879,8 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                             and wantedType not in wantedTypes
                             and wantedType not in badTypes
                         ):
-                            typeDict[wantedType] = typeDict[wantedType] + 10
+                            typeDict[wantedType] = typeDict[wantedType] + 50
                             wantedTypes.append(wantedType)
-                print([(key, value) for key, value in typeDict.items()])
 
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
