@@ -3828,16 +3828,21 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
             cardsOfType = [card for card in completeSet if cardType in card.types]
             if cardsOfType:
                 cardDict = {}
-                for cardOfType in cardsOfType:
+                for cardOfType in reversed(cardsOfType):
                     typesForCardOfType = [
                         typeDict[cardsType]
                         for cardsType in cardOfType.types
                         if cardsType in typeDict and cardsType != cardType
                     ]
-                    print(f"{cardOfType} has {typesForCardOfType}")
-                    cardDict[cardOfType] = math.ceil(
-                        sum(typesForCardOfType) / len(typesForCardOfType)
-                    )
+                    if typesForCardOfType:
+                        cardDict[cardOfType] = math.ceil(
+                            sum(typesForCardOfType) / len(typesForCardOfType)
+                        )
+                        print(
+                            f"{cardOfType} weighs {cardDict[cardOfType]} based on {typesForCardOfType}"
+                        )
+                    else:
+                        cardDict[cardOfType] = 5
                 selectedTypes.add(cardType)
                 typeDict.pop(cardType)
             else:
