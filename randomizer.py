@@ -3811,6 +3811,7 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
             typeSet = typeSet | card.types
         typeDict = {}
         selectedTypes = set()
+        includedTypes = set()
         # set the initial card type weights
         for cardType in typeSet:
             typeDict[cardType] = (
@@ -3860,6 +3861,8 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
             wantedTypes = []
             print(f"card is {card}, with types {card.types}")
             for cardType in card.types:
+                includedTypes.add(cardType)
+            for cardType in card.types:
                 if cardType in typeDict:
                     typeDict[cardType] = max(0, typeDict[cardType] - 1)
                     for selectedType in selectedTypes:
@@ -3870,15 +3873,17 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                             and bonusType not in bonusedTypes
                             and bonusType not in badTypes
                         ):
-                            typeDict[bonusType] = typeDict[bonusType] + 5
+                            print(f"{cardType} adds probability for {bonusType}!")
+                            typeDict[bonusType] = typeDict[bonusType] + 6
                             bonusedTypes.append(bonusType)
                     for wantedType in cardType.wantsTypes:
                         if (
                             wantedType in typeDict
-                            and wantedType not in selectedTypes
+                            and wantedType not in includedTypes
                             and wantedType not in wantedTypes
                             and wantedType not in badTypes
                         ):
+                            print(f"{cardType} wants {wantedType}!")
                             typeDict[wantedType] = typeDict[wantedType] + 50
                             wantedTypes.append(wantedType)
 
