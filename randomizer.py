@@ -3784,7 +3784,7 @@ CannotHaveTraits = set().union(
 )
 
 
-def AdvancedRandomize(options, completeSet, landscapeSet=[]):
+def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
     """Sketch some thoughts here:
     1. Get all the Card Types (visible and _internal) and put them in a dict.
     2. Weight each of the card types based on two things:
@@ -3833,7 +3833,7 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
                     if cardsType in typeDict and cardsType != cardType
                 ]
                 if typesForCardOfType:
-                    cardDict[cardOfType] = math.ceil(
+                    cardDict[cardOfType] = round(
                         sum(typesForCardOfType) / len(typesForCardOfType)
                     )
                     print(
@@ -3899,12 +3899,96 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
         else:
             landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
             landscapeList.extend(random.sample(waySet, len(waySet))[:1])
-        return landscapeList, resultSet, waySet
+        return typeDict, landscapeList, resultSet, waySet
     else:
-        return [], resultSet, []
+        return typeDict, [], resultSet, set()
 
 
-def BasicRandomize(options, completeSet, landscapes=False):
+def AdvancedSample(typeDict, cardSet, num):
+    print("Advanced Sample!")
+    resultSet = set()
+    typeSet = set()
+    for card in cardSet:
+        typeSet = typeSet | card.types
+    selectedTypes = set()
+    includedTypes = set()
+    # set the initial card type weights
+    for cardType in typeSet:
+        typeDict[cardType] = (
+            min(5, len([card for card in cardSet if cardType in card.types])) * 1
+        )
+    counter = 0
+    while len(resultSet) < num:
+        # choose a card type:
+        cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
+        print(
+            f"card type is {cardType}, it had a weight of {typeDict[cardType]} out of {sum(list(typeDict.values()))}"
+        )
+        cardsOfType = [card for card in cardSet if cardType in card.types]
+        if cardsOfType:
+            cardDict = {}
+            for cardOfType in reversed(cardsOfType):
+                typesForCardOfType = [
+                    typeDict[cardsType]
+                    for cardsType in cardOfType.types
+                    if cardsType in typeDict and cardsType != cardType
+                ]
+                if typesForCardOfType:
+                    cardDict[cardOfType] = math.ceil(
+                        sum(typesForCardOfType) / len(typesForCardOfType)
+                    )
+                    print(
+                        f"{cardOfType} weighs {cardDict[cardOfType]} based on {typesForCardOfType}"
+                    )
+                else:
+                    cardDict[cardOfType] = 5
+            selectedTypes.add(cardType)
+            typeDict.pop(cardType)
+        else:
+            typeDict.pop(cardType)
+            continue
+        card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
+        print(
+            f"card is {card}, it had a weight of {cardDict[card]} out of {sum(list(cardDict.values()))}"
+        )
+        resultSet.add(card)
+        counter += 1
+        # Rebalance the card type weights
+        badTypes = set()
+        bonusedTypes = []
+        wantedTypes = []
+        print(f"card is {card}, with types {card.types}")
+        for cardType in card.types:
+            includedTypes.add(cardType)
+        for cardType in card.types:
+            if cardType in typeDict:
+                typeDict[cardType] = max(0, typeDict[cardType] - 1)
+                for selectedType in selectedTypes:
+                    badTypes.add(badType for badType in selectedType.badTypes)
+                for bonusType in cardType.bonusToTypes:
+                    if (
+                        bonusType in typeDict
+                        and bonusType not in bonusedTypes
+                        and bonusType not in badTypes
+                    ):
+                        print(f"{cardType} adds probability for {bonusType}!")
+                        typeDict[bonusType] = typeDict[bonusType] + 6
+                        bonusedTypes.append(bonusType)
+                for wantedType in cardType.wantsTypes:
+                    if (
+                        wantedType in typeDict
+                        and wantedType not in includedTypes
+                        and wantedType not in wantedTypes
+                        and wantedType not in badTypes
+                    ):
+                        print(f"{cardType} wants {wantedType}!")
+                        typeDict[wantedType] = typeDict[wantedType] + 50
+                        wantedTypes.append(wantedType)
+
+    return list(resultSet)
+
+
+def BasicRandomize(options, typeDict, completeSet, landscapes=False):
     if landscapes:
         resultSet = set()
         waySet = set()
@@ -3938,7 +4022,11 @@ def BasicRandomize(options, completeSet, landscapes=False):
         return landscapeList, resultSet, waySet
     else:
         resultSet = set(random.sample(completeSet, 10))
-        return [], resultSet, []
+        return typeDict, [], resultSet, set()
+
+
+def BasicSample(cardSet, num):
+    return random.sample(list(cardSet), num)
 
 
 def RandomizeDominion(setNames=None, options=None):
@@ -4011,6 +4099,7 @@ def RandomizeDominion(setNames=None, options=None):
     # Allies are not randomized
     completeSet = completeSet - AllyCards
     landscapeSet = set()
+    typeDict = {}
 
     if completeSet & LandscapeCards:
         # Handle sets that include landscape cards
@@ -4021,26 +4110,30 @@ def RandomizeDominion(setNames=None, options=None):
         waySet = set()
 
         # for testing only
-        landscapeList, resultSet, waySet = AdvancedRandomize(
-            options, completeSet, landscapeSet
+        typeDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+            options, typeDict, completeSet, landscapeSet
         )
 
         # if options and options.get("advanced-randomization"):
-        #    landscapeList, resultSet, waySet = AdvancedRandomize(
-        #        options, completeSet, landscapeSet
+        #    typeDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+        #        options, typeDict, completeSet, landscapeSet
         #    )
         # else:
-        #    landscapeList, resultSet, waySet = BasicRandomize(
-        #        options, completeSet, landscapeSet
+        #    typeDict, landscapeList, resultSet, waySet = BasicRandomize(
+        #        options, typeDict, completeSet, landscapeSet
         #    )
     else:
         kingdomSet = completeSet
         landscapeList = []
 
         if options and options.get("advanced-randomization"):
-            landscapeList, resultSet, waySet = AdvancedRandomize(options, completeSet)
+            typeDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+                options, typeDict, completeSet
+            )
         else:
-            landscapeList, resultSet, waySet = BasicRandomize(options, completeSet)
+            typeDict, landscapeList, resultSet, waySet = BasicRandomize(
+                options, typeDict, completeSet
+            )
 
     # Enforce Alchemy rule
     if (options or {}).get("enforce-alchemy-rule", True):
@@ -4049,12 +4142,16 @@ def RandomizeDominion(setNames=None, options=None):
             # If there's only 1 Alchemy card, remove Alchemy from the options
             # and draw an addtional Kingdom card
             resultSet -= alchemyCards
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+            resultSet.update(
+                SampleDominion(options, typeDict, kingdomSet - resultSet, 1)
+            )
         elif len(alchemyCards) == 2:
             # If there are only 2 Alchemy cards, pull an additional Alchemy
             # card and randomly remove one non-Alchemy card
             resultSet -= alchemyCards
-            alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
+            alchemyCards.update(
+                SampleDominion(options, typeDict, Alchemy.cards - alchemyCards, 1)
+            )
             resultSet = alchemyCards.union(random.sample(resultSet, 7))
         # If there are 3 or more Alchemy cards, let it lie.
 
@@ -4066,10 +4163,12 @@ def RandomizeDominion(setNames=None, options=None):
             # All eligible Bane cards are already part of the randomized set!
             # Add a new card to the set and pull a Bane from the randomized
             # cards.
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
-            baneCard = random.sample(resultSet & BaneCards, 1)[0]
+            resultSet.update(
+                SampleDominion(options, typeDict, kingdomSet - resultSet, 1)
+            )
+            baneCard = SampleDominion(options, typeDict, resultSet & BaneCards, 1)[0]
         else:
-            baneCard = random.sample(eligibleBanes, 1)[0]
+            baneCard = SampleDominion(options, typeDict, eligibleBanes, 1)[0]
             resultSet.add(baneCard)
 
     # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
@@ -4088,18 +4187,20 @@ def RandomizeDominion(setNames=None, options=None):
             if includeBane:
                 eligibleMice.remove(baneCard)
 
-            mouseCard = random.sample(eligibleMice, 1)[0]
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+            mouseCard = SampleDominion(options, typeDict, eligibleMice, 1)[0]
+            resultSet.update(
+                SampleDominion(options, typeDict, kingdomSet - resultSet, 1)
+            )
             resultSet.remove(mouseCard)
         else:
-            mouseCard = random.sample(eligibleMice, 1)[0]
+            mouseCard = SampleDominion(options, typeDict, eligibleMice, 1)[0]
         mouseSet.add(mouseCard)
 
     fullResults = resultSet.union(landscapeList)
 
     # Check for Colonies and Platinums
     includeColoniesAndPlatinum = Prosperity in sets and PlatinumLove.intersection(
-        random.sample(fullResults, 2)
+        random.sample(fullResults, 1)
     )
 
     # Check for _Potions
@@ -4110,7 +4211,7 @@ def RandomizeDominion(setNames=None, options=None):
 
     # Check for Shelters
     includeShelters = DarkAges in sets and ShelterLove.intersection(
-        random.sample(fullResults, 2)
+        random.sample(fullResults, 1)
     )
     # Check for Ruins
     includeRuins = LooterCards & resultSet
@@ -4246,6 +4347,15 @@ def RandomizeDominion(setNames=None, options=None):
         finalResult.append("Mouse is {}".format(mouseCard))
 
     return [str(card) for card in finalResult]
+
+
+def SampleDominion(options, typeDict, cardSet, num):
+    # Temporary for testing
+    return AdvancedSample(typeDict, cardSet, num)
+    # if options and options.get("advanced-randomization"):
+    #     return AdvancedSample(typeDict, cardSet, num)
+    # else:
+    #     return BasicSample(cardSet, num)
 
 
 if __name__ == "__main__":
