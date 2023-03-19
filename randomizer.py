@@ -3802,7 +3802,6 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
         d.  "BadTypes" stop any synnergies from being applied to this type if they are present
     7. Repeat steps 3-6 until results are done. Do the same for landscapes.
     """
-    print("Advanced Randomization!")
     resultSet = set()
     waySet = set()
     typeSet = set()
@@ -3820,9 +3819,6 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
     while len(resultSet) < 10:
         # choose a card type:
         cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-        print(
-            f"card type is {cardType}, it had a weight of {typeDict[cardType]} out of {sum(list(typeDict.values()))}"
-        )
         cardsOfType = [card for card in completeSet if cardType in card.types]
         if cardsOfType:
             cardDict = {}
@@ -3833,11 +3829,8 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
                     if cardsType in typeDict and cardsType != cardType
                 ]
                 if typesForCardOfType:
-                    cardDict[cardOfType] = round(
-                        sum(typesForCardOfType) / len(typesForCardOfType)
-                    )
-                    print(
-                        f"{cardOfType} weighs {cardDict[cardOfType]} based on {typesForCardOfType}"
+                    cardDict[cardOfType] = int(
+                        round(sum(typesForCardOfType) / len(typesForCardOfType), 0)
                     )
                 else:
                     cardDict[cardOfType] = 5
@@ -3847,9 +3840,6 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
             typeDict.pop(cardType)
             continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
-        print(
-            f"card is {card}, it had a weight of {cardDict[card]} out of {sum(list(cardDict.values()))}"
-        )
         # Categorize the card from the shuffled pile
         if card.types & {Way}:
             waySet.add(card)
@@ -3862,7 +3852,6 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
         badTypes = set()
         bonusedTypes = []
         wantedTypes = []
-        print(f"card is {card}, with types {card.types}")
         for cardType in card.types:
             includedTypes.add(cardType)
         for cardType in card.types:
@@ -3876,7 +3865,6 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
                         and bonusType not in bonusedTypes
                         and bonusType not in badTypes
                     ):
-                        print(f"{cardType} adds probability for {bonusType}!")
                         typeDict[bonusType] = typeDict[bonusType] + 6
                         bonusedTypes.append(bonusType)
                 for wantedType in cardType.wantsTypes:
@@ -3886,7 +3874,6 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
                         and wantedType not in wantedTypes
                         and wantedType not in badTypes
                     ):
-                        print(f"{cardType} wants {wantedType}!")
                         typeDict[wantedType] = typeDict[wantedType] + 50
                         wantedTypes.append(wantedType)
     if landscapeSet:
@@ -3905,7 +3892,6 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
 
 
 def AdvancedSample(typeDict, cardSet, num):
-    print("Advanced Sample!")
     resultSet = set()
     typeSet = set()
     for card in cardSet:
@@ -3921,9 +3907,6 @@ def AdvancedSample(typeDict, cardSet, num):
     while len(resultSet) < num:
         # choose a card type:
         cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-        print(
-            f"card type is {cardType}, it had a weight of {typeDict[cardType]} out of {sum(list(typeDict.values()))}"
-        )
         cardsOfType = [card for card in cardSet if cardType in card.types]
         if cardsOfType:
             cardDict = {}
@@ -3937,9 +3920,6 @@ def AdvancedSample(typeDict, cardSet, num):
                     cardDict[cardOfType] = math.ceil(
                         sum(typesForCardOfType) / len(typesForCardOfType)
                     )
-                    print(
-                        f"{cardOfType} weighs {cardDict[cardOfType]} based on {typesForCardOfType}"
-                    )
                 else:
                     cardDict[cardOfType] = 5
             selectedTypes.add(cardType)
@@ -3948,16 +3928,12 @@ def AdvancedSample(typeDict, cardSet, num):
             typeDict.pop(cardType)
             continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
-        print(
-            f"card is {card}, it had a weight of {cardDict[card]} out of {sum(list(cardDict.values()))}"
-        )
         resultSet.add(card)
         counter += 1
         # Rebalance the card type weights
         badTypes = set()
         bonusedTypes = []
         wantedTypes = []
-        print(f"card is {card}, with types {card.types}")
         for cardType in card.types:
             includedTypes.add(cardType)
         for cardType in card.types:
@@ -3971,7 +3947,6 @@ def AdvancedSample(typeDict, cardSet, num):
                         and bonusType not in bonusedTypes
                         and bonusType not in badTypes
                     ):
-                        print(f"{cardType} adds probability for {bonusType}!")
                         typeDict[bonusType] = typeDict[bonusType] + 6
                         bonusedTypes.append(bonusType)
                 for wantedType in cardType.wantsTypes:
@@ -3981,7 +3956,6 @@ def AdvancedSample(typeDict, cardSet, num):
                         and wantedType not in wantedTypes
                         and wantedType not in badTypes
                     ):
-                        print(f"{cardType} wants {wantedType}!")
                         typeDict[wantedType] = typeDict[wantedType] + 50
                         wantedTypes.append(wantedType)
 
