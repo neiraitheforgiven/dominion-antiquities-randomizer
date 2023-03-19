@@ -3803,95 +3803,93 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
     7. Repeat steps 3-6 until results are done. Do the same for landscapes.
     """
     print("Advanced Randomization!")
+    resultSet = set()
+    waySet = set()
+    typeSet = set()
+    for card in completeSet:
+        typeSet = typeSet | card.types
+    typeDict = {}
+    selectedTypes = set()
+    includedTypes = set()
+    # set the initial card type weights
+    for cardType in typeSet:
+        typeDict[cardType] = (
+            min(5, len([card for card in completeSet if cardType in card.types])) * 1
+        )
+    counter = 0
+    while len(resultSet) < 10:
+        # choose a card type:
+        cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
+        print(
+            f"card type is {cardType}, it had a weight of {typeDict[cardType]} out of {sum(list(typeDict.values()))}"
+        )
+        cardsOfType = [card for card in completeSet if cardType in card.types]
+        if cardsOfType:
+            cardDict = {}
+            for cardOfType in reversed(cardsOfType):
+                typesForCardOfType = [
+                    typeDict[cardsType]
+                    for cardsType in cardOfType.types
+                    if cardsType in typeDict and cardsType != cardType
+                ]
+                if typesForCardOfType:
+                    cardDict[cardOfType] = math.ceil(
+                        sum(typesForCardOfType) / len(typesForCardOfType)
+                    )
+                    print(
+                        f"{cardOfType} weighs {cardDict[cardOfType]} based on {typesForCardOfType}"
+                    )
+                else:
+                    cardDict[cardOfType] = 5
+            selectedTypes.add(cardType)
+            typeDict.pop(cardType)
+        else:
+            typeDict.pop(cardType)
+            continue
+        card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
+        print(
+            f"card is {card}, it had a weight of {cardDict[card]} out of {sum(list(cardDict.values()))}"
+        )
+        # Categorize the card from the shuffled pile
+        if card.types & {Way}:
+            waySet.add(card)
+        elif card.types & {Event, Landmark, Project, Trait}:
+            landscapeSet.add(card)
+        else:
+            resultSet.add(card)
+        counter += 1
+        # Rebalance the card type weights
+        badTypes = set()
+        bonusedTypes = []
+        wantedTypes = []
+        print(f"card is {card}, with types {card.types}")
+        for cardType in card.types:
+            includedTypes.add(cardType)
+        for cardType in card.types:
+            if cardType in typeDict:
+                typeDict[cardType] = max(0, typeDict[cardType] - 1)
+                for selectedType in selectedTypes:
+                    badTypes.add(badType for badType in selectedType.badTypes)
+                for bonusType in cardType.bonusToTypes:
+                    if (
+                        bonusType in typeDict
+                        and bonusType not in bonusedTypes
+                        and bonusType not in badTypes
+                    ):
+                        print(f"{cardType} adds probability for {bonusType}!")
+                        typeDict[bonusType] = typeDict[bonusType] + 6
+                        bonusedTypes.append(bonusType)
+                for wantedType in cardType.wantsTypes:
+                    if (
+                        wantedType in typeDict
+                        and wantedType not in includedTypes
+                        and wantedType not in wantedTypes
+                        and wantedType not in badTypes
+                    ):
+                        print(f"{cardType} wants {wantedType}!")
+                        typeDict[wantedType] = typeDict[wantedType] + 50
+                        wantedTypes.append(wantedType)
     if landscapeSet:
-        resultSet = set()
-        waySet = set()
-        typeSet = set()
-        for card in completeSet:
-            typeSet = typeSet | card.types
-        typeDict = {}
-        selectedTypes = set()
-        includedTypes = set()
-        # set the initial card type weights
-        for cardType in typeSet:
-            typeDict[cardType] = (
-                min(5, len([card for card in completeSet if cardType in card.types]))
-                * 1
-            )
-        counter = 0
-        while len(resultSet) < 10:
-            # choose a card type:
-            cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-            print(
-                f"card type is {cardType}, it had a weight of {typeDict[cardType]} out of {sum(list(typeDict.values()))}"
-            )
-            cardsOfType = [card for card in completeSet if cardType in card.types]
-            if cardsOfType:
-                cardDict = {}
-                for cardOfType in reversed(cardsOfType):
-                    typesForCardOfType = [
-                        typeDict[cardsType]
-                        for cardsType in cardOfType.types
-                        if cardsType in typeDict and cardsType != cardType
-                    ]
-                    if typesForCardOfType:
-                        cardDict[cardOfType] = math.ceil(
-                            sum(typesForCardOfType) / len(typesForCardOfType)
-                        )
-                        print(
-                            f"{cardOfType} weighs {cardDict[cardOfType]} based on {typesForCardOfType}"
-                        )
-                    else:
-                        cardDict[cardOfType] = 5
-                selectedTypes.add(cardType)
-                typeDict.pop(cardType)
-            else:
-                typeDict.pop(cardType)
-                continue
-            card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
-            print(
-                f"card is {card}, it had a weight of {cardDict[card]} out of {sum(list(cardDict.values()))}"
-            )
-            # Categorize the card from the shuffled pile
-            if card.types & {Way}:
-                waySet.add(card)
-            elif card.types & {Event, Landmark, Project, Trait}:
-                landscapeSet.add(card)
-            else:
-                resultSet.add(card)
-            counter += 1
-            # Rebalance the card type weights
-            badTypes = set()
-            bonusedTypes = []
-            wantedTypes = []
-            print(f"card is {card}, with types {card.types}")
-            for cardType in card.types:
-                includedTypes.add(cardType)
-            for cardType in card.types:
-                if cardType in typeDict:
-                    typeDict[cardType] = max(0, typeDict[cardType] - 1)
-                    for selectedType in selectedTypes:
-                        badTypes.add(badType for badType in selectedType.badTypes)
-                    for bonusType in cardType.bonusToTypes:
-                        if (
-                            bonusType in typeDict
-                            and bonusType not in bonusedTypes
-                            and bonusType not in badTypes
-                        ):
-                            print(f"{cardType} adds probability for {bonusType}!")
-                            typeDict[bonusType] = typeDict[bonusType] + 6
-                            bonusedTypes.append(bonusType)
-                    for wantedType in cardType.wantsTypes:
-                        if (
-                            wantedType in typeDict
-                            and wantedType not in includedTypes
-                            and wantedType not in wantedTypes
-                            and wantedType not in badTypes
-                        ):
-                            print(f"{cardType} wants {wantedType}!")
-                            typeDict[wantedType] = typeDict[wantedType] + 50
-                            wantedTypes.append(wantedType)
-
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
             landscapeList = random.sample([way for way in waySet], len(waySet))[:1]
@@ -3903,7 +3901,6 @@ def AdvancedRandomize(options, completeSet, landscapeSet=[]):
             landscapeList.extend(random.sample(waySet, len(waySet))[:1])
         return landscapeList, resultSet, waySet
     else:
-        resultSet = set(random.sample(completeSet, 10))
         return [], resultSet, []
 
 
