@@ -17,13 +17,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 options: {},
             };
 
-            for (var i = 0; i < form.sets.elements.length; i++) {
-                let checkbox = form.sets.elements[i];
+            for (let sets of [form.sets, form["fan-sets"]]) {
+                for (var i = 0; i < sets.elements.length; i++) {
+                    let checkbox = sets.elements[i];
 
-                if (checkbox.className == "set" && checkbox.checked) {
-                    data.sets.push(checkbox.value);
-                } else {
-                    data.options[checkbox.name] = checkbox.checked;
+                    if (checkbox.className == "set" && checkbox.checked) {
+                        data.sets.push(checkbox.value);
+                    } else {
+                        data.options[checkbox.name] = checkbox.checked;
+                    }
                 }
             }
 
@@ -52,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             }
             cards.appendChild(ul);
             cards.scrollIntoView({ behavior: "smooth" });
-            proxy.destroy()
+            proxy.destroy();
         },
         false
     );
