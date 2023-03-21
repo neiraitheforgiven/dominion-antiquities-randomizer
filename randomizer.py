@@ -2026,21 +2026,14 @@ def RandomizeDominion(setNames=None, options=None):
                 "(Empires Landmark): Obelisk (on {})".format(obeliskCard)
             )
 
-    # handle extras
-    extras = set()
-    chosenCards = resultSet
-    if includeMouse:
-        chosenCards.add(mouseCard)
-    if includeBane:
-        chosenCards.add(baneCard)
-
-    for card in chosenCards:
-        extras = extras | card.extras
+    # Handle extras
+    extras = set().union(*(card.extras for card in resultSet))
 
     # Create final card list
     if includeBane:
         # Append Bane Card to end of list
         resultSet.remove(baneCard)
+        extras.update(baneCard.extras)
         finalResult = sorted(resultSet | additionalCards)
         finalResult.append("Bane is {}".format(baneCard))
     else:
@@ -2053,6 +2046,7 @@ def RandomizeDominion(setNames=None, options=None):
         finalResult.append(ally)
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
+        extras.update(mouseCard.extras)
         finalResult.append("Mouse is {}".format(mouseCard))
 
     # append extras at the end
@@ -2061,7 +2055,7 @@ def RandomizeDominion(setNames=None, options=None):
         extras.add("Coffers/Villagers Mat")
     if extras:
         finalResult.append("Extras:")
-        finalResult.extend(extras)
+        finalResult.extend(sorted(extras))
 
     return [str(card) for card in finalResult]
 
