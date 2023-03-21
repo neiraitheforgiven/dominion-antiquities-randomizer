@@ -1721,10 +1721,13 @@ def RandomizeDominion(setNames=None, options=None):
     # Enforce Alchemy rule
     if (options or {}).get("enforce-alchemy-rule", True):
         alchemyCards = Alchemy.cards & resultSet
-        if len(alchemyCards) == 1:
+        if not alchemyCards:
+            kingdomSet -= Alchemy.cards
+        elif len(alchemyCards) == 1:
             # If there's only 1 Alchemy card, remove Alchemy from the options
             # and draw an addtional Kingdom card
             resultSet -= alchemyCards
+            kingdomSet -= Alchemy.cards
             resultSet.update(random.sample(kingdomSet - resultSet, 1))
         elif len(alchemyCards) == 2:
             # If there are only 2 Alchemy cards, pull an additional Alchemy
