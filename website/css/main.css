@@ -130,3 +130,8 @@ fieldset.set-options > span {
 #cards ul li {
     margin-bottom: 8px;
 }
+
+#cards h3 {
+    font-size: 20px;
+    margin-top: 20px;
+}
