@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Website's Symbolic link to python file
+website/scripts/randomizer.py
+
+# Website's config file
+web.config
