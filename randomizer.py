@@ -5,12 +5,17 @@ import random
 AllSets = {}
 
 
-class CardType(object):
-    def __init__(self, name, bonusToTypes=[], wantsTypes=[], badTypes=[]):
-        self.name = name
+class AdvTag(object):
+    def __init__(self, card, bonusToTypes=[], wantsTypes=[], badTypes=[]):
+        self.name = card.name
         self.bonusToTypes = bonusToTypes
         self.wantsTypes = wantsTypes
         self.badTypes = badTypes
+
+
+class CardType(object):
+    def __init__(self, name):
+        self.name = name
 
     def __repr__(self):
         return self.name
@@ -33,7 +38,7 @@ class CardList(set):
 
 
 class Card(object):
-    def __init__(self, name, types=None, cardSet=None):
+    def __init__(self, name, types=None, cardSet=None, advTags=None):
         self.name = name
         self.set = cardSet
 
@@ -43,6 +48,13 @@ class Card(object):
             self.types = set()
         else:
             self.types = set(types)
+
+        if isinstance(advTags, set):
+            self.advTags = advTags
+        elif advTags is None:
+            self.advTags = set()
+        else:
+            self.advTags = set(advTags)
 
     def __hash__(self):
         return hash(str(self))
@@ -199,7 +211,7 @@ class Set(object):
     def potionCards(self):
         if self._potionCards is None:
             self._potionCards = CardList(
-                card for card in self._cards if card.types & {_Potion}
+                card for card in self._cards if card.types & {Potion}
             )
         return self._potionCards
 
@@ -231,7 +243,7 @@ Knight = CardType("Knight")
 Liaison = CardType("Liaison")
 Looter = CardType("Looter")
 Night = CardType("Night")
-_Potion = CardType("_Potion")
+Potion = CardType("Potion")
 Reaction = CardType("Reaction")
 Reserve = CardType("Reserve")
 Townsfolk = CardType("Townsfolk")
@@ -239,174 +251,208 @@ Traveller = CardType("Traveller")
 Treasure = CardType("Treasure")
 Victory = CardType("Victory")
 Wizard = CardType("Wizard")
+
+
 # for enhanced randomizer
-_AttackResponse = CardType(
+# Define card types
+# Donald X Landmarky Things
+Event = CardType("Event")
+Landmark = CardType("Landmark")
+Project = CardType("Project")
+Way = CardType("Way")
+Ally = CardType("Ally")
+Trait = CardType("Trait")
+# Donald X types
+# Potion isn't written on the card
+Action = CardType("Action")
+Attack = CardType("Attack")
+Augur = CardType("Augur")
+Castle = CardType("Castle")
+Castle = CardType("Castle")
+Clash = CardType("Clash")
+Command = CardType("Command")
+Doom = CardType("Doom")
+Duration = CardType("Duration")
+Fate = CardType("Fate")
+Fort = CardType("Fort")
+Gathering = CardType("Gathering")
+Heirloom = CardType("Heirloom")
+Knight = CardType("Knight")
+Liaison = CardType("Liaison")
+Looter = CardType("Looter")
+Night = CardType("Night")
+Potion = CardType("Potion")
+Reaction = CardType("Reaction")
+Reserve = CardType("Reserve")
+Townsfolk = CardType("Townsfolk")
+Traveller = CardType("Traveller")
+Treasure = CardType("Treasure")
+Victory = CardType("Victory")
+Wizard = CardType("Wizard")
+
+_AttackResponse = AdvTag(
     "_AttackResponse", wantsTypes=[Attack]
 )  # allows you to respond to attacks. Wants for Attacks
-_BadSifter = CardType("_BadSifter")  # attacks by messing up your deck
-_BadThinner = CardType("_BadThinner")  # attacks by trashing good things
-_BottomSeeder = CardType("_BottomSeeder")  # puts cards on the bottom of your deck.
-_Buys = CardType("_Buys")  # allow you to buy more cards in a turn.
-_Cantrip = CardType(
+_BadSifter = AdvTag("_BadSifter")  # attacks by messing up your deck
+_BadThinner = AdvTag("_BadThinner")  # attacks by trashing good things
+_BottomSeeder = AdvTag("_BottomSeeder")  # puts cards on the bottom of your deck.
+_Buys = AdvTag("_Buys")  # allow you to buy more cards in a turn.
+_Cantrip = AdvTag(
     "_Cantrip"
 )  # card draws and chains, which essentially makes it a free bonus card
-_Chainer = CardType("_Chainer")  # allows you to play another action after it is done
-_Choice = CardType("_Choice")  # gives you a set of choices
-_Cost0 = CardType("_Cost0")  # card costs 0
-_Cost1 = CardType("_Cost1")  # card costs 1
-_Cost2 = CardType("_Cost2")  # card costs 2
-_Cost2Response = CardType(
+_Chainer = AdvTag("_Chainer")  # allows you to play another action after it is done
+_Choice = AdvTag("_Choice")  # gives you a set of choices
+_Cost0 = AdvTag("_Cost0")  # card costs 0
+_Cost1 = AdvTag("_Cost1")  # card costs 1
+_Cost2 = AdvTag("_Cost2")  # card costs 2
+_Cost2Response = AdvTag(
     "_Cost2Response", wantsTypes=[_Cost2]
 )  # Wants cards that cost 2
-_Cost3 = CardType("_Cost3")  # card costs 3
-_Cost4 = CardType("_Cost4")  # card costs 4
-_Command4 = CardType(
+_Cost3 = AdvTag("_Cost3")  # card costs 3
+_Cost4 = AdvTag("_Cost4")  # card costs 4
+_Command4 = AdvTag(
     "_Command4", [_Cost4]
 )  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
-_Cost5 = CardType("_Cost5")  # card costs 5
-_Command5 = CardType(
+_Cost5 = AdvTag("_Cost5")  # card costs 5
+_Command5 = AdvTag(
     "_Command5", [_Cost5]
 )  # allows you to play cards costing up to 5. Synnergizes with _Cost5.
-_Cost6 = CardType("_Cost6")  # card costs 6
-_Cost7 = CardType("_Cost7")  # card costs 7
-_Cost8 = CardType("_Cost8")  # card costs 8
-_Cost10 = CardType("_Cost10")  # card costs 10
-_Cost14 = CardType("_Cost14")  # card costs 14
-_Cost16 = CardType("_Cost16")  # card costs 16
-_CostReducer = CardType(
+_Cost6 = AdvTag("_Cost6")  # card costs 6
+_Cost7 = AdvTag("_Cost7")  # card costs 7
+_Cost8 = AdvTag("_Cost8")  # card costs 8
+_Cost10 = AdvTag("_Cost10")  # card costs 10
+_Cost14 = AdvTag("_Cost14")  # card costs 14
+_Cost16 = AdvTag("_Cost16")  # card costs 16
+_CostReducer = AdvTag(
     "_CostReducer", [_Buys]
 )  # reduces the cost of cards. synnergizes with _Buys and _Gainer
-_CostVaries = CardType("_CostVaries")  # Gets cheaper or more expensive.
-_Curser = CardType("_Curser")  # gives other players curses
-_Debt = CardType("_Debt")  # using this card gives you debt
-_DeckSeeder = CardType(
+_CostVaries = AdvTag("_CostVaries")  # Gets cheaper or more expensive.
+_Curser = AdvTag("_Curser")  # gives other players curses
+_Debt = AdvTag("_Debt")  # using this card gives you debt
+_DeckSeeder = AdvTag(
     "_DeckSeeder",
 )  # allows you to manipulate your deck; synnergizes with _DeckGuesser
-_DeckGuesser = CardType(
+_DeckGuesser = AdvTag(
     "_DeckGuesser", bonusToTypes=["_DeckSeeder"]
 )  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
-_Discard = CardType("_Discard")  # discards cards because sometimes you want to do that
-_DiscardResponse = CardType(
+_Discard = AdvTag("_Discard")  # discards cards because sometimes you want to do that
+_DiscardResponse = AdvTag(
     "_DiscardResponse", wantsTypes=["_Discard"]
 )  # Reaction triggered by discards other than cleanup. Wants _Discard
-_Downgrader = CardType("_Downgrader")  # attack card that does upgrades in reverse
-_Draw2 = CardType("_Draw2")  # draws 2 cards
-_Draw3 = CardType("_Draw3")  # draws 3 cards
-_Draw4 = CardType("_Draw4")  # draws 4 cards
-_Draw5 = CardType("_Draw5")  # draws 5 cards
-_Draw6 = CardType("_Draw6")  # draws 6 cards
-_Draw7 = CardType("_Draw7")  # draws 7 cards
-_Drawload = CardType("_Drawload")  # draws potentially infinite numbers of cards
-_Empty = CardType("_Empty")  # cares about empty supply piles
-_ExtraCost = CardType(
+_Downgrader = AdvTag("_Downgrader")  # attack card that does upgrades in reverse
+_Draw2 = AdvTag("_Draw2")  # draws 2 cards
+_Draw3 = AdvTag("_Draw3")  # draws 3 cards
+_Draw4 = AdvTag("_Draw4")  # draws 4 cards
+_Draw5 = AdvTag("_Draw5")  # draws 5 cards
+_Draw6 = AdvTag("_Draw6")  # draws 6 cards
+_Draw7 = AdvTag("_Draw7")  # draws 7 cards
+_Drawload = AdvTag("_Drawload")  # draws potentially infinite numbers of cards
+_Empty = AdvTag("_Empty")  # cares about empty supply piles
+_ExtraCost = AdvTag(
     "_ExtraCost"
 )  # has an extra cost, preventing gainers from gaining it. Bad synnergy with gainers
-_Filler = CardType(
+_Filler = AdvTag(
     "_Filler", [_Discard]
 )  # fills hand up to a certain point; synnergizes with _Discard
-_FreeAction = CardType(
+_FreeAction = AdvTag(
     "_FreeAction"
 )  # card that can play itself without expending actions
-_FreeEvent = CardType(
+_FreeEvent = AdvTag(
     "_FreeEvent"
 )  # event that gives you one buy, and therefore essentially costs no buy.
-_FutureAction = CardType(
+_FutureAction = AdvTag(
     "_FutureAction"
 )  # gives a bonus action at the start of next turn
-_FutureMoney1 = CardType(
+_FutureMoney1 = AdvTag(
     "_FutureMoney1"
 )  # gives you future money, such as by giving 1 coffer or gaining a silver
-_FutureMoney2 = CardType(
+_FutureMoney2 = AdvTag(
     "_FutureMoney2"
 )  # gives you future money, such as by giving 2 coffers or gaining a gold
-_FutureMoney3 = CardType(
+_FutureMoney3 = AdvTag(
     "_FutureMoney3"
 )  # gives you future money, such as by giving 3 coffers or gaining a gold and a silver
-_FutureMoney4 = CardType(
+_FutureMoney4 = AdvTag(
     "_FutureMoney4"
 )  # gives you future money, such as by gaining 2 spoils
-_FutureMoney6 = CardType(
+_FutureMoney6 = AdvTag(
     "_FutureMoney6"
 )  # gives you future money, such as by gaining 3 golds
-_Gainer3 = CardType(
+_Gainer3 = AdvTag(
     "_Gainer3", bonusToTypes=[_Cost3, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
-_Gainer4 = CardType(
+_Gainer4 = AdvTag(
     "_Gainer4", bonusToTypes=[_Cost4, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 4; synnergizes with _CostReducer, _Cost4
-_Gainer5 = CardType(
+_Gainer5 = AdvTag(
     "_Gainer5", bonusToTypes=[_Cost5, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 5; synnergizes with _CostReducer, _Cost5
-_Gainer6 = CardType(
+_Gainer6 = AdvTag(
     "_Gainer6", bonusToTypes=[_Cost6, _CostReducer], badTypes=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
-_Kingdom = CardType("_Kingdom")  # Adds cards to the kingdom
-_Interactive = CardType(
+_Kingdom = AdvTag("_Kingdom")  # Adds cards to the kingdom
+_Interactive = AdvTag(
     "_Interactive"
 )  # does something to other players that is not an attack
-_Junker = CardType("_Junker")  # attacker gives opponents bad cards
-_Money1 = CardType("_Money1")  # gives +1 Money
-_Money2 = CardType("_Money2")  # gives +2 Money
-_Money3 = CardType("_Money3")  # gives +3 Money
-_Money4 = CardType("_Money4")  # gives +4 Money
-_Money5 = CardType("_Money5")  # gives +5 Money
-_Money6 = CardType("_Money6")  # gives +6 Money
-_MultiType = CardType("_MultiType")  # has more than two types
-_MultiTypeLove = CardType(
+_Junker = AdvTag("_Junker")  # attacker gives opponents bad cards
+_Money1 = AdvTag("_Money1")  # gives +1 Money
+_Money2 = AdvTag("_Money2")  # gives +2 Money
+_Money3 = AdvTag("_Money3")  # gives +3 Money
+_Money4 = AdvTag("_Money4")  # gives +4 Money
+_Money5 = AdvTag("_Money5")  # gives +5 Money
+_Money6 = AdvTag("_Money6")  # gives +6 Money
+_MultiType = AdvTag("_MultiType")  # has more than two types
+_MultiTypeLove = AdvTag(
     "_MultiTypeLove", wantsTypes=[_MultiType]
 )  # Wants cards with more than two types
-_Payload = CardType(
-    "_Payload"
-)  # a card that adds variable, potentially infinite money.
-_Overpay = CardType(
+_Payload = AdvTag("_Payload")  # a card that adds variable, potentially infinite money.
+_Overpay = AdvTag(
     "_Overpay", [_FutureMoney2, _Money3, _Money4, _Money5, _Money6, _Payload]
 )  # Allows you to pay more for more functionality. Synnergizes with _Money3, _Money4, _Money5, _Payload.
-_Peddler = CardType(
+_Peddler = AdvTag(
     "_Peddler"
 )  # cantrip that give +1 Money; seperate class for randomizer reasons
-_Random = CardType(
-    "_Random"
-)  # a card with seemly random effects (as opposed to _Choice)
-_Reveal = CardType(
+_Random = AdvTag("_Random")  # a card with seemly random effects (as opposed to _Choice)
+_Reveal = AdvTag(
     "_Reveal"
 )  # a card that makes you reveal other cards, explicitly using the word reveal
-_RevealResponse = CardType(
+_RevealResponse = AdvTag(
     "_RevealResponse", [Doom, _Reveal]
 )  # a card that reacts to being revealed, Wants _Reveal or Doom
-_Saver = CardType(
+_Saver = AdvTag(
     "_Saver"
 )  # puts cards from this hand into future hands, without discards or draws
-_ShuffleIn = CardType("_ShuffleIn")  # shuffles cards into other piles
-_Sifter = CardType(
+_ShuffleIn = AdvTag("_ShuffleIn")  # shuffles cards into other piles
+_Sifter = AdvTag(
     "_Sifter", bonusToTypes=[_Discard]
 )  # draws and discards cards to improve future hands
-_SpeedUp = CardType("_SpeedUp")  # allows you to get gained cards into play faster
-_SplitPile = CardType("_SplitPile")  # There's more than one named thing in here!
-_NamesMatter = CardType(
+_SpeedUp = AdvTag("_SpeedUp")  # allows you to get gained cards into play faster
+_SplitPile = AdvTag("_SplitPile")  # There's more than one named thing in here!
+_NamesMatter = AdvTag(
     "_NamesMatter", [Looter, _FutureMoney2, _Kingdom, _SplitPile]
 )  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
-_Terminal = CardType(
+_Terminal = AdvTag(
     "_Terminal"
 )  # doesn't allow more actions to be played. synnergizes with _Splitter and _Village
-_Splitter = CardType(
+_Splitter = AdvTag(
     "_Splitter", bonusToTypes=[_Terminal]
 )  # allows you to play cards multiple times.
-_Thinner = CardType(
+_Thinner = AdvTag(
     "_Thinner"
 )  # Puts cards into the trash and leaves you with a smaller deck
-_Trasher = CardType("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
-_TrashBenefit = CardType("_TrashBenefit")  # Wants to be trashed
-_TrashGainer = CardType(
+_Trasher = AdvTag("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
+_TrashBenefit = AdvTag("_TrashBenefit")  # Wants to be trashed
+_TrashGainer = AdvTag(
     "_TrashGainer", wantsTypes=[_Trasher]
 )  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
-_Twin = CardType(
+_Twin = AdvTag(
     "_Twin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
-_Remodeler = CardType(
+_Remodeler = AdvTag(
     "_Remodeler"
 )  # allows you to trash cards and replace them with better cards
-_Victory = CardType("_Victory")  # gains you victory cards or points
-_Village = CardType(
+_Victory = AdvTag("_Victory")  # gains you victory cards or points
+_Village = AdvTag(
     "_Village", bonusToTypes=[_Terminal]
 )  # replaces itself and allows multiple terminals to be played
 
