@@ -4610,6 +4610,16 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
     counter = 0
     while len(resultSet) < 10:
         # choose a card type:
+        if sum (advTagDict.values()) == 0:
+            print("no matching tags...")
+            # reset the weights
+            for card in completeSet:
+                tagSet = tagSet | card.advTags
+            for cardTag in tagSet:
+                advTagDict[cardTag] = (
+                    min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
+                )
+            print(sum(advTagDict.values()))
         cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
         cardsWithTag = [card for card in completeSet if cardTag in card.advTags]
         if cardsWithTag:
@@ -4631,6 +4641,9 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
         else:
             advTagDict.pop(cardTag)
             continue
+        if sum(cardDict.values()) == 0:
+           print("no matching cards...")
+           continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
         # Categorize the card from the shuffled pile
         if card.types & {Way}:
@@ -4698,16 +4711,15 @@ def AdvancedSample(advTagDict, cardSet, completeSet, num):
     counter = 0
     while len(resultSet) < num:
         # choose a card type:
-        # print(sum(advTagDict.values()))
-        # if sum(advTagDict.values()) == 0:
-        #    # reset card type weights
-        #    for card in cardSet:
-        #        tagSet = tagSet | card.advTags
-        #    for cardTag in tagSet:
-        #        advTagDict[cardTag] = (
-        #            min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
-        #        )
-        #    print(sum(advTagDict.values()))
+        if sum(advTagDict.values()) == 0:
+            # reset card type weights
+            for card in cardSet:
+                tagSet = tagSet | card.advTags
+            for cardTag in tagSet:
+                advTagDict[cardTag] = (
+                    min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
+                )
+            print(sum(advTagDict.values()))
         cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
         cardsWithTag = [card for card in cardSet if cardTag in card.advTags]
         if cardsWithTag:
