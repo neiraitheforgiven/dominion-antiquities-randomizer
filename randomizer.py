@@ -6,11 +6,11 @@ AllSets = {}
 
 
 class AdvTag(object):
-    def __init__(self, name, bonusToTypes=[], wantsTypes=[], badTypes=[]):
+    def __init__(self, name, bonusToTags=[], wantsTags=[], badTags=[]):
         self.name = name
-        self.bonusToTypes = bonusToTypes
-        self.wantsTypes = wantsTypes
-        self.badTypes = badTypes
+        self.bonusToTags = bonusToTags
+        self.wantsTags = wantsTags
+        self.badTags = badTags
 
 
 class CardType(object):
@@ -291,7 +291,7 @@ Victory = AdvTag("Victory")
 Wizard = AdvTag("Wizard")
 
 _AttackResponse = AdvTag(
-    "_AttackResponse", wantsTypes=[Attack]
+    "_AttackResponse", wantsTags=[Attack]
 )  # allows you to respond to attacks. Wants for Attacks
 _BadSifter = AdvTag("_BadSifter")  # attacks by messing up your deck
 _BadThinner = AdvTag("_BadThinner")  # attacks by trashing good things
@@ -306,7 +306,7 @@ _Cost0 = AdvTag("_Cost0")  # card costs 0
 _Cost1 = AdvTag("_Cost1")  # card costs 1
 _Cost2 = AdvTag("_Cost2")  # card costs 2
 _Cost2Response = AdvTag(
-    "_Cost2Response", wantsTypes=[_Cost2]
+    "_Cost2Response", wantsTags=[_Cost2]
 )  # Wants cards that cost 2
 _Cost3 = AdvTag("_Cost3")  # card costs 3
 _Cost4 = AdvTag("_Cost4")  # card costs 4
@@ -333,11 +333,11 @@ _DeckSeeder = AdvTag(
     "_DeckSeeder",
 )  # allows you to manipulate your deck; synnergizes with _DeckGuesser
 _DeckGuesser = AdvTag(
-    "_DeckGuesser", bonusToTypes=["_DeckSeeder"]
+    "_DeckGuesser", bonusToTags=["_DeckSeeder"]
 )  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
 _Discard = AdvTag("_Discard")  # discards cards because sometimes you want to do that
 _DiscardResponse = AdvTag(
-    "_DiscardResponse", wantsTypes=["_Discard"]
+    "_DiscardResponse", wantsTags=["_Discard"]
 )  # Reaction triggered by discards other than cleanup. Wants _Discard
 _Downgrader = AdvTag("_Downgrader")  # attack card that does upgrades in reverse
 _Draw2 = AdvTag("_Draw2")  # draws 2 cards
@@ -379,16 +379,16 @@ _FutureMoney6 = AdvTag(
     "_FutureMoney6"
 )  # gives you future money, such as by gaining 3 golds
 _Gainer3 = AdvTag(
-    "_Gainer3", bonusToTypes=[_Cost3, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer3", bonusToTags=[_Cost3, _CostReducer], badTags=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
 _Gainer4 = AdvTag(
-    "_Gainer4", bonusToTypes=[_Cost4, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer4", bonusToTags=[_Cost4, _CostReducer], badTags=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 4; synnergizes with _CostReducer, _Cost4
 _Gainer5 = AdvTag(
-    "_Gainer5", bonusToTypes=[_Cost5, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer5", bonusToTags=[_Cost5, _CostReducer], badTags=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 5; synnergizes with _CostReducer, _Cost5
 _Gainer6 = AdvTag(
-    "_Gainer6", bonusToTypes=[_Cost6, _CostReducer], badTypes=["_ExtraCost"]
+    "_Gainer6", bonusToTags=[_Cost6, _CostReducer], badTags=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
 _Kingdom = AdvTag("_Kingdom")  # Adds cards to the kingdom
 _Interactive = AdvTag(
@@ -403,7 +403,7 @@ _Money5 = AdvTag("_Money5")  # gives +5 Money
 _Money6 = AdvTag("_Money6")  # gives +6 Money
 _MultiType = AdvTag("_MultiType")  # has more than two types
 _MultiTypeLove = AdvTag(
-    "_MultiTypeLove", wantsTypes=[_MultiType]
+    "_MultiTypeLove", wantsTags=[_MultiType]
 )  # Wants cards with more than two types
 _Payload = AdvTag("_Payload")  # a card that adds variable, potentially infinite money.
 _Overpay = AdvTag(
@@ -424,7 +424,7 @@ _Saver = AdvTag(
 )  # puts cards from this hand into future hands, without discards or draws
 _ShuffleIn = AdvTag("_ShuffleIn")  # shuffles cards into other piles
 _Sifter = AdvTag(
-    "_Sifter", bonusToTypes=[_Discard]
+    "_Sifter", bonusToTags=[_Discard]
 )  # draws and discards cards to improve future hands
 _SpeedUp = AdvTag("_SpeedUp")  # allows you to get gained cards into play faster
 _SplitPile = AdvTag("_SplitPile")  # There's more than one named thing in here!
@@ -435,7 +435,7 @@ _Terminal = AdvTag(
     "_Terminal"
 )  # doesn't allow more actions to be played. synnergizes with _Splitter and _Village
 _Splitter = AdvTag(
-    "_Splitter", bonusToTypes=[_Terminal]
+    "_Splitter", bonusToTags=[_Terminal]
 )  # allows you to play cards multiple times.
 _Thinner = AdvTag(
     "_Thinner"
@@ -443,7 +443,7 @@ _Thinner = AdvTag(
 _Trasher = AdvTag("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
 _TrashBenefit = AdvTag("_TrashBenefit")  # Wants to be trashed
 _TrashGainer = AdvTag(
-    "_TrashGainer", wantsTypes=[_Trasher]
+    "_TrashGainer", wantsTags=[_Trasher]
 )  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
 _Twin = AdvTag(
     "_Twin"
@@ -453,7 +453,7 @@ _Remodeler = AdvTag(
 )  # allows you to trash cards and replace them with better cards
 _Victory = AdvTag("_Victory")  # gains you victory cards or points
 _Village = AdvTag(
-    "_Village", bonusToTypes=[_Terminal]
+    "_Village", bonusToTags=[_Terminal]
 )  # replaces itself and allows multiple terminals to be played
 
 # Define sets
@@ -4576,7 +4576,7 @@ CannotHaveTraits = set().union(
 )
 
 
-def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
+def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
     """Sketch some thoughts here:
     1. Get all the Card tags and put them in a dict.
     2. Weight each of the card tags based on two things:
@@ -4591,45 +4591,45 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
             the weight by +0.2, unless there is another example of this Card Tag in the
             Results.
         c.  For each Card Tag in the Results that wants this card, increase the weight by +1
-        d.  "BadTypes" stop any synnergies from being applied to this type if they are present
+        d.  "badTags" stop any synnergies from being applied to this type if they are present
     7. Repeat steps 3-6 until results are done. Do the same for landscapes.
     """
     resultSet = set()
     waySet = set()
-    typeSet = set()
+    tagSet = set()
     for card in completeSet:
-        typeSet = typeSet | card.advTags
-    typeDict = {}
-    selectedTypes = set()
-    includedTypes = set()
+        tagSet = tagSet | card.advTags
+    advTagDict = {}
+    selectedTags = set()
+    includedTags = set()
     # set the initial card type weights
-    for cardTag in typeSet:
-        typeDict[cardTag] = (
-            min(5, len([card for card in completeSet if cardTag in card.types])) * 1
+    for cardTag in tagSet:
+        advTagDict[cardTag] = (
+            min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
         )
     counter = 0
     while len(resultSet) < 10:
         # choose a card type:
-        cardTag = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-        cardsOfType = [card for card in completeSet if cardTag in card.types]
-        if cardsOfType:
+        cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
+        cardsWithTag = [card for card in completeSet if cardTag in card.advTags]
+        if cardsWithTag:
             cardDict = {}
-            for cardOfType in reversed(cardsOfType):
-                typesForCardOfType = [
-                    typeDict[cardsType]
-                    for cardsType in cardOfType.types
-                    if cardsType in typeDict and cardsType != cardTag
+            for cardWithTag in reversed(cardsWithTag):
+                tagsForCardWithTag = [
+                    advTagDict[cardsTag]
+                    for cardsTag in cardWithTag.advTags
+                    if cardsTag in advTagDict and cardsTag != cardTag
                 ]
-                if typesForCardOfType:
-                    cardDict[cardOfType] = int(
-                        round(sum(typesForCardOfType) / len(typesForCardOfType), 0)
+                if tagsForCardWithTag:
+                    cardDict[cardWithTag] = int(
+                        round(sum(tagsForCardWithTag) / len(tagsForCardWithTag), 0)
                     )
                 else:
-                    cardDict[cardOfType] = 5
-            selectedTypes.add(cardTag)
-            typeDict.pop(cardTag)
+                    cardDict[cardWithTag] = 5
+            selectedTags.add(cardTag)
+            advTagDict.pop(cardTag)
         else:
-            typeDict.pop(cardTag)
+            advTagDict.pop(cardTag)
             continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
         # Categorize the card from the shuffled pile
@@ -4641,33 +4641,33 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
             resultSet.add(card)
         counter += 1
         # Rebalance the card type weights
-        badTypes = set()
-        bonusedTypes = []
-        wantedTypes = []
-        for cardTag in card.types:
-            includedTypes.add(cardTag)
-        for cardTag in card.types:
-            if cardTag in typeDict:
-                typeDict[cardTag] = max(0, typeDict[cardTag] - 1)
-                for selectedType in selectedTypes:
-                    badTypes.add(badType for badType in selectedType.badTypes)
-                for bonusType in cardTag.bonusToTypes:
+        badTags = set()
+        bonusedTags = []
+        wantedTags = []
+        for cardTag in card.advTags:
+            includedTags.add(cardTag)
+        for cardTag in card.advTags:
+            if cardTag in advTagDict:
+                advTagDict[cardTag] = max(0, advTagDict[cardTag] - 1)
+                for selectedTag in selectedTags:
+                    badTags.add(badTag for badTag in selectedTag.badTags)
+                for bonusTag in cardTag.bonusToTags:
                     if (
-                        bonusType in typeDict
-                        and bonusType not in bonusedTypes
-                        and bonusType not in badTypes
+                        bonusTag in advTagDict
+                        and bonusTag not in bonusedTags
+                        and bonusTag not in badTags
                     ):
-                        typeDict[bonusType] = typeDict[bonusType] + 6
-                        bonusedTypes.append(bonusType)
-                for wantedType in cardTag.wantsTypes:
+                        advTagDict[bonusTag] = advTagDict[bonusTag] + 6
+                        bonusedTags.append(bonusTag)
+                for wantedTag in cardTag.wantsTags:
                     if (
-                        wantedType in typeDict
-                        and wantedType not in includedTypes
-                        and wantedType not in wantedTypes
-                        and wantedType not in badTypes
+                        wantedTag in advTagDict
+                        and wantedTag not in includedTags
+                        and wantedTag not in wantedTags
+                        and wantedTag not in badTags
                     ):
-                        typeDict[wantedType] = typeDict[wantedType] + 50
-                        wantedTypes.append(wantedType)
+                        advTagDict[wantedTag] = advTagDict[wantedTag] + 50
+                        wantedTags.append(wantedTag)
     if landscapeSet:
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
@@ -4678,83 +4678,93 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
         else:
             landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
             landscapeList.extend(random.sample(waySet, len(waySet))[:1])
-        return typeDict, landscapeList, resultSet, waySet
+        return advTagDict, landscapeList, resultSet, waySet
     else:
-        return typeDict, [], resultSet, set()
+        return advTagDict, [], resultSet, set()
 
 
-def AdvancedSample(typeDict, cardSet, num):
+def AdvancedSample(advTagDict, cardSet, completeSet, num):
     resultSet = set()
-    typeSet = set()
+    tagSet = set()
     for card in cardSet:
-        typeSet = typeSet | card.types
-    selectedTypes = set()
-    includedTypes = set()
+        tagSet = tagSet | card.advTags
+    selectedTags = set()
+    includedTags = set()
     # set the initial card type weights
-    for cardTag in typeSet:
-        typeDict[cardTag] = (
-            min(5, len([card for card in cardSet if cardTag in card.types])) * 1
+    for cardTag in tagSet:
+        advTagDict[cardTag] = (
+            min(5, len([card for card in cardSet if cardTag in card.advTags])) * 1
         )
     counter = 0
     while len(resultSet) < num:
         # choose a card type:
-        cardTag = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-        cardsOfType = [card for card in cardSet if cardTag in card.advTags]
-        if cardsOfType:
+        # print(sum(advTagDict.values()))
+        # if sum(advTagDict.values()) == 0:
+        #    # reset card type weights
+        #    for card in cardSet:
+        #        tagSet = tagSet | card.advTags
+        #    for cardTag in tagSet:
+        #        advTagDict[cardTag] = (
+        #            min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
+        #        )
+        #    print(sum(advTagDict.values()))
+        cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
+        cardsWithTag = [card for card in cardSet if cardTag in card.advTags]
+        if cardsWithTag:
             cardDict = {}
-            for cardOfType in reversed(cardsOfType):
-                typesForCardOfType = [
-                    typeDict[cardsType]
-                    for cardsType in cardOfType.types
-                    if cardsType in typeDict and cardsType != cardTag
+            for cardWithTag in reversed(cardsWithTag):
+                tagsForCardWithTag = [
+                    advTagDict[cardsType]
+                    for cardsType in cardWithTag.advTags
+                    if cardsType in advTagDict and cardsType != cardTag
                 ]
-                if typesForCardOfType:
-                    cardDict[cardOfType] = math.ceil(
-                        sum(typesForCardOfType) / len(typesForCardOfType)
+                if tagsForCardWithTag:
+                    cardDict[cardWithTag] = math.ceil(
+                        sum(tagsForCardWithTag) / len(tagsForCardWithTag)
                     )
                 else:
-                    cardDict[cardOfType] = 5
-            selectedTypes.add(cardTag)
-            typeDict.pop(cardTag)
+                    cardDict[cardWithTag] = 5
+            selectedTags.add(cardTag)
+            advTagDict.pop(cardTag)
         else:
-            typeDict.pop(cardTag)
+            advTagDict.pop(cardTag)
             continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
         resultSet.add(card)
         counter += 1
         # Rebalance the card type weights
-        badTypes = set()
-        bonusedTypes = []
-        wantedTypes = []
-        for cardTag in card.types:
-            includedTypes.add(cardTag)
-        for cardTag in card.types:
-            if cardTag in typeDict:
-                typeDict[cardTag] = max(0, typeDict[cardTag] - 1)
-                for selectedType in selectedTypes:
-                    badTypes.add(badType for badType in selectedType.badTypes)
-                for bonusType in cardTag.bonusToTypes:
+        badTags = set()
+        bonusedTags = []
+        wantedTags = []
+        for cardTag in card.advTags:
+            includedTags.add(cardTag)
+        for cardTag in card.advTags:
+            if cardTag in advTagDict:
+                advTagDict[cardTag] = max(0, advTagDict[cardTag] - 1)
+                for selectedTag in selectedTags:
+                    badTags.add(badTag for badTag in selectedTag.badTags)
+                for bonusTag in cardTag.bonusToTags:
                     if (
-                        bonusType in typeDict
-                        and bonusType not in bonusedTypes
-                        and bonusType not in badTypes
+                        bonusTag in advTagDict
+                        and bonusTag not in bonusedTags
+                        and bonusTag not in badTags
                     ):
-                        typeDict[bonusType] = typeDict[bonusType] + 6
-                        bonusedTypes.append(bonusType)
-                for wantedType in cardTag.wantsTypes:
+                        advTagDict[bonusTag] = advTagDict[bonusTag] + 6
+                        bonusedTags.append(bonusTag)
+                for wantedTag in cardTag.wantsTags:
                     if (
-                        wantedType in typeDict
-                        and wantedType not in includedTypes
-                        and wantedType not in wantedTypes
-                        and wantedType not in badTypes
+                        wantedTag in advTagDict
+                        and wantedTag not in includedTags
+                        and wantedTag not in wantedTags
+                        and wantedTag not in badTags
                     ):
-                        typeDict[wantedType] = typeDict[wantedType] + 50
-                        wantedTypes.append(wantedType)
+                        advTagDict[wantedTag] = advTagDict[wantedTag] + 50
+                        wantedTags.append(wantedTag)
 
     return list(resultSet)
 
 
-def BasicRandomize(options, typeDict, completeSet, landscapes=False):
+def BasicRandomize(options, advTagDict, completeSet, landscapes=False):
     if landscapes:
         resultSet = set()
         waySet = set()
@@ -4788,7 +4798,7 @@ def BasicRandomize(options, typeDict, completeSet, landscapes=False):
         return landscapeList, resultSet, waySet
     else:
         resultSet = set(random.sample(completeSet, 10))
-        return typeDict, [], resultSet, set()
+        return advTagDict, [], resultSet, set()
 
 
 def BasicSample(cardSet, num):
@@ -4865,7 +4875,7 @@ def RandomizeDominion(setNames=None, options=None):
     # Allies are not randomized
     completeSet = completeSet - AllyCards
     landscapeSet = set()
-    typeDict = {}
+    advTagDict = {}
 
     if completeSet & LandscapeCards:
         # Handle sets that include landscape cards
@@ -4876,29 +4886,29 @@ def RandomizeDominion(setNames=None, options=None):
         waySet = set()
 
         # for testing only
-        typeDict, landscapeList, resultSet, waySet = AdvancedRandomize(
-            options, typeDict, completeSet, landscapeSet
+        advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+            options, advTagDict, completeSet, landscapeSet
         )
 
         # if options and options.get("advanced-randomization"):
-        #    typeDict, landscapeList, resultSet, waySet = AdvancedRandomize(
-        #        options, typeDict, completeSet, landscapeSet
+        #    advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+        #        options, advTagDict, completeSet, landscapeSet
         #    )
         # else:
-        #    typeDict, landscapeList, resultSet, waySet = BasicRandomize(
-        #        options, typeDict, completeSet, landscapeSet
+        #    advTagDict, landscapeList, resultSet, waySet = BasicRandomize(
+        #        options, advTagDict, completeSet, landscapeSet
         #    )
     else:
         kingdomSet = completeSet
         landscapeList = []
 
         if options and options.get("advanced-randomization"):
-            typeDict, landscapeList, resultSet, waySet = AdvancedRandomize(
-                options, typeDict, completeSet
+            advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+                options, advTagDict, completeSet
             )
         else:
-            typeDict, landscapeList, resultSet, waySet = BasicRandomize(
-                options, typeDict, completeSet
+            advTagDict, landscapeList, resultSet, waySet = BasicRandomize(
+                options, advTagDict, completeSet
             )
 
     # Enforce Alchemy rule
@@ -4909,14 +4919,14 @@ def RandomizeDominion(setNames=None, options=None):
             # and draw an addtional Kingdom card
             resultSet -= alchemyCards
             resultSet.update(
-                SampleDominion(options, typeDict, kingdomSet - resultSet, 1)
+                SampleDominion(options, advTagDict, kingdomSet - resultSet, completeSet, 1)
             )
         elif len(alchemyCards) == 2:
             # If there are only 2 Alchemy cards, pull an additional Alchemy
             # card and randomly remove one non-Alchemy card
             resultSet -= alchemyCards
             alchemyCards.update(
-                SampleDominion(options, typeDict, Alchemy.cards - alchemyCards, 1)
+                SampleDominion(options, advTagDict, Alchemy.cards - alchemyCards, completeSet, 1)
             )
             resultSet = alchemyCards.union(random.sample(resultSet, 7))
         # If there are 3 or more Alchemy cards, let it lie.
@@ -4930,11 +4940,11 @@ def RandomizeDominion(setNames=None, options=None):
             # Add a new card to the set and pull a Bane from the randomized
             # cards.
             resultSet.update(
-                SampleDominion(options, typeDict, kingdomSet - resultSet, 1)
+                SampleDominion(options, advTagDict, kingdomSet - resultSet, completeSet, 1)
             )
-            baneCard = SampleDominion(options, typeDict, resultSet & BaneCards, 1)[0]
+            baneCard = SampleDominion(options, advTagDict, resultSet & BaneCards, completeSet, 1)[0]
         else:
-            baneCard = SampleDominion(options, typeDict, eligibleBanes, 1)[0]
+            baneCard = SampleDominion(options, advTagDict, eligibleBanes, completeSet, 1)[0]
             resultSet.add(baneCard)
 
     # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
@@ -4953,13 +4963,13 @@ def RandomizeDominion(setNames=None, options=None):
             if includeBane:
                 eligibleMice.remove(baneCard)
 
-            mouseCard = SampleDominion(options, typeDict, eligibleMice, 1)[0]
+            mouseCard = SampleDominion(options, advTagDict, eligibleMice, completeSet, 1)[0]
             resultSet.update(
-                SampleDominion(options, typeDict, kingdomSet - resultSet, 1)
+                SampleDominion(options, advTagDict, kingdomSet - resultSet, completeSet, 1)
             )
             resultSet.remove(mouseCard)
         else:
-            mouseCard = SampleDominion(options, typeDict, eligibleMice, 1)[0]
+            mouseCard = SampleDominion(options, advTagDict, eligibleMice, completeSet, 1)[0]
         mouseSet.add(mouseCard)
 
     fullResults = resultSet.union(landscapeList)
@@ -5115,11 +5125,11 @@ def RandomizeDominion(setNames=None, options=None):
     return [str(card) for card in finalResult]
 
 
-def SampleDominion(options, typeDict, cardSet, num):
+def SampleDominion(options, advTagDict, cardSet, completeSet, num):
     # Temporary for testing
-    return AdvancedSample(typeDict, cardSet, num)
+    return AdvancedSample(advTagDict, cardSet, completeSet, num)
     # if options and options.get("advanced-randomization"):
-    #     return AdvancedSample(typeDict, cardSet, num)
+    #     return AdvancedSample(advTagDict, cardSet, num)
     # else:
     #     return BasicSample(cardSet, num)
 
