@@ -6,8 +6,8 @@ AllSets = {}
 
 
 class AdvTag(object):
-    def __init__(self, card, bonusToTypes=[], wantsTypes=[], badTypes=[]):
-        self.name = card.name
+    def __init__(self, name, bonusToTypes=[], wantsTypes=[], badTypes=[]):
+        self.name = name
         self.bonusToTypes = bonusToTypes
         self.wantsTypes = wantsTypes
         self.badTypes = badTypes
