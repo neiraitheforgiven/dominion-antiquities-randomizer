@@ -4578,19 +4578,19 @@ CannotHaveTraits = set().union(
 
 def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
     """Sketch some thoughts here:
-    1. Get all the Card Types (visible and _internal) and put them in a dict.
-    2. Weight each of the card types based on two things:
+    1. Get all the Card tags and put them in a dict.
+    2. Weight each of the card tags based on two things:
         a.  1 if 5 or more examples in pool
         b.  0.2 * # if 4 or less in pool
-    3. Randomly pull a Card Type.
-    4. Randomly select a card with that Card Type.
-    5. Remove that Card Type from the list of Card Types so we cannot get it again.
-    6. Rebalance the weight of each Card Type:
+    3. Randomly pull a Card Tag.
+    4. Randomly select a card with that Card Tag.
+    5. Remove that Card Tag from the list of Card tags so we cannot get it again.
+    6. Rebalance the weight of each Card Tag:
         a.  If it's already in the Results, -0.1 for each card with that type in the Results.
-        b.  For each Card Type in the Results that synnergizes with this card, increase
-            the weight by +0.2, unless there is another example of this Card Type in the
+        b.  For each Card Tag in the Results that synnergizes with this card, increase
+            the weight by +0.2, unless there is another example of this Card Tag in the
             Results.
-        c.  For each Card Type in the Results that wants this card, increase the weight by +1
+        c.  For each Card Tag in the Results that wants this card, increase the weight by +1
         d.  "BadTypes" stop any synnergies from being applied to this type if they are present
     7. Repeat steps 3-6 until results are done. Do the same for landscapes.
     """
@@ -4598,27 +4598,27 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
     waySet = set()
     typeSet = set()
     for card in completeSet:
-        typeSet = typeSet | card.types
+        typeSet = typeSet | card.advTags
     typeDict = {}
     selectedTypes = set()
     includedTypes = set()
     # set the initial card type weights
-    for cardType in typeSet:
-        typeDict[cardType] = (
-            min(5, len([card for card in completeSet if cardType in card.types])) * 1
+    for cardTag in typeSet:
+        typeDict[cardTag] = (
+            min(5, len([card for card in completeSet if cardTag in card.types])) * 1
         )
     counter = 0
     while len(resultSet) < 10:
         # choose a card type:
-        cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-        cardsOfType = [card for card in completeSet if cardType in card.types]
+        cardTag = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
+        cardsOfType = [card for card in completeSet if cardTag in card.types]
         if cardsOfType:
             cardDict = {}
             for cardOfType in reversed(cardsOfType):
                 typesForCardOfType = [
                     typeDict[cardsType]
                     for cardsType in cardOfType.types
-                    if cardsType in typeDict and cardsType != cardType
+                    if cardsType in typeDict and cardsType != cardTag
                 ]
                 if typesForCardOfType:
                     cardDict[cardOfType] = int(
@@ -4626,10 +4626,10 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
                     )
                 else:
                     cardDict[cardOfType] = 5
-            selectedTypes.add(cardType)
-            typeDict.pop(cardType)
+            selectedTypes.add(cardTag)
+            typeDict.pop(cardTag)
         else:
-            typeDict.pop(cardType)
+            typeDict.pop(cardTag)
             continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
         # Categorize the card from the shuffled pile
@@ -4644,14 +4644,14 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
         badTypes = set()
         bonusedTypes = []
         wantedTypes = []
-        for cardType in card.types:
-            includedTypes.add(cardType)
-        for cardType in card.types:
-            if cardType in typeDict:
-                typeDict[cardType] = max(0, typeDict[cardType] - 1)
+        for cardTag in card.types:
+            includedTypes.add(cardTag)
+        for cardTag in card.types:
+            if cardTag in typeDict:
+                typeDict[cardTag] = max(0, typeDict[cardTag] - 1)
                 for selectedType in selectedTypes:
                     badTypes.add(badType for badType in selectedType.badTypes)
-                for bonusType in cardType.bonusToTypes:
+                for bonusType in cardTag.bonusToTypes:
                     if (
                         bonusType in typeDict
                         and bonusType not in bonusedTypes
@@ -4659,7 +4659,7 @@ def AdvancedRandomize(options, typeDict, completeSet, landscapeSet=[]):
                     ):
                         typeDict[bonusType] = typeDict[bonusType] + 6
                         bonusedTypes.append(bonusType)
-                for wantedType in cardType.wantsTypes:
+                for wantedType in cardTag.wantsTypes:
                     if (
                         wantedType in typeDict
                         and wantedType not in includedTypes
@@ -4691,22 +4691,22 @@ def AdvancedSample(typeDict, cardSet, num):
     selectedTypes = set()
     includedTypes = set()
     # set the initial card type weights
-    for cardType in typeSet:
-        typeDict[cardType] = (
-            min(5, len([card for card in cardSet if cardType in card.types])) * 1
+    for cardTag in typeSet:
+        typeDict[cardTag] = (
+            min(5, len([card for card in cardSet if cardTag in card.types])) * 1
         )
     counter = 0
     while len(resultSet) < num:
         # choose a card type:
-        cardType = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
-        cardsOfType = [card for card in cardSet if cardType in card.types]
+        cardTag = random.choices(list(typeDict.keys()), list(typeDict.values()))[0]
+        cardsOfType = [card for card in cardSet if cardTag in card.advTags]
         if cardsOfType:
             cardDict = {}
             for cardOfType in reversed(cardsOfType):
                 typesForCardOfType = [
                     typeDict[cardsType]
                     for cardsType in cardOfType.types
-                    if cardsType in typeDict and cardsType != cardType
+                    if cardsType in typeDict and cardsType != cardTag
                 ]
                 if typesForCardOfType:
                     cardDict[cardOfType] = math.ceil(
@@ -4714,10 +4714,10 @@ def AdvancedSample(typeDict, cardSet, num):
                     )
                 else:
                     cardDict[cardOfType] = 5
-            selectedTypes.add(cardType)
-            typeDict.pop(cardType)
+            selectedTypes.add(cardTag)
+            typeDict.pop(cardTag)
         else:
-            typeDict.pop(cardType)
+            typeDict.pop(cardTag)
             continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
         resultSet.add(card)
@@ -4726,14 +4726,14 @@ def AdvancedSample(typeDict, cardSet, num):
         badTypes = set()
         bonusedTypes = []
         wantedTypes = []
-        for cardType in card.types:
-            includedTypes.add(cardType)
-        for cardType in card.types:
-            if cardType in typeDict:
-                typeDict[cardType] = max(0, typeDict[cardType] - 1)
+        for cardTag in card.types:
+            includedTypes.add(cardTag)
+        for cardTag in card.types:
+            if cardTag in typeDict:
+                typeDict[cardTag] = max(0, typeDict[cardTag] - 1)
                 for selectedType in selectedTypes:
                     badTypes.add(badType for badType in selectedType.badTypes)
-                for bonusType in cardType.bonusToTypes:
+                for bonusType in cardTag.bonusToTypes:
                     if (
                         bonusType in typeDict
                         and bonusType not in bonusedTypes
@@ -4741,7 +4741,7 @@ def AdvancedSample(typeDict, cardSet, num):
                     ):
                         typeDict[bonusType] = typeDict[bonusType] + 6
                         bonusedTypes.append(bonusType)
-                for wantedType in cardType.wantsTypes:
+                for wantedType in cardTag.wantsTypes:
                     if (
                         wantedType in typeDict
                         and wantedType not in includedTypes
