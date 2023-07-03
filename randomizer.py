@@ -294,7 +294,7 @@ _Victory = AdvTag("Victory")
 _Wizard = AdvTag("Wizard")
 
 _AttackResponse = AdvTag(
-    "_AttackResponse", wantsTags=[Attack]
+    "_AttackResponse", wantsTags=[_Attack]
 )  # allows you to respond to attacks. Wants for Attacks
 _BadSifter = AdvTag("_BadSifter")  # attacks by messing up your deck
 _BadThinner = AdvTag("_BadThinner")  # attacks by trashing good things
@@ -426,7 +426,7 @@ _Reveal = AdvTag(
     "_Reveal"
 )  # a card that makes you reveal other cards, explicitly using the word reveal
 _RevealResponse = AdvTag(
-    "_RevealResponse", [Doom, _Reveal]
+    "_RevealResponse", [_Doom, _Reveal]
 )  # a card that reacts to being revealed, Wants _Reveal or Doom
 _Saver = AdvTag(
     "_Saver"
@@ -438,7 +438,7 @@ _Sifter = AdvTag(
 _SpeedUp = AdvTag("_SpeedUp")  # allows you to get gained cards into play faster
 _SplitPile = AdvTag("_SplitPile")  # There's more than one named thing in here!
 _NamesMatter = AdvTag(
-    "_NamesMatter", [Looter, _FutureMoney2, _Kingdom, _SplitPile]
+    "_NamesMatter", [_Looter, _FutureMoney2, _Kingdom, _SplitPile]
 )  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
 _Terminal = AdvTag(
     "_Terminal"
