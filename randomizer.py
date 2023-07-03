@@ -290,7 +290,7 @@ _Reserve = AdvTag("Reserve")
 _Townsfolk = AdvTag("Townsfolk")
 _Traveller = AdvTag("Traveller")
 _Treasure = AdvTag("Treasure")
-_Victory = AdvTag("Victory")
+_VictoryGainer = AdvTag("Victory")
 _Wizard = AdvTag("Wizard")
 
 _AttackResponse = AdvTag(
@@ -460,8 +460,8 @@ _Twin = AdvTag(
 _Remodeler = AdvTag(
     "_Remodeler"
 )  # allows you to trash cards and replace them with better cards
-_Victory = AdvTag("_Victory")  # gains you victory cards or points
-_VictoryResponse = AdvTag( "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_Victory]
+_VictoryGainer = AdvTag("_VictoryGainer")  # gains you victory cards or points
+_VictoryResponse = AdvTag( "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_VictoryGainer]
 )  # allows you to respond to other players gaining victory cards. Wants for victory cards, encourages gainers
 _Village = AdvTag(
     "_Village", bonusToTags=[_Terminal]
@@ -643,7 +643,7 @@ Intrigue.AddCards(
         {
             "name": "Baron",
             "types": {Action},
-            "advTags": {_Buys, _Cost4, _Money4, _Terminal, _Victory},
+            "advTags": {_Buys, _Cost4, _Money4, _Terminal, _VictoryGainer},
         },
         {
             "name": "Bridge",
@@ -1087,7 +1087,7 @@ Alchemy.AddCards(
                 _MultiTypeLove,
                 _Terminal,
                 _Trasher,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
@@ -1137,7 +1137,7 @@ Prosperity.AddCards(
         {
             "name": "Collection",
             "types": {Treasure},
-            "advTags": {_Buys, _Cost5, _Money2, _Victory},
+            "advTags": {_Buys, _Cost5, _Money2, _VictoryGainer},
         },
         {
             "name": "Crystal Ball",
@@ -1164,7 +1164,7 @@ Prosperity.AddCards(
         {
             "name": "Investment",
             "types": {Treasure},
-            "advTags": {_Cost4, _Money1, _Reveal, _Thinner, _Victory},
+            "advTags": {_Cost4, _Money1, _Reveal, _Thinner, _VictoryGainer},
         },
         {"name": "King's Court", "types": {Action}, "advTags": {_Cost7, _Splitter}},
         {
@@ -1180,7 +1180,7 @@ Prosperity.AddCards(
         {
             "name": "Monument",
             "types": {Action},
-            "advTags": {_Cost4, _Money2, _Terminal, _Victory},
+            "advTags": {_Cost4, _Money2, _Terminal, _VictoryGainer},
         },
         {
             "name": "Peddler",
@@ -1244,7 +1244,7 @@ Prosperity.firstEdition = [
             _Discard,
             _Money2,
             _Terminal,
-            _Victory,
+            _VictoryGainer,
         },
     },
     {
@@ -1677,7 +1677,7 @@ DarkAges.AddCards(
                 _Money3,
                 _Terminal,
                 _Thinner,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
@@ -1727,7 +1727,7 @@ DarkAges.AddCards(
         {
             "name": "Hunting Grounds",
             "types": {Action},
-            "advTags": {_Cost6, _Draw4, _Terminal, _TrashGainer, _Victory},
+            "advTags": {_Cost6, _Draw4, _Terminal, _TrashGainer, _VictoryGainer},
         },
         {
             "name": "Ironmonger",
@@ -1828,7 +1828,7 @@ DarkAges.AddCards(
         {
             "name": "Rebuild",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Remodeler, _Trasher, _Victory},
+            "advTags": {_Cantrip, _Cost5, _Remodeler, _Trasher, _VictoryGainer},
         },
         {
             "name": "Rogue",
@@ -2260,7 +2260,7 @@ Empires.AddCards(
                 _Reveal,
                 _SplitPile,
                 _Trasher,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
@@ -2283,7 +2283,7 @@ Empires.AddCards(
         {
             "name": "Chariot Race",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost3, _Money1, _Reveal, _Victory},
+            "advTags": {_Cantrip, _Cost3, _Money1, _Reveal, _VictoryGainer},
         },
         {
             "name": "Charm",
@@ -2305,7 +2305,7 @@ Empires.AddCards(
                 _Money2,
                 _Reveal,
                 _SplitPile,
-                _Victory,
+                _VictoryGainer,
                 _Village,
             },
         },
@@ -2333,7 +2333,7 @@ Empires.AddCards(
                 _Money2,
                 _Terminal,
                 _Twin,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
@@ -2362,7 +2362,7 @@ Empires.AddCards(
         {
             "name": "Groundskeeper",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Victory},
+            "advTags": {_Cantrip, _Cost5, _VictoryGainer},
         },
         {
             "name": "Legionary",
@@ -2384,7 +2384,7 @@ Empires.AddCards(
                 _Draw2,
                 _Peddler,
                 _Reveal,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
@@ -2402,7 +2402,7 @@ Empires.AddCards(
                 _Money2,
                 _Trasher,
                 _TrashGainer,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
@@ -2413,7 +2413,7 @@ Empires.AddCards(
         {
             "name": "Temple",
             "types": {Action, Gathering},
-            "advTags": {_Cost4, _Terminal, _Thinner, _Victory},
+            "advTags": {_Cost4, _Terminal, _Thinner, _VictoryGainer},
         },
         {
             "name": "Villa",
@@ -2423,27 +2423,27 @@ Empires.AddCards(
         {
             "name": "Wild Hunt",
             "types": {Action},
-            "advTags": {_Cost5, _Draw3, _Terminal, _Victory},
+            "advTags": {_Cost5, _Draw3, _Terminal, _VictoryGainer},
         },
         # Event cards
         {"name": "Advance", "types": {Event}, "advTags": {_Cost0, _Gainer6, _Trasher}},
         {
             "name": "Annex",
             "types": {Event},
-            "advTags": {_Cost8, _Debt, _ExtraCost, _Sifter, _Victory},
+            "advTags": {_Cost8, _Debt, _ExtraCost, _Sifter, _VictoryGainer},
         },
         {"name": "Banquet", "types": {Event}, "advTags": {_Cost3, _Gainer5, _Junker}},
         {
             "name": "Conquest",
             "types": {Event},
-            "advTags": {_Cost6, _FutureMoney2, _Victory},
+            "advTags": {_Cost6, _FutureMoney2, _VictoryGainer},
         },
         {
             "name": "Delve",
             "types": {Event},
             "advTags": {_Cost2, _FreeEvent, _FutureMoney1},
         },
-        {"name": "Dominate", "types": {Event}, "advTags": {_Cost14, _Victory}},
+        {"name": "Dominate", "types": {Event}, "advTags": {_Cost14, _VictoryGainer}},
         {
             "name": "Donate",
             "types": {Event},
@@ -2452,12 +2452,12 @@ Empires.AddCards(
         {
             "name": "Salt the Earth",
             "types": {Event},
-            "advTags": {_Cost4, _Trasher, _Victory},
+            "advTags": {_Cost4, _Trasher, _VictoryGainer},
         },
         {
             "name": "Ritual",
             "types": {Event},
-            "advTags": {_Cost4, _Curser, _Trasher, _Victory},
+            "advTags": {_Cost4, _Curser, _Trasher, _VictoryGainer},
         },
         {"name": "Tax", "types": {Event}, "advTags": {_Cost2, _Debt}},
         {
@@ -2468,34 +2468,34 @@ Empires.AddCards(
         {
             "name": "Triumph",
             "types": {Event},
-            "advTags": {_Cost5, _Debt, _ExtraCost, _Victory},
+            "advTags": {_Cost5, _Debt, _ExtraCost, _VictoryGainer},
         },
         {
             "name": "Wedding",
             "types": {Event},
-            "advTags": {_Cost7, _Debt, _ExtraCost, _FutureMoney2, _Victory},
+            "advTags": {_Cost7, _Debt, _ExtraCost, _FutureMoney2, _VictoryGainer},
         },
         {"name": "Windfall", "types": {Event}, "advTags": {_Cost5, _FutureMoney6}},
         # Landmark Cards
-        {"name": "Aqueduct", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Arena", "types": {Landmark}, "advTags": {_Discard, _Victory}},
+        {"name": "Aqueduct", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Arena", "types": {Landmark}, "advTags": {_Discard, _VictoryGainer}},
         {"name": "Bandit Fort", "types": {Landmark}, "advTags": {_Curser}},
-        {"name": "Basilica", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Baths", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Battlefield", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Colonnade", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Defiled Shrine", "types": {Landmark}, "advTags": {_Curser, _Victory}},
-        {"name": "Fountain", "types": {Landmark}, "advTags": {_Junker, _Victory}},
-        {"name": "Keep", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Labyrinth", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Mountain Pass", "types": {Landmark}, "advTags": {_Debt, _Victory}},
-        {"name": "Museum", "types": {Landmark}, "advTags": {_NamesMatter, _Victory}},
-        {"name": "Obelisk", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Orchard", "types": {Landmark}, "advTags": {_NamesMatter, _Victory}},
-        {"name": "Palace", "types": {Landmark}, "advTags": {_Victory}},
-        {"name": "Tomb", "types": {Landmark}, "advTags": {_TrashGainer, _Victory}},
-        {"name": "Tower", "types": {Landmark}, "advTags": {_Empty, _Victory}},
-        {"name": "Triumphal Arch", "types": {Landmark}, "advTags": {_Victory}},
+        {"name": "Basilica", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Baths", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Battlefield", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Colonnade", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Defiled Shrine", "types": {Landmark}, "advTags": {_Curser, _VictoryGainer}},
+        {"name": "Fountain", "types": {Landmark}, "advTags": {_Junker, _VictoryGainer}},
+        {"name": "Keep", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Labyrinth", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Mountain Pass", "types": {Landmark}, "advTags": {_Debt, _VictoryGainer}},
+        {"name": "Museum", "types": {Landmark}, "advTags": {_NamesMatter, _VictoryGainer}},
+        {"name": "Obelisk", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Orchard", "types": {Landmark}, "advTags": {_NamesMatter, _VictoryGainer}},
+        {"name": "Palace", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Tomb", "types": {Landmark}, "advTags": {_TrashGainer, _VictoryGainer}},
+        {"name": "Tower", "types": {Landmark}, "advTags": {_Empty, _VictoryGainer}},
+        {"name": "Triumphal Arch", "types": {Landmark}, "advTags": {_VictoryGainer}},
         {"name": "Wall", "types": {Landmark}, "advTags": {_Curser}},
         {"name": "Wolf Den", "types": {Landmark}, "advTags": {_Curser}},
     ]
@@ -3103,7 +3103,7 @@ Menagerie.AddCards(
         {
             "name": "Alliance",
             "types": {Event},
-            "advTags": {_Cost10, _FutureMoney3, _Junker, _Victory},
+            "advTags": {_Cost10, _FutureMoney3, _Junker, _VictoryGainer},
         },
         {"name": "Banish", "types": {Event}, "advTags": {_Cost4, _Thinner}},
         {
@@ -3126,7 +3126,7 @@ Menagerie.AddCards(
         {
             "name": "Enclave",
             "types": {Event},
-            "advTags": {_Cost8, _FutureMoney2, _Victory},
+            "advTags": {_Cost8, _FutureMoney2, _VictoryGainer},
         },
         {
             "name": "Enhance",
@@ -3176,7 +3176,7 @@ Menagerie.AddCards(
         {"name": "Way of the Sheep", "types": {Way}, "advTags": {_Money2}},
         {"name": "Way of the Squirrel", "types": {Way}, "advTags": {_Draw2}},
         {"name": "Way of the Turtle", "types": {Way}, "advTags": {_FreeAction}},
-        {"name": "Way of the Worm", "types": {Way}, "advTags": {_Victory}},
+        {"name": "Way of the Worm", "types": {Way}, "advTags": {_VictoryGainer}},
     ]
 )
 
@@ -3458,7 +3458,7 @@ Allies.AddCards(
         {
             "name": "Plateau Shepherds",
             "types": {Ally},
-            "advTags": {_Cost2Response, _Victory},
+            "advTags": {_Cost2Response, _VictoryGainer},
         },
         {"name": "Trappers' Lodge", "types": {Ally}, "advTags": {_DeckSeeder}},
         {
@@ -3734,7 +3734,7 @@ Plunder.AddCards(
         {
             "name": "Invasion",
             "types": {Event},
-            "advTags": {_AttackResponse, _Chainer, _Cost10, _Money3, _Victory},
+            "advTags": {_AttackResponse, _Chainer, _Cost10, _Money3, _VictoryGainer},
         },
         {"name": "Journey", "types": {Event}, "advTags": {_Cost4, _Draw5}},
         {"name": "Launch", "types": {Event}, "advTags": {_Cantrip, _Cost3, _FreeEvent}},
@@ -3770,7 +3770,7 @@ Plunder.AddCards(
                 _Gainer5,
                 _Thinner,
                 _TrashGainer,
-                _Victory,
+                _VictoryGainer,
             },
         },
         # Traits
@@ -3840,7 +3840,7 @@ Antiquities.AddCards(
         {
             "name": "Dig",
             "types": {Action},
-            "advTags": {_Cost8, _Discard, _Reveal, _Victory},
+            "advTags": {_Cost8, _Discard, _Reveal, _VictoryGainer},
         },
         {
             "name": "Discovery",
@@ -3856,7 +3856,7 @@ Antiquities.AddCards(
                 _Filler,
                 _Remodeler,
                 _Terminal,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
@@ -3914,7 +3914,7 @@ Antiquities.AddCards(
         {
             "name": "Mendicant",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost4, _Discard, _Junker, _Victory},
+            "advTags": {_Cantrip, _Cost4, _Discard, _Junker, _VictoryGainer},
         },
         {
             "name": "Miner",
@@ -3924,7 +3924,7 @@ Antiquities.AddCards(
         {
             "name": "Mission House",
             "types": {Action},
-            "advTags": {_Cost5, _Discard, _Draw2, _Victory, _Village},
+            "advTags": {_Cost5, _Discard, _Draw2, _VictoryGainer, _Village},
         },
         {
             "name": "Moundbuilder Village",
@@ -3944,7 +3944,7 @@ Antiquities.AddCards(
         {
             "name": "Pyramid",
             "types": {Action},
-            "advTags": {_Buys, _Cost5, _Terminal, _Thinner, _Trasher, _Victory},
+            "advTags": {_Buys, _Cost5, _Terminal, _Thinner, _Trasher, _VictoryGainer},
         },
         {
             "name": "Shipwreck",
@@ -3969,7 +3969,7 @@ Antiquities.AddCards(
                 _FutureMoney1,
                 _Trasher,
                 _TrashGainer,
-                _Victory,
+                _VictoryGainer,
             },
         },
         {
