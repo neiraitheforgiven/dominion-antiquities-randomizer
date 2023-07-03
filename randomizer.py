@@ -247,6 +247,7 @@ Knight = CardType("Knight")
 Liaison = CardType("Liaison")
 Looter = CardType("Looter")
 Night = CardType("Night")
+Odyssey = CardType("Odyssey")
 Potion = CardType("Potion")
 Reaction = CardType("Reaction")
 Reserve = CardType("Reserve")
@@ -284,6 +285,7 @@ _Knight = AdvTag("Knight")
 _Liaison = AdvTag("Liaison")
 _Looter = AdvTag("Looter")
 _Night = AdvTag("Night")
+_Odyssey = AdvTag("Odyssey")
 _Potion = AdvTag("Potion")
 _Reaction = AdvTag("Reaction")
 _Reserve = AdvTag("Reserve")
@@ -694,7 +696,15 @@ Intrigue.AddCards(
         {
             "name": "Diplomat",
             "types": {Action, Reaction},
-            "advTags": {_AttackResponse, _Cost4, _Draw2, _Sifter, _Terminal, _Village},
+            "advTags": {
+                _AttackResponse,
+                _Cost4,
+                _Discard,
+                _Draw2,
+                _Sifter,
+                _Terminal,
+                _Village,
+            },
         },
         {"name": "Duke", "types": {Victory}, "advTags": {_Cost5}},
         {"name": "Harem", "types": {Treasure, Victory}, "advTags": {_Cost6, _Money2}},
@@ -726,7 +736,7 @@ Intrigue.AddCards(
         {
             "name": "Minion",
             "types": {Action, Attack},
-            "advTags": {_Chainer, _Choice, _Cost5, _Money2, _Sifter},
+            "advTags": {_Chainer, _Choice, _Cost5, _Discard, _Money2, _Sifter},
         },
         {"name": "Nobles", "types": {Action, Victory}, "advTags": {_Choice, _Cost6}},
         {
@@ -952,6 +962,7 @@ Seaside.AddCards(
             "advTags": {
                 _Cost5,
                 _Curser,
+                _Discard,
                 _Draw2,
                 _MultiType,
                 _Sifter,
@@ -993,7 +1004,7 @@ Seaside.AddCards(
         {
             "name": "Warehouse",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost3, _Discard, _Sifter},
+            "advTags": {_Chainer, _Cost3, _Discard, _Sifter},
         },
         {
             "name": "Wharf",
@@ -1407,6 +1418,7 @@ Cornucopia.AddCards(
             "advTags": {
                 _Cost4,
                 _Curser,
+                _Discard,
                 _Kingdom,
                 _Reveal,
                 _Sifter,
@@ -1496,7 +1508,7 @@ Hinterlands.AddCards(
         {
             "name": "Inn",
             "types": {Action},
-            "advTags": {_Cost5, _DeckSeeder, _Reveal, _Sifter, _Village},
+            "advTags": {_Cost5, _DeckSeeder, _Discard, _Reveal, _Sifter, _Village},
         },
         {
             "name": "Jack of All Trades",
@@ -1529,7 +1541,11 @@ Hinterlands.AddCards(
             "types": {Action},
             "advTags": {_Buys, _Cost4, _Money2, _Money4, _Terminal},
         },
-        {"name": "Oasis", "types": {Action}, "advTags": {_Cost3, _Discard, _Peddler}},
+        {
+            "name": "Oasis",
+            "types": {Action},
+            "advTags": {_Cost3, _Discard, _Money1, _Peddler},
+        },
         {
             "name": "Scheme",
             "types": {Action},
@@ -1605,6 +1621,7 @@ Hinterlands.AddCards(
                 _Cost5,
                 _Curser,
                 _Discard,
+                _Draw2,
                 _Reveal,
                 _Sifter,
                 _Terminal,
@@ -1622,7 +1639,15 @@ Hinterlands.firstEdition = [
     {
         "name": "Embassy",
         "types": {Action},
-        "advTags": {_Cost5, _Draw2, _Interactive, _Sifter, _Terminal},
+        "advTags": {
+            _Cost5,
+            _Discard,
+            _Draw2,
+            _GainResponse5,
+            _Interactive,
+            _Sifter,
+            _Terminal,
+        },
     },
     {
         "name": "Ill-gotten Gains",
@@ -2108,7 +2133,7 @@ Adventures.AddCards(
         {
             "name": "Dungeon",
             "types": {Action, Duration},
-            "advTags": {_Chainer, _Cost3, _Sifter},
+            "advTags": {_Chainer, _Cost3, _Discard, _Sifter},
         },
         {
             "name": "Gear",
@@ -2137,7 +2162,7 @@ Adventures.AddCards(
         {
             "name": "Guide",
             "types": {Action, Reserve},
-            "advTags": {_Cantrip, _Cost3, _Discard, _Draw5},
+            "advTags": {_Cantrip, _Cost3, _Discard, _Draw5, _FreeAction},
         },
         {
             "name": "Haunted Woods",
@@ -2183,6 +2208,7 @@ Adventures.AddCards(
                 _BadThinner,
                 _Cantrip,
                 _Cost2,
+                _Discard,
                 _Draw2,
                 _FutureMoney1,
                 _FutureMoney2,
@@ -2396,7 +2422,7 @@ Empires.AddCards(
         {
             "name": "Forum",
             "types": {Action},
-            "advTags": {_Buys, _Cantrip, _Cost5, _Sifter},
+            "advTags": {_Buys, _Cantrip, _Cost5, _Discard, _GainResponse5, _Sifter},
         },
         {
             "name": "Gladiator/Fortune",
@@ -2979,7 +3005,11 @@ Renaissance.AddCards(
         {"name": "Canal", "types": {Project}, "advTags": {_Cost7, _CostReducer}},
         {"name": "Citadel", "types": {Project}, "advTags": {_Cost8, _Splitter}},
         {"name": "City Gate", "types": {Project}, "advTags": {_Cost3, _DeckSeeder}},
-        {"name": "Crop Rotation", "types": {Project}, "advTags": {_Cost6, _Draw2}},
+        {
+            "name": "Crop Rotation",
+            "types": {Project},
+            "advTags": {_Cost6, _Discard, _Draw2},
+        },
         {
             "name": "Exploration",
             "types": {Project},
@@ -2993,7 +3023,7 @@ Renaissance.AddCards(
         {"name": "Piazza", "types": {Project}, "advTags": {_Chainer, _Cost5}},
         {"name": "Road Network", "types": {Project}, "advTags": {_Cost5, _Drawload}},
         {"name": "Sewers", "types": {Project}, "advTags": {_Cost3, _Thinner}},
-        {"name": "Silos", "types": {Project}, "advTags": {_Cost4, _Sifter}},
+        {"name": "Silos", "types": {Project}, "advTags": {_Cost4, _Discard, _Sifter}},
         {"name": "Sinister Plot", "types": {Project}, "advTags": {_Cost4, _Drawload}},
         {"name": "Star Chart", "types": {Project}, "advTags": {_Cost3, _DeckSeeder}},
     ]
@@ -3116,7 +3146,7 @@ Menagerie.AddCards(
         {
             "name": "Hunting Lodge",
             "types": {Action},
-            "advTags": {_Cost5, _Discard, _Filler, _Village},
+            "advTags": {_Cost5, _Discard, _Draw5, _Village},
         },
         {
             "name": "Kiln",
@@ -3260,7 +3290,11 @@ Menagerie.AddCards(
         {"name": "Way of the Frog", "types": {Way}, "advTags": {_Chainer, _DeckSeeder}},
         {"name": "Way of the Goat", "types": {Way}, "advTags": {_Thinner}},
         {"name": "Way of the Horse", "types": {Way}, "advTags": {_Draw2, _Thinner}},
-        {"name": "Way of the Mole", "types": {Way}, "advTags": {_Chainer, _Sifter}},
+        {
+            "name": "Way of the Mole",
+            "types": {Way},
+            "advTags": {_Chainer, _Discard, _Sifter},
+        },
         {"name": "Way of the Monkey", "types": {Way}, "advTags": {_Buys, _Money1}},
         {"name": "Way of the Mouse", "types": {Way}, "advTags": {_Kingdom}},
         {"name": "Way of the Mule", "types": {Way}, "advTags": {_Chainer, _Money1}},
@@ -3419,7 +3453,7 @@ Allies.AddCards(
         {
             "name": "Innkeeper",
             "types": {Action},
-            "advTags": {_Cantrip, _Choice, _Cost4, _Sifter},
+            "advTags": {_Choice, _Cost4, _Discard, _Sifter},
         },
         {
             "name": "Marquis",
@@ -3438,7 +3472,8 @@ Allies.AddCards(
         },
         {
             "name": "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
-            "types": {Action},
+            "types": {Action, Duration, Odyssey, Treasure, Victory},
+            "advTags": {_Cantrip, _Chainer, _Discard, _Draw2, _Gainer6, _VictoryGainer},
         },
         {
             "name": "Royal Galley",
@@ -3531,7 +3566,11 @@ Allies.AddCards(
             "types": {Ally},
             "advTags": {_DeckSeeder, _Gainer4},
         },
-        {"name": "Desert Guides", "types": {Ally}, "advTags": {_Sifter}},
+        {
+            "name": "Desert Guides",
+            "types": {Ally},
+            "advTags": {_Discard, _Draw5, _Sifter},
+        },
         {"name": "Family of Inventors", "types": {Ally}, "advTags": {_CostReducer}},
         {"name": "Fellowship of Scribes", "types": {Ally}, "advTags": {_Filler}},
         {
