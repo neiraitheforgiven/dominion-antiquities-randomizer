@@ -493,9 +493,9 @@ Base.AddCards(
             "name": "Bandit",
             "types": {Action, Attack},
             "advTags": {
-                _BadSifter,
                 _BadThinner,
                 _Cost5,
+                _Discard,
                 _FutureMoney2,
                 _Reveal,
                 _Terminal,
@@ -637,6 +637,7 @@ Base.firstEdition = [
         "advTags": {
             _BadThinner,
             _Cost4,
+            _Discard,
             _FutureMoney2,
             _Reveal,
             _Terminal,
@@ -771,7 +772,7 @@ Intrigue.AddCards(
         {
             "name": "Swindler",
             "types": {Action, Attack},
-            "advTags": {_BadSifter, _Cost3, _Money2, _Terminal, _Trasher},
+            "advTags": {_Cost3, _Downgrader, _Money2, _Terminal, _Trasher},
         },
         {
             "name": "Torturer",
@@ -808,6 +809,7 @@ Intrigue.firstEdition = [
         "advTags": {
             _Downgrader,
             _Cost5,
+            _Discard,
             _Reveal,
             _Terminal,
             _Trasher,
@@ -1047,7 +1049,7 @@ Seaside.firstEdition = [
     {
         "name": "Pirate Ship",
         "types": {Action, Attack},
-        "advTags": {_BadSifter, _BadThinner, _Cost4, _Payload, _Terminal},
+        "advTags": {_BadThinner, _Cost4, _Discard, _Payload, _Terminal},
     },
     {
         "name": "Sea Hag",
@@ -1662,7 +1664,17 @@ Hinterlands.firstEdition = [
     {
         "name": "Noble Brigand",
         "types": {Action, Attack},
-        "advTags": {_BadThinner, _Cost4, _FreeAction, _Money1, _Reveal},
+        "advTags": {
+            _BadThinner,
+            _Cost4,
+            _Discard,
+            _FreeAction,
+            _GainResponse4,
+            _Junker,
+            _Money1,
+            _Reveal,
+            _Terminal,
+        },
     },
     {
         "name": "Nomad Camp",
@@ -1917,6 +1929,7 @@ DarkAges.AddCards(
             "advTags": {
                 _BadThinner,
                 _Cost5,
+                _Discard,
                 _Money2,
                 _Reveal,
                 _Terminal,
@@ -3076,7 +3089,6 @@ Menagerie.AddCards(
             "name": "Cardinal",
             "types": {Action, Attack},
             "advTags": {
-                _BadSifter,
                 _BadThinner,
                 _Cost4,
                 _Discard,
@@ -3116,6 +3128,7 @@ Menagerie.AddCards(
             "advTags": {
                 _BadThinner,
                 _Cost5,
+                _GainResponse5,
                 _Money3,
                 _MultiType,
                 _Terminal,
@@ -3335,7 +3348,7 @@ Allies.AddCards(
         {
             "name": "Barbarian",
             "types": {Action, Attack},
-            "advTags": {_Cost5, _Curser, _Downgrader, _Money2, _Trasher},
+            "advTags": {_Cost5, _Curser, _Downgrader, _Money2, _Terminal, _Trasher},
         },
         {
             "name": "Bauble",
