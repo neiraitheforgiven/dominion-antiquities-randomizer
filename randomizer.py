@@ -308,9 +308,7 @@ _Choice = AdvTag("_Choice")  # gives you a set of choices
 _Cost0 = AdvTag("_Cost0")  # card costs 0
 _Cost1 = AdvTag("_Cost1")  # card costs 1
 _Cost2 = AdvTag("_Cost2")  # card costs 2
-_Cost2Response = AdvTag(
-    "_Cost2Response", wantsTags=[_Cost2]
-)  # Wants cards that cost 2
+_Cost2Response = AdvTag("_Cost2Response", wantsTags=[_Cost2])  # Wants cards that cost 2
 _Cost3 = AdvTag("_Cost3")  # card costs 3
 _Cost4 = AdvTag("_Cost4")  # card costs 4
 _Command4 = AdvTag(
@@ -351,7 +349,9 @@ _Draw6 = AdvTag("_Draw6")  # draws 6 cards
 _Draw7 = AdvTag("_Draw7")  # draws 7 cards
 _Drawload = AdvTag("_Drawload")  # draws potentially infinite numbers of cards
 _Empty = AdvTag("_Empty")  # cares about empty supply piles
-_Exchange = AdvTag("_Exchange")  # allows you to exchange cards, triggering on-gain effects before the exchange
+_Exchange = AdvTag(
+    "_Exchange"
+)  # allows you to exchange cards, triggering on-gain effects before the exchange
 _ExtraCost = AdvTag(
     "_ExtraCost"
 )  # has an extra cost, preventing gainers from gaining it. Bad synnergy with gainers
@@ -394,10 +394,18 @@ _Gainer5 = AdvTag(
 _Gainer6 = AdvTag(
     "_Gainer6", bonusToTags=[_Cost6, _CostReducer], badTags=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
-_GainResponse3 = AdvTag("_GainResponse3", bonusToTags=[_Gainer3, _Exchange])  # Reaction triggered by gains.
-_GainResponse4 = AdvTag("_GainResponse4", bonusToTags=[_Gainer4, _Exchange])  # Reaction triggered by gains.
-_GainResponse5 = AdvTag("_GainResponse5", bonusToTags=[_Gainer5, _Exchange])  # Reaction triggered by gains.
-_GainResponse6 = AdvTag("_GainResponse6", bonusToTags=[_Gainer6, _Exchange])  # Reaction triggered by gains.
+_GainResponse3 = AdvTag(
+    "_GainResponse3", bonusToTags=[_Gainer3, _Exchange]
+)  # Reaction triggered by gains.
+_GainResponse4 = AdvTag(
+    "_GainResponse4", bonusToTags=[_Gainer4, _Exchange]
+)  # Reaction triggered by gains.
+_GainResponse5 = AdvTag(
+    "_GainResponse5", bonusToTags=[_Gainer5, _Exchange]
+)  # Reaction triggered by gains.
+_GainResponse6 = AdvTag(
+    "_GainResponse6", bonusToTags=[_Gainer6, _Exchange]
+)  # Reaction triggered by gains.
 _Exchange.bonusToTags = [_GainResponse3, _GainResponse4, _GainResponse5, _GainResponse6]
 _Kingdom = AdvTag("_Kingdom")  # Adds cards to the kingdom
 _Interactive = AdvTag(
@@ -450,7 +458,9 @@ _Thinner = AdvTag(
     "_Thinner"
 )  # Puts cards into the trash and leaves you with a smaller deck
 _Trasher = AdvTag("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
-_TrashResponse = AdvTag("_TrashResponse", wantsTags=[_Trasher])  # Responds to trashing or being trashed. Wants for _Trasher
+_TrashResponse = AdvTag(
+    "_TrashResponse", wantsTags=[_Trasher]
+)  # Responds to trashing or being trashed. Wants for _Trasher
 _TrashGainer = AdvTag(
     "_TrashGainer", wantsTags=[_Trasher]
 )  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
@@ -461,7 +471,8 @@ _Remodeler = AdvTag(
     "_Remodeler"
 )  # allows you to trash cards and replace them with better cards
 _VictoryGainer = AdvTag("_VictoryGainer")  # gains you victory cards or points
-_VictoryResponse = AdvTag( "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_VictoryGainer]
+_VictoryResponse = AdvTag(
+    "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_VictoryGainer]
 )  # allows you to respond to other players gaining victory cards. Wants for victory cards, encourages gainers
 _Village = AdvTag(
     "_Village", bonusToTags=[_Terminal]
@@ -571,7 +582,15 @@ Base.AddCards(
         {
             "name": "Sentry",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Sifter, _Thinner},
+            "advTags": {
+                _Cantrip,
+                _Cost5,
+                _DeckSeeder,
+                _Discard,
+                _Sifter,
+                _Trasher,
+                _Thinner,
+            },
         },
         {"name": "Smithy", "types": {Action}, "advTags": {_Cost4, _Draw3, _Terminal}},
         {"name": "Throne Room", "types": {Action}, "advTags": {_Cost4, _Splitter}},
@@ -608,7 +627,7 @@ Base.firstEdition = [
     {
         "name": "Spy",
         "types": {Action, Attack},
-        "advTags": {_BadSifter, _Cost4, _Reveal, _Sifter},
+        "advTags": {_BadSifter, _Cantrip, _Cost4, _Reveal, _Sifter},
     },
     {
         "name": "Thief",
@@ -792,7 +811,15 @@ Intrigue.firstEdition = [
     {
         "name": "Secret Chamber",
         "types": {Action, Reaction},
-        "advTags": {_AttackResponse, _Cost2, _DeckSeeder, _Discard, _Money4, _Sifter, _Terminal},
+        "advTags": {
+            _AttackResponse,
+            _Cost2,
+            _DeckSeeder,
+            _Discard,
+            _Money4,
+            _Sifter,
+            _Terminal,
+        },
     },
     {
         "name": "Tribute",
@@ -863,7 +890,15 @@ Seaside.AddCards(
         {
             "name": "Lookout",
             "types": {Action},
-            "advTags": {_Chainer, _Cost3, _Sifter, _Thinner},
+            "advTags": {
+                _Chainer,
+                _Cost3,
+                _DeckSeeder,
+                _Discard,
+                _Sifter,
+                _Trasher,
+                _Thinner,
+            },
         },
         {
             "name": "Merchant Ship",
@@ -991,7 +1026,7 @@ Seaside.firstEdition = [
     {
         "name": "Navigator",
         "types": {Action},
-        "advTags": {_Cost4, _Money2, _Sifter, _Terminal},
+        "advTags": {_Cost4, _DeckSeeder, _Discard, _Money2, _Sifter, _Terminal},
     },
     {
         "name": "Pearl Diver",
@@ -1071,7 +1106,9 @@ Alchemy.AddCards(
             "types": {Action, Attack, Potion},
             "advTags": {
                 _BadSifter,
+                _Cantrip,
                 _Chainer,
+                _Cost2,
                 _Drawload,
                 _ExtraCost,
                 _Reveal,
@@ -1142,7 +1179,7 @@ Prosperity.AddCards(
         {
             "name": "Crystal Ball",
             "types": {Treasure},
-            "advTags": {_Cost5, _Discard, _Money1, _Thinner},
+            "advTags": {_Cost5, _Discard, _FreeAction, _Money1, _Thinner, _Trasher},
         },
         {
             "name": "Expand",
@@ -1395,7 +1432,7 @@ Hinterlands.AddCards(
         {
             "name": "Cartographer",
             "types": {Action},
-            "advTags": {_Cantrip, _Discard, _Sifter},
+            "advTags": {_Cantrip, _DeckSeeder, _Discard, _Sifter},
         },
         {
             "name": "Cauldron",
@@ -1472,6 +1509,7 @@ Hinterlands.AddCards(
                 _Sifter,
                 _Terminal,
                 _Thinner,
+                _Trasher,
             },
         },
         {
@@ -1529,7 +1567,14 @@ Hinterlands.AddCards(
         {
             "name": "Trail",
             "types": {Action, Reaction},
-            "advTags": {_Cantrip, _Cost4, _DiscardResponse, _FreeAction, _GainResponse4, _TrashResponse},
+            "advTags": {
+                _Cantrip,
+                _Cost4,
+                _DiscardResponse,
+                _FreeAction,
+                _GainResponse4,
+                _TrashResponse,
+            },
         },
         {
             "name": "Tunnel",
@@ -1572,7 +1617,7 @@ Hinterlands.firstEdition = [
     {
         "name": "Duchess",
         "types": {Action},
-        "advTags": {_Cost2, _Interactive, _Money2, _Sifter},
+        "advTags": {_Cost2, _Discard, _GainResponse5, _Interactive, _Money2, _Sifter},
     },
     {
         "name": "Embassy",
@@ -1605,6 +1650,8 @@ Hinterlands.firstEdition = [
         "advTags": {
             _BadSifter,
             _Cost3,
+            _DeckSeeder,
+            _Discard,
             _Draw2,
             _Reveal,
             _Sifter,
@@ -1663,7 +1710,16 @@ DarkAges.AddCards(
         {
             "name": "Catacombs",
             "types": {Action},
-            "advTags": {_Cost5, _Draw3, _Sifter, _TrashGainer, _Terminal},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _Draw3,
+                _Gainer4,
+                _Sifter,
+                _TrashGainer,
+                _TrashResponse,
+                _Terminal,
+            },
         },
         {
             "name": "Count",
@@ -1902,7 +1958,7 @@ DarkAges.AddCards(
         {
             "name": "Wandering Minstrel",
             "types": {Action},
-            "advTags": {_Cost4, _Reveal, _Sifter, _Village},
+            "advTags": {_Cost4, _DeckSeeder, _Reveal, _Sifter, _Village},
         },
     ]
 )
@@ -1953,6 +2009,7 @@ Guilds.AddCards(
             "advTags": {
                 _Cost5,
                 _DeckGuesser,
+                _Discard,
                 _Draw3,
                 _Reveal,
                 _Sifter,
@@ -2224,7 +2281,7 @@ Adventures.AddCards(
         {
             "name": "Scouting Party",
             "types": {Event},
-            "advTags": {_Cost2, _FreeEvent, _Sifter},
+            "advTags": {_Cost2, _DeckSeeder, _Discard, _FreeEvent, _Sifter},
         },
         {"name": "Seaway", "types": {Event}, "advTags": {_Buys, _Cost5, _Gainer4}},
         {"name": "Training", "types": {Event}, "advTags": {_Cost6, _FutureMoney1}},
@@ -2484,16 +2541,36 @@ Empires.AddCards(
         {"name": "Baths", "types": {Landmark}, "advTags": {_VictoryGainer}},
         {"name": "Battlefield", "types": {Landmark}, "advTags": {_VictoryGainer}},
         {"name": "Colonnade", "types": {Landmark}, "advTags": {_VictoryGainer}},
-        {"name": "Defiled Shrine", "types": {Landmark}, "advTags": {_Curser, _VictoryGainer}},
+        {
+            "name": "Defiled Shrine",
+            "types": {Landmark},
+            "advTags": {_Curser, _VictoryGainer},
+        },
         {"name": "Fountain", "types": {Landmark}, "advTags": {_Junker, _VictoryGainer}},
         {"name": "Keep", "types": {Landmark}, "advTags": {_VictoryGainer}},
         {"name": "Labyrinth", "types": {Landmark}, "advTags": {_VictoryGainer}},
-        {"name": "Mountain Pass", "types": {Landmark}, "advTags": {_Debt, _VictoryGainer}},
-        {"name": "Museum", "types": {Landmark}, "advTags": {_NamesMatter, _VictoryGainer}},
+        {
+            "name": "Mountain Pass",
+            "types": {Landmark},
+            "advTags": {_Debt, _VictoryGainer},
+        },
+        {
+            "name": "Museum",
+            "types": {Landmark},
+            "advTags": {_NamesMatter, _VictoryGainer},
+        },
         {"name": "Obelisk", "types": {Landmark}, "advTags": {_VictoryGainer}},
-        {"name": "Orchard", "types": {Landmark}, "advTags": {_NamesMatter, _VictoryGainer}},
+        {
+            "name": "Orchard",
+            "types": {Landmark},
+            "advTags": {_NamesMatter, _VictoryGainer},
+        },
         {"name": "Palace", "types": {Landmark}, "advTags": {_VictoryGainer}},
-        {"name": "Tomb", "types": {Landmark}, "advTags": {_TrashGainer, _VictoryGainer}},
+        {
+            "name": "Tomb",
+            "types": {Landmark},
+            "advTags": {_TrashGainer, _VictoryGainer},
+        },
         {"name": "Tower", "types": {Landmark}, "advTags": {_Empty, _VictoryGainer}},
         {"name": "Triumphal Arch", "types": {Landmark}, "advTags": {_VictoryGainer}},
         {"name": "Wall", "types": {Landmark}, "advTags": {_Curser}},
@@ -2603,9 +2680,21 @@ Nocturne.AddCards(
         {
             "name": "Necromancer + Zombies",
             "types": {Action},
-            "advTags": {_Choice, _Cost4, _Discard, _Draw3, _Remodeler, _Trasher},
+            "advTags": {
+                _Choice,
+                _Cost4,
+                _DeckSeeder,
+                _Discard,
+                _Draw3,
+                _Remodeler,
+                _Trasher,
+            },
         },
-        {"name": "Night Watchman", "types": {Night}, "advTags": {_Cost3, _Sifter}},
+        {
+            "name": "Night Watchman",
+            "types": {Night},
+            "advTags": {_Cost3, _DeckSeeder, _Discard, _Sifter},
+        },
         {
             "name": "Pixie + Goat (Heirloom)",
             "types": {Action, Fate, Treasure, Heirloom},
@@ -2733,8 +2822,8 @@ Renaissance.AddCards(
             "advTags": {
                 _Cantrip,
                 _Cost2,
-                _Cantrip,
                 _DeckSeeder,
+                _Discard,
                 _Reveal,
                 _Sifter,
             },
@@ -2940,7 +3029,7 @@ Menagerie.AddCards(
                 _Draw2,
                 _MultiType,
                 _Terminal,
-                _VictoryResponse
+                _VictoryResponse,
             },
         },
         {
@@ -3144,7 +3233,15 @@ Menagerie.AddCards(
         {
             "name": "Pursue",
             "types": {Event},
-            "advTags": {_Cost2, _Discard, _FreeEvent, _Reveal, _Sifter},
+            "advTags": {
+                _Cost2,
+                _DeckGuesser,
+                _DeckSeeder,
+                _Discard,
+                _FreeEvent,
+                _Reveal,
+                _Sifter,
+            },
         },
         {"name": "Reap", "types": {Event}, "advTags": {_Cost7, _FutureMoney2, _Money3}},
         {"name": "Ride", "types": {Event}, "advTags": {_Cost2, _Draw2}},
@@ -3317,7 +3414,7 @@ Allies.AddCards(
         {
             "name": "Hunter",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Reveal, _Sifter},
+            "advTags": {_Cantrip, _Cost5, _Discard, _Draw3, _Reveal, _Sifter},
         },
         {
             "name": "Innkeeper",
@@ -4627,14 +4724,18 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
     counter = 0
     while len(resultSet) < 10:
         # choose a card type:
-        if sum (advTagDict.values()) == 0:
+        if sum(advTagDict.values()) == 0:
             print("no matching tags...")
             # reset the weights
             for card in completeSet:
                 tagSet = tagSet | card.advTags
             for cardTag in tagSet:
                 advTagDict[cardTag] = (
-                    min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
+                    min(
+                        5,
+                        len([card for card in completeSet if cardTag in card.advTags]),
+                    )
+                    * 1
                 )
             print(sum(advTagDict.values()))
         cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
@@ -4659,8 +4760,8 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
             advTagDict.pop(cardTag)
             continue
         if sum(cardDict.values()) == 0:
-           print("no matching cards...")
-           continue
+            print("no matching cards...")
+            continue
         card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
         # Categorize the card from the shuffled pile
         if card.types & {Way}:
@@ -4734,7 +4835,11 @@ def AdvancedSample(advTagDict, cardSet, completeSet, num):
                 tagSet = tagSet | card.advTags
             for cardTag in tagSet:
                 advTagDict[cardTag] = (
-                    min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
+                    min(
+                        5,
+                        len([card for card in completeSet if cardTag in card.advTags]),
+                    )
+                    * 1
                 )
             print(sum(advTagDict.values()))
         cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
@@ -4948,14 +5053,18 @@ def RandomizeDominion(setNames=None, options=None):
             # and draw an addtional Kingdom card
             resultSet -= alchemyCards
             resultSet.update(
-                SampleDominion(options, advTagDict, kingdomSet - resultSet, completeSet, 1)
+                SampleDominion(
+                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                )
             )
         elif len(alchemyCards) == 2:
             # If there are only 2 Alchemy cards, pull an additional Alchemy
             # card and randomly remove one non-Alchemy card
             resultSet -= alchemyCards
             alchemyCards.update(
-                SampleDominion(options, advTagDict, Alchemy.cards - alchemyCards, completeSet, 1)
+                SampleDominion(
+                    options, advTagDict, Alchemy.cards - alchemyCards, completeSet, 1
+                )
             )
             resultSet = alchemyCards.union(random.sample(resultSet, 7))
         # If there are 3 or more Alchemy cards, let it lie.
@@ -4969,11 +5078,17 @@ def RandomizeDominion(setNames=None, options=None):
             # Add a new card to the set and pull a Bane from the randomized
             # cards.
             resultSet.update(
-                SampleDominion(options, advTagDict, kingdomSet - resultSet, completeSet, 1)
+                SampleDominion(
+                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                )
             )
-            baneCard = SampleDominion(options, advTagDict, resultSet & BaneCards, completeSet, 1)[0]
+            baneCard = SampleDominion(
+                options, advTagDict, resultSet & BaneCards, completeSet, 1
+            )[0]
         else:
-            baneCard = SampleDominion(options, advTagDict, eligibleBanes, completeSet, 1)[0]
+            baneCard = SampleDominion(
+                options, advTagDict, eligibleBanes, completeSet, 1
+            )[0]
             resultSet.add(baneCard)
 
     # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
@@ -4992,13 +5107,19 @@ def RandomizeDominion(setNames=None, options=None):
             if includeBane:
                 eligibleMice.remove(baneCard)
 
-            mouseCard = SampleDominion(options, advTagDict, eligibleMice, completeSet, 1)[0]
+            mouseCard = SampleDominion(
+                options, advTagDict, eligibleMice, completeSet, 1
+            )[0]
             resultSet.update(
-                SampleDominion(options, advTagDict, kingdomSet - resultSet, completeSet, 1)
+                SampleDominion(
+                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                )
             )
             resultSet.remove(mouseCard)
         else:
-            mouseCard = SampleDominion(options, advTagDict, eligibleMice, completeSet, 1)[0]
+            mouseCard = SampleDominion(
+                options, advTagDict, eligibleMice, completeSet, 1
+            )[0]
         mouseSet.add(mouseCard)
 
     fullResults = resultSet.union(landscapeList)
