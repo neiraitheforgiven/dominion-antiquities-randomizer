@@ -352,6 +352,7 @@ _Draw6 = AdvTag("_Draw6")  # draws 6 cards
 _Draw7 = AdvTag("_Draw7")  # draws 7 cards
 _Drawload = AdvTag("_Drawload")  # draws potentially infinite numbers of cards
 _Empty = AdvTag("_Empty")  # cares about empty supply piles
+_Exchange = AdvTag("_Exchange")  # allows you to exchange cards, triggering on-gain effects before the exchange
 _ExtraCost = AdvTag(
     "_ExtraCost"
 )  # has an extra cost, preventing gainers from gaining it. Bad synnergy with gainers
@@ -394,6 +395,11 @@ _Gainer5 = AdvTag(
 _Gainer6 = AdvTag(
     "_Gainer6", bonusToTags=[_Cost6, _CostReducer], badTags=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
+_GainResponse3 = AdvTag("_GainResponse3", bonusToTags=[_Gainer3, _Exchange])  # Reaction triggered by gains.
+_GainResponse4 = AdvTag("_GainResponse4", bonusToTags=[_Gainer4, _Exchange])  # Reaction triggered by gains.
+_GainResponse5 = AdvTag("_GainResponse5", bonusToTags=[_Gainer5, _Exchange])  # Reaction triggered by gains.
+_GainResponse6 = AdvTag("_GainResponse6", bonusToTags=[_Gainer6, _Exchange])  # Reaction triggered by gains.
+_Exchange.bonusToTags = [_GainResponse3, _GainResponse4, _GainResponse5, _GainResponse6]
 _Kingdom = AdvTag("_Kingdom")  # Adds cards to the kingdom
 _Interactive = AdvTag(
     "_Interactive"
@@ -445,7 +451,7 @@ _Thinner = AdvTag(
     "_Thinner"
 )  # Puts cards into the trash and leaves you with a smaller deck
 _Trasher = AdvTag("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
-_TrashBenefit = AdvTag("_TrashBenefit")  # Wants to be trashed
+_TrashResponse = AdvTag("_TrashResponse", wantsTags=[_Trasher])  # Responds to trashing or being trashed. Wants for _Trasher
 _TrashGainer = AdvTag(
     "_TrashGainer", wantsTags=[_Trasher]
 )  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
@@ -456,6 +462,8 @@ _Remodeler = AdvTag(
     "_Remodeler"
 )  # allows you to trash cards and replace them with better cards
 _Victory = AdvTag("_Victory")  # gains you victory cards or points
+_VictoryResponse = AdvTag( "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_Victory]
+)  # allows you to respond to other players gaining victory cards. Wants for victory cards, encourages gainers
 _Village = AdvTag(
     "_Village", bonusToTags=[_Terminal]
 )  # replaces itself and allows multiple terminals to be played
@@ -668,7 +676,7 @@ Intrigue.AddCards(
         {
             "name": "Diplomat",
             "types": {Action, Reaction},
-            "advTags": {_AttackResponse, _Cost4, _Draw2},
+            "advTags": {_AttackResponse, _Cost4, _Draw2, _Sifter, _Terminal, _Village},
         },
         {"name": "Duke", "types": {Victory}, "advTags": {_Cost5}},
         {"name": "Harem", "types": {Treasure, Victory}, "advTags": {_Cost6, _Money2}},
@@ -785,7 +793,7 @@ Intrigue.firstEdition = [
     {
         "name": "Secret Chamber",
         "types": {Action, Reaction},
-        "advTags": {_AttackResponse, _Cost2, _DeckSeeder, _Discard},
+        "advTags": {_AttackResponse, _Cost2, _DeckSeeder, _Discard, _Money4, _Sifter, _Terminal},
     },
     {
         "name": "Tribute",
@@ -883,6 +891,7 @@ Seaside.AddCards(
             "types": {Action, Duration, Reaction},
             "advTags": {
                 _Cost5,
+                _FreeAction,
                 _FutureMoney2,
                 _MultiType,
                 _Terminal,
@@ -1210,6 +1219,7 @@ Prosperity.AddCards(
                 _SpeedUp,
                 _Terminal,
                 _Thinner,
+                _Trasher,
             },
         },
         {
@@ -1439,8 +1449,7 @@ Hinterlands.AddCards(
             "advTags": {
                 _Cost3,
                 _DiscardResponse,
-                _Remodeler,
-                _Trasher,
+                _FutureMoney2,
             },
         },
         {
@@ -1510,7 +1519,9 @@ Hinterlands.AddCards(
             "types": {Action, Reaction},
             "advTags": {
                 _Cost4,
+                _Exchange,
                 _FutureMoney1,
+                _GainResponse4,
                 _Terminal,
                 _Thinner,
                 _Trasher,
@@ -1519,7 +1530,7 @@ Hinterlands.AddCards(
         {
             "name": "Trail",
             "types": {Action, Reaction},
-            "advTags": {_Cost4, _FreeAction},
+            "advTags": {_Cantrip, _Cost4, _DiscardResponse, _FreeAction, _GainResponse4, _TrashResponse},
         },
         {
             "name": "Tunnel",
@@ -1780,6 +1791,7 @@ DarkAges.AddCards(
                 _Cost3,
                 _FutureMoney2,
                 _TrashGainer,
+                _TrashResponse,
             },
         },
         {
@@ -2929,6 +2941,7 @@ Menagerie.AddCards(
                 _Draw2,
                 _MultiType,
                 _Terminal,
+                _VictoryResponse
             },
         },
         {
@@ -2976,7 +2989,7 @@ Menagerie.AddCards(
         {
             "name": "Falconer",
             "types": {Action, Reaction},
-            "advTags": {_Cost5, _Gainer4, _MultiTypeLove, _Terminal},
+            "advTags": {_Cost5, _FreeAction, _Gainer4, _MultiTypeLove, _Terminal},
         },
         {"name": "Fisherman", "types": {Action}, "advTags": {_Cost3, _Cost5, _Peddler}},
         {
@@ -3590,6 +3603,7 @@ Plunder.AddCards(
                 _FreeAction,
                 _Sifter,
                 _Terminal,
+                _VictoryResponse,
             },
         },
         {
