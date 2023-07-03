@@ -56,6 +56,10 @@ class Card(object):
         else:
             self.advTags = set(advTags)
 
+        # create an entry in self.advTags for each type in self.types
+        for type in self.types:
+            self.advTags.add(AdvTag(type.name))
+
     def __hash__(self):
         return hash(str(self))
 
