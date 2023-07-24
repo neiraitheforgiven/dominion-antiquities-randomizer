@@ -390,8 +390,18 @@ _FutureMoney4 = AdvTag(
 _FutureMoney6 = AdvTag(
     "_FutureMoney6"
 )  # gives you future money, such as by gaining 3 golds
-_ExactGainer3 = _Gainer3 = AdvTag(
-    "_ExactGainer3", bonusToTags=[_Cost3, _CostReducer], badTags=["_ExtraCost"]
+_ExactGainer3 = AdvTag(
+    "_ExactGainer3", bonusToTags=[_Cost3, _CostReducer], badTags=["_ExtraCost"], wantsTags=[_Cost3]
+)  # allows you to gain cards from the supply costing exactly 3; synnergizes with _Cost3, _CostReducer
+_ExactGainer4 = AdvTag(
+    "_ExactGainer4", bonusToTags=[_Cost4, _CostReducer], badTags=["_ExtraCost"], wantsTags=[_Cost4]
+)  # allows you to gain cards from the supply costing exactly 4; synnergizes with _Cost4, _CostReducer
+_ExactGainer5 = AdvTag(
+    "_ExactGainer5", bonusToTags=[_Cost5, _CostReducer], badTags=["_ExtraCost"], wantsTags=[_Cost5]
+)  # allows you to gain cards from the supply costing exactly 5; synnergizes with _Cost5, _CostReducer
+_ExactGainer6 = AdvTag(
+    "_ExactGainer6", bonusToTags=[_Cost6, _CostReducer], badTags=["_ExtraCost"], wantsTags=[_Cost6]
+)  # allows you to gain cards from the supply costing exactly 6; synnergizes with _Cost6, _CostReducer
 _Gainer3 = AdvTag(
     "_Gainer3", bonusToTags=[_Cost3, _CostReducer], badTags=["_ExtraCost"]
 )  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
@@ -414,7 +424,7 @@ _GainResponse5 = AdvTag(
     "_GainResponse5", bonusToTags=[_ExactGainer5, _Exchange, _Gainer5, _Gainer6]
 )  # Reaction triggered by gains.
 _GainResponse6 = AdvTag(
-    "_GainResponse6", bonusToTags=[_Gainer6, _Exchange]
+    "_GainResponse6", bonusToTags=[_ExactGainer6, _Gainer6, _Exchange]
 )  # Reaction triggered by gains.
 _Exchange.bonusToTags = [_GainResponse3, _GainResponse4, _GainResponse5, _GainResponse6]
 _Kingdom = AdvTag("_Kingdom")  # Adds cards to the kingdom
@@ -479,8 +489,8 @@ _Twin = AdvTag(
     "_Twin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
 _Remodeler = AdvTag(
-    "_Remodeler"
-)  # allows you to trash cards and replace them with better cards
+    "_Remodeler", bonusToTags=[_Cost3, _Cost4, _Cost5, _Cost6, _Cost7],
+)  # allows you to trash cards and replace them with better cards. Encourages an unbroker upgrade path to Province
 _VictoryGainer = AdvTag("_VictoryGainer")  # gains you victory cards or points
 _VictoryResponse = AdvTag(
     "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_VictoryGainer]
@@ -693,7 +703,7 @@ Intrigue.AddCards(
             "types": {Action},
             "advTags": {
                 _Buys,
-                _Chainer
+                _Chainer,
                 _Choice,
                 _Cost5,
                 _FutureMoney2,
