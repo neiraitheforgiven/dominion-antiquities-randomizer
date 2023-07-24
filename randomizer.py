@@ -2694,9 +2694,11 @@ Nocturne.AddCards(
             "types": {Victory, Treasure, Heirloom},
             "advTags": {
                 _Cost4,
-                _Money1,
+                _Discard, # Haunted Mirror
+                _Money1, # Haunted Mirror
+                _Splitter, # Haunted Mirror
                 _Thinner,
-                _TrashGainer,
+                _TrashResponse, # Haunted Mirror
             },
         },
         {
@@ -2839,9 +2841,13 @@ Nocturne.AddCards(
                 _Cantrip,
                 _Cost3,
                 _Discard,
-                _Money1,
+                _Gainer6, # Magic Lamp
+                _Money1, # Magic Lamp
                 _Money3,
-                _TrashGainer,
+                _NamesMatter, # Magic Lamp
+                _TrashResponse, # Magic Lamp
+                _Thinner, # Magic Lamp
+                _Trasher, # Magic Lamp
                 _Twin,
             },
         },
@@ -3305,7 +3311,7 @@ Menagerie.AddCards(
             "advTags": {_Cost4, _Gainer5, _Interactive},
         },
         {"name": "Commerce", "types": {Event}, "advTags": {_Cost5, _Payload}},
-        {"name": "Delay", "types": {Event}, "advTags": {_Cost0, _FreeAction, _Saver}},
+        {"name": "Delay", "types": {Event}, "advTags": {_Cost0, _FutureAction, _Saver}},
         {
             "name": "Demand",
             "types": {Event},
