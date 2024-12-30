@@ -85,6 +85,8 @@ class Card(object):
             formatStr = "({} Ally): {}"
         elif Trait in self.types:
             formatStr = "({} Trait): {}"
+        elif Prophecy in self.types:
+            formatStr = "({} Prophecy): {}"
         else:
             formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
@@ -106,6 +108,7 @@ class Set(object):
         self._actions = None
         self._allyCards = None
         self._traits = None
+        self._prophecies = None
 
         AllSets[self.name] = self
 
@@ -198,6 +201,14 @@ class Set(object):
         return self._projects
 
     @property
+    def prophecies(self):
+        if self._prophecies is None:
+            self._prophecies = CardList(
+                card for card in self._cards if card.types & {Prophecy}
+            )
+        return self._prophecies
+
+    @property
     def traits(self):
         if self._traits is None:
             self._traits = CardList(
@@ -222,12 +233,13 @@ class Set(object):
 
 # Define card types
 # Donald X Landmarky Things
+Ally = CardType("Ally")
 Event = CardType("Event")
 Landmark = CardType("Landmark")
 Project = CardType("Project")
-Way = CardType("Way")
-Ally = CardType("Ally")
+Prophecy = CardType("Prophecy")
 Trait = CardType("Trait")
+Way = CardType("Way")
 # Donald X types
 # Potion isn't written on the card
 Action = CardType("Action")
@@ -248,9 +260,11 @@ Liaison = CardType("Liaison")
 Looter = CardType("Looter")
 Night = CardType("Night")
 Odyssey = CardType("Odyssey")
+Omen = CardType("Omen")
 Potion = CardType("Potion")
 Reaction = CardType("Reaction")
 Reserve = CardType("Reserve")
+Shadow = CardType("Shadow")
 Townsfolk = CardType("Townsfolk")
 Traveller = CardType("Traveller")
 Treasure = CardType("Treasure")
@@ -261,12 +275,13 @@ Wizard = CardType("Wizard")
 # for enhanced randomizer
 # Define card types
 # Donald X Landmarky Things
+_Ally = AdvTag("Ally")
 _Event = AdvTag("Event")
 _Landmark = AdvTag("Landmark")
 _Project = AdvTag("Project")
-_Way = AdvTag("Way")
-_Ally = AdvTag("Ally")
+_Prophecy = AdvTag("Prophecy")
 _Trait = AdvTag("Trait")
+_Way = AdvTag("Way")
 # Donald X types
 # Potion isn't written on the card
 _Action = AdvTag("Action")
@@ -286,9 +301,11 @@ _Liaison = AdvTag("Liaison")
 _Looter = AdvTag("Looter")
 _Night = AdvTag("Night")
 _Odyssey = AdvTag("Odyssey")
+_Omen = AdvTag("Omen")
 _Potion = AdvTag("Potion")
 _Reaction = AdvTag("Reaction")
 _Reserve = AdvTag("Reserve")
+_Shadow = AdvTag("Shadow")
 _Townsfolk = AdvTag("Townsfolk")
 _Traveller = AdvTag("Traveller")
 _Treasure = AdvTag("Treasure")
@@ -5580,6 +5597,7 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
     resultSet = set()
     waySet = set()
     tagSet = set()
+    prophecySet = set()
     for card in completeSet:
         tagSet = tagSet | card.advTags
     advTagDict = {}
@@ -5637,8 +5655,11 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
             waySet.add(card)
         elif card.types & {Event, Landmark, Project, Trait}:
             landscapeSet.add(card)
+        elif card.type & {Prophecy}:
+            prophecySet.add(card)
         else:
             resultSet.add(card)
+
         counter += 1
         # Rebalance the card type weights
         badTags = set()
@@ -5668,6 +5689,42 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
                     ):
                         advTagDict[wantedTag] = advTagDict[wantedTag] + 50
                         wantedTags.append(wantedTag)
+                # Pick the prophecy immediately if there is an omen in the results
+        if "_Omen" in includedTags and "_Prophecy" not in includedTags:
+            if prophecySet:
+                prophecyCard = resultSet.add(random.sample(prophecySet, 1)[0])
+            else:
+                prophecies = [
+                    card for card in completeSet if "_Prophecy" in card.advTags
+                ]
+                if prophecies:
+                    prophecyCard = resultSet.add(random.sample(prophecies, 1)[0])
+            if prophecyCard:
+                resultSet.add(prophecyCard)
+                for cardTag in prophecyCard.advTags:
+                    includedTags.add(cardTag)
+                for cardTag in prophecyCard.advTags:
+                    if cardTag in advTagDict:
+                        advTagDict[cardTag] = max(0, advTagDict[cardTag] - 1)
+                        for selectedTag in selectedTags:
+                            badTags.add(badTag for badTag in selectedTag.badTags)
+                        for bonusTag in cardTag.bonusToTags:
+                            if (
+                                bonusTag in advTagDict
+                                and bonusTag not in bonusedTags
+                                and bonusTag not in badTags
+                            ):
+                                advTagDict[bonusTag] = advTagDict[bonusTag] + 6
+                                bonusedTags.append(bonusTag)
+                        for wantedTag in cardTag.wantsTags:
+                            if (
+                                wantedTag in advTagDict
+                                and wantedTag not in includedTags
+                                and wantedTag not in wantedTags
+                                and wantedTag not in badTags
+                            ):
+                                advTagDict[wantedTag] = advTagDict[wantedTag] + 50
+                                wantedTags.append(wantedTag)
     if landscapeSet:
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
@@ -6050,6 +6107,8 @@ def RandomizeDominion(setNames=None, options=None):
         random.sample(fullResults, 1)
     )
 
+    includeProphecy = OmenCards & (fullResults | mouseSet)
+
     # Create final list
     additionalCards = set()
 
@@ -6099,6 +6158,12 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Menagerie: Horse")
     if includeLoot:
         landscapeList.append("(Plunder: Loot Deck)")
+    if includeProphecy and not (resultSet & ProphecyCards):
+        resultSet.update(
+            SampleDominion(
+                options, advTagDict, resultSet & ProphecyCards, completeSet, 1
+            )[0]
+        )
 
     # Assign Traits to selected cards
     selectedTraits = Traits.intersection(landscapeList)
