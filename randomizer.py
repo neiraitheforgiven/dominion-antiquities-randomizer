@@ -534,6 +534,10 @@ _Overpay = AdvTag(
 _Peddler = AdvTag(
     "_Peddler"
 )  # cantrip that give +1 Money; seperate class for randomizer reasons
+_PlatinumLover = AdvTag(
+    "_PlatinumLover"
+)  # Really does better if there are 9-cost treasures
+_Playload = AdvTag("_Playload")  # Allows you to play many cards into the play area
 _Terminal = AdvTag(
     "_Terminal"
 )  # doesn't allow more actions to be played. synnergizes with _Splitter and _Village
@@ -565,7 +569,7 @@ _NamesMatter = AdvTag(
     "_NamesMatter", [_Looter, _Kingdom, _Prize, _SplitPile]
 )  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
 _Splitter = AdvTag(
-    "_Splitter", bonusToTags=[_Terminal]
+    "_Splitter", bonusToTags=[_Omen, _Terminal]
 )  # allows you to play cards multiple times.
 _StationaryLover3 = AdvTag(
     "StationaryLover3", bonusToTags=[_Command3, _Command4, _Command7]
@@ -603,10 +607,11 @@ _VictoryResponse = AdvTag(
     "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_VictoryGainer]
 )  # allows you to respond to other players gaining victory cards. Wants for victory cards, encourages gainers
 _Village = AdvTag(
-    "_Village", bonusToTags=[_Terminal]
+    "_Village", bonusToTags=[_Shadow, _Terminal]
 )  # replaces itself and allows multiple terminals to be played
 _ActionLover.bonusToTags = [_Village]
-_CardLover.bonusToTags = [_Cantrip, _Village]
+_CardLover.bonusToTags = [_Cantrip, _Playload, _Village]
+
 
 # Define sets
 Base = Set("Base")
@@ -4772,6 +4777,240 @@ Plunder.AddCards(
         {"name": "Rich", "types": {Trait}, "advTags": {_FutureMoney1}},
         {"name": "Shy", "types": {Trait}, "advTags": {_Discard, _Draw2}},
         {"name": "Tireless", "types": {Trait}, "advTags": {_DeckSeeder}},
+    ]
+)
+
+RisingSun = Set("Rising Sun")
+RisingSun.AddCards(
+    [
+        {
+            "name": "Alley",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Cost4, _Cantrip, _Discard},
+        },
+        {
+            "name": "Aristocrat",
+            "types": {Action},
+            "advTags": {_Buys, _Cost3, _Draw3, _Money3, _Terminal, _Village},
+        },
+        {
+            "name": "Artist",
+            "types": {Action},
+            "advTags": {_Cost8, _Cantrip, _Debt, _Drawload, _NamesMatter},
+        },
+        {
+            "name": "Change",
+            "types": {Action},
+            "advTags": {_Cost4, _Debt, _Money3, _Remodeler, _Terminal},
+        },
+        {
+            "name": "Craftsman",
+            "types": {Action},
+            "advTags": {_Cost3, _Debt, _Gainer5, _Terminal},
+        },
+        {
+            "name": "Daimyo",
+            "types": {Action, Command},
+            "advTags": {_Cost6, _Debt, _Cantrip, _Splitter},
+        },
+        {
+            "name": "Fishmonger",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Buys, _Cost2, _Money1},
+        },
+        {
+            "name": "Gold Mine",
+            "types": {Action},
+            "advTags": {_Buys, _Cantrip, _Cost5, _Debt, _FutureMoney3},
+        },
+        {
+            "name": "Imperial Envoy",
+            "types": {Action},
+            "advTags": {_Buys, _Cost5, _Debt, _Draw5, _Terminal},
+        },
+        {
+            "name": "Kitsune",
+            "types": {Action, Attack, Omen},
+            "advTags": {_Choice, _Cost5, _Curser, _FutureMoney2, _Money2, _Village},
+        },
+        {
+            "name": "Litter",
+            "types": {Action},
+            "advTags": {_Cost5, _Debt, _DoubleDouble},
+        },
+        {
+            "name": "Mountain Shrine",
+            "types": {Action, Omen},
+            "advTags": {_Cost5, _Debt, _Draw2, _Money2, _Thinner},
+        },
+        {
+            "name": "Ninja",
+            "types": {Action, Attack, Shadow},
+            "advTags": {_BottomSeeder, _Cost4, _Discard, _Draw1, _Terminal},
+        },
+        {
+            "name": "Poet",
+            "types": {Action, Omen},
+            "advTags": {_Cantrip, _Cost4, _Reveal, _Sifter},
+        },
+        {
+            "name": "Rice",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost7, _MultiTypeLove, _Payload},
+        },
+        {
+            "name": "Rice Broker",
+            "types": {Action},
+            "advTags": {_Cost5, _Lab, _Draw5},
+        },
+        {
+            "name": "Riverboat",
+            "types": {Action, Duration},
+            "advTags": {_Cost3, _FutureAction, _Kingdom, _Terminal},
+        },
+        {
+            "name": "River Shrine",
+            "types": {Action, Omen},
+            "advTags": {_Cost4, _Gainer4, _Terminal, _Thinner},
+        },
+        {
+            "name": "Ronin",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Cost5, _Drawload, _Terminal},
+        },
+        {
+            "name": "Root Cellar",
+            "types": {Action, Omen},
+            "advTags": {_Cost3, _Debt, _Draw3, _Lab},
+        },
+        {
+            "name": "Rustic Village",
+            "types": {Action, Omen},
+            "advTags": {_Cost4, _Discard, _DoubleDouble, _Village},
+        },
+        {
+            "name": "Samurai",
+            "types": {Action, Attack, Duration},
+            "advTags": {_Cost6, _Discard, _Money1, _MultiType, _Payload, _Terminal},
+        },
+        {
+            "name": "Snake Witch",
+            "types": {Action, Attack},
+            "advTags": {_Cost2, _Curser, _Piler, _Thinner},
+        },
+        {
+            "name": "Tanuki",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Cost5, _Remodeler, _Terminal},
+        },
+        {
+            "name": "Tea House",
+            "types": {Action, Omen},
+            "advTags": {_Cantrip, _Cost5, _Money2},
+        },
+        # Landscapes
+        {
+            "name": "Amass",
+            "types": {Event},
+            "advTags": {_Cost2, _Gainer5},
+        },
+        {
+            "name": "Asceticism",
+            "types": {Event},
+            "advTags": {_Cost2, _Thinner},
+        },
+        {
+            "name": "Continue",
+            "types": {Event},
+            "advTags": {
+                _Cost8,
+                _Chainer,
+                _Debt,
+                _FreeAction,
+                _FreeEvent,
+                _Gainer4,
+                _PhaseBreaker,
+            },
+        },
+        {
+            "name": "Credit",
+            "types": {Event},
+            "advTags": {_Cost2, _Debt, _Gainer8},
+        },
+        {
+            "name": "Foresight",
+            "types": {Event},
+            "advTags": {_Cost2, _Discard, _Reveal, _Saver},
+        },
+        {
+            "name": "Gather",
+            "types": {Event},
+            "advTags": {_Cost7, _Gainer3, _Gainer4, _Gainer5},
+        },
+        {
+            "name": "Kintsugi",
+            "types": {Event},
+            "advTags": {_Cost3, _Remodeler, _Thinner},
+        },
+        {
+            "name": "Practice",
+            "types": {Event},
+            "advTags": {_Cost3, _FreeAction, _PhaseBreaker, _Splitter},
+        },
+        {
+            "name": "Receive Tribute",
+            "types": {Event},
+            "advTags": {_Cost5, _GainLover, _Gainer8, _NamesMatter},
+        },
+        {
+            "name": "Sea Trade",
+            "types": {Event},
+            "advTags": {_ActionLover, _Cost4, _Drawload, _Thinner},
+        },
+        {
+            "name": "Approaching Army",
+            "types": {Prophecy},
+            "advTags": {_AttackResponse, _Kingdom, _Payload},
+        },
+        {"name": "Biding Time", "types": {Prophecy}, "advTags": {_Saver}},
+        {"name": "Bureaucracy", "types": {Prophecy}, "advTags": {_Junker}},
+        {"name": "Divine Wind", "types": {Prophecy}, "advTags": {_Kingdom}},
+        {
+            "name": "Enlightenment",
+            "types": {Prophecy},
+            "advTags": {_PhaseBreaker, _Playload},
+        },
+        {
+            "name": "Flourishing Trade",
+            "types": {Prophecy},
+            "advTags": {_Buys, _CostReducer},
+        },
+        {
+            "name": "Good Harvest",
+            "types": {Prophecy},
+            "advTags": {_Buys, _NamesMatter, _Payload},
+        },
+        {"name": "Great Leader", "types": {Prophecy}, "advTags": {_Playload}},
+        {
+            "name": "Growth",
+            "types": {Prophecy},
+            "advTags": {_Gainer8, _GainLover, _PlatinumLover},
+        },
+        {"name": "Harsh Winter", "types": {Prophecy}, "advTags": {_Debt}},
+        {"name": "Kind Emperor", "types": {Prophecy}, "advTags": {_Gainer7}},
+        {"name": "Panic", "types": {Prophecy}, "advTags": {_Buys, _Piler}},
+        {"name": "Progress", "types": {Prophecy}, "advTags": {_DeckSeeder, _GainLover}},
+        {
+            "name": "Rapid Expansion",
+            "types": {Prophecy},
+            "advTags": {_FreeAction, _GainLover, _Saver},
+        },
+        {
+            "name": "Enlightenment",
+            "types": {Prophecy},
+            "advTags": {_PhaseBreaker, _Playload},
+        },
+        {"name": "Sickness", "types": {Prophecy}, "advTags": {_Curser, _Discard}},
     ]
 )
 
