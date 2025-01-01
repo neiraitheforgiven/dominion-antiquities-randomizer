@@ -6287,6 +6287,38 @@ def RandomizeDominion(setNames=None, options=None):
             )[0]
         mouseSet.add(mouseCard)
 
+    # Get card for Riverboat. These are 5-cost non-duration actions. The card chosen for
+    # Riverboat should not be used when determining most additional card rules.
+    includeRiverboat = RisingSun.cards("Riverboat").intersection(resultSet)
+    riverboatSet = set()
+    if includeRiverboat:
+        cost5NonDurationActions = set(
+            kingdomPile
+            for kingdomPile in kingdomSet
+            if (
+                "_Cost5" in kingdomPile.advTags
+                and "Action" in kingdomPile.types
+                and "Duration" not in kingdomPile.types
+            )
+        )
+        eligibleRiverboats = cost5NonDurationActions - resultSet
+        if not eligibleRiverboats:
+            # All eligible Riverboats are already part of the randomized set!
+            # (This is nearly impossible.) Get a Riverboat from the randomized
+            # cards, add a new card to the set, and remove the Riverboat from the
+            # set.
+            eligibleRiverboats = resultSet & cost5NonDurationActions
+            riverboatCard = random.sample(eligibleRiverboats, 1)[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                )
+            )
+            resultSet.remove(riverboatCard)
+        else:
+            riverboatCard = random.sample(eligibleRiverboats, 1)[0]
+        riverboatSet.add(riverboatCard)
+
     fullResults = resultSet.union(landscapeList)
 
     # Check for Colonies and Platinums
@@ -6305,48 +6337,50 @@ def RandomizeDominion(setNames=None, options=None):
         random.sample(fullResults, 1)
     )
     # Check for Ruins
-    includeRuins = LooterCards & resultSet
+    includeRuins = LooterCards & (resultSet | riverboatSet)
     # Check for Madman
     includeMadman = DarkAges.cards("Hermit") & resultSet
     # Check for Mercenary
     includeMercenary = DarkAges.cards("Urchin") & resultSet
     # Check for Spoils
-    includeSpoils = SpoilsCards & resultSet
+    includeSpoils = SpoilsCards & (resultSet | riverboatSet)
 
     # Check for special Nocturne cards
     includeGhost = resultSet & Nocturne.cards(
         "Cemetary + Haunted Mirror (Heirloom)", "Exorcist"
     )
 
-    includeBoons = BoonCards & (resultSet | mouseSet)
+    includeBoons = BoonCards & (resultSet | mouseSet | riverboatSet)
 
-    includeHexes = HexCards & (resultSet | mouseSet)
+    includeHexes = HexCards & (resultSet | mouseSet | riverboatSet)
 
     includeWisp = includeBoons or (Nocturne.cards("Exorcist") & resultSet)
 
     includeBat = Nocturne.cards("Vampire") & resultSet
 
-    includeImp = resultSet & Nocturne.cards("Devil's Workshop", "Exorcist", "Tormentor")
+    includeImp = (resultSet | riverboatSet) & Nocturne.cards(
+        "Devil's Workshop", "Exorcist", "Tormentor"
+    )
 
-    includeWish = resultSet & Nocturne.cards(
+    includeWish = (resultSet | mouseSet) & Nocturne.cards(
         "Leprechaun", "Secret Cave + Magic Lamp (Heirloom)"
     )
 
     # Check for Horses
-    includeHorse = HorseCards & (fullResults | mouseSet)
+    includeHorse = HorseCards & (fullResults | mouseSet | riverboatSet)
 
     # Check for Liaisons (for a random Ally Card)
-    includeAlly = LiaisonCards & (fullResults | mouseSet)
+    includeAlly = LiaisonCards & (fullResults | mouseSet | riverboatSet)
 
     # Check for Loot cards
-    includeLoot = LootCards & (fullResults | mouseSet)
+    includeLoot = LootCards & (fullResults | mouseSet | riverboatSet)
 
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
         random.sample(fullResults, 1)
     )
 
-    includeProphecy = OmenCards & (fullResults | mouseSet)
+    includeProphecy = any(result for result in fullResults if "Omen" in result.types)
 
     # Create final list
     additionalCards = set()
@@ -6397,11 +6431,9 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Menagerie: Horse")
     if includeLoot:
         landscapeList.append("(Plunder: Loot Deck)")
-    if includeProphecy and not (resultSet & ProphecyCards):
+    if includeProphecy and not (resultSet & Prophecy):
         resultSet.update(
-            SampleDominion(
-                options, advTagDict, resultSet & ProphecyCards, completeSet, 1
-            )[0]
+            SampleDominion(options, advTagDict, resultSet & Prophecy, completeSet, 1)[0]
         )
 
     # Assign Traits to selected cards
