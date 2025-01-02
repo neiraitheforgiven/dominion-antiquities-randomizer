@@ -1637,24 +1637,21 @@ Prosperity.secondEdition = Prosperity.cards(
 Cornucopia = Set("Cornucopia")
 Cornucopia.AddCards(
     [
+        {
+            "name": "Carnival",
+            "types": {Action},
+            "advTags": {_Cost5, _Draw4, _NamesMatter, _Reveal, _Terminal},
+        },
         {"name": "Fairgrounds", "types": {Victory}, "advTags": {_Cost6, _NamesMatter}},
         {
-            "name": "Farming Village",
+            "name": "Farmhands",
             "types": {Action},
-            "advTags": {_Cost4, _Discard, _Sifter, _Reveal, _Village},
+            "advTags": {_Cost4, _FreeAction, _GainResponse4, _Saver, _Village},
         },
         {
-            "name": "Fortune Teller",
-            "types": {Action, Attack},
-            "advTags": {
-                _BadSifter,
-                _Cost3,
-                _DeckSeeder,
-                _Discard,
-                _Money2,
-                _Reveal,
-                _Terminal,
-            },
+            "name": "Ferryman",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost5, _Kingdom, _GainResponse5, _Sifter},
         },
         {
             "name": "Hamlet",
@@ -1662,35 +1659,9 @@ Cornucopia.AddCards(
             "advTags": {_Buys, _Cantrip, _Choice, _Cost2, _Discard, _Village},
         },
         {
-            "name": "Harvest",
-            "types": {Action},
-            "advTags": {
-                _Cost5,
-                _Discard,
-                _Money4,
-                _NamesMatter,
-                _Reveal,
-                _Terminal,
-            },
-        },
-        {
             "name": "Horn of Plenty",
             "types": {Treasure},
             "advTags": {_Cost5, _Gainer8, _NamesMatter, _Trasher},
-        },
-        {
-            "name": "Horse Traders",
-            "types": {Action, Reaction},
-            "advTags": {
-                _AttackResponse,
-                _Buys,
-                _Cost4,
-                _Discard,
-                _FutureDraw1,
-                _Money3,
-                _Saver,
-                _Terminal,
-            },
         },
         {
             "name": "Hunting Party",
@@ -1711,6 +1682,11 @@ Cornucopia.AddCards(
             },
         },
         {
+            "name": "Joust",
+            "types": {Action},
+            "advTags": {_Cost5, _Peddler, _MultiType, _Prize, _Reveal},
+        },
+        {
             "name": "Menagerie",
             "types": {Action},
             "advTags": {_Cantrip, _Cost3, _Draw3, _NamesMatter, _Reveal},
@@ -1721,18 +1697,9 @@ Cornucopia.AddCards(
             "advTags": {_Cost4, _Remodeler, _Terminal, _Trasher},
         },
         {
-            "name": "Tournament",
+            "name": "Shop",
             "types": {Action},
-            "advTags": {
-                _Cost4,
-                _DeckSeeder,
-                _Discard,
-                _Interactive,
-                _Peddler,
-                _Prize,
-                _Reveal,
-                _VictoryGainer,
-            },
+            "advTags": {_Cost3, _NamesMatter, _Peddler},
         },
         {
             "name": "Young Witch",
@@ -1748,6 +1715,69 @@ Cornucopia.AddCards(
             },
         },
     ]
+)
+Cornucopia.firstEdition = [
+    {
+        "name": "Farming Village",
+        "types": {Action},
+        "advTags": {_Cost4, _Discard, _Sifter, _Reveal, _Village},
+    },
+    {
+        "name": "Fortune Teller",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadSifter,
+            _Cost3,
+            _DeckSeeder,
+            _Discard,
+            _Money2,
+            _Reveal,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Harvest",
+        "types": {Action},
+        "advTags": {
+            _Cost5,
+            _Discard,
+            _Money4,
+            _NamesMatter,
+            _Reveal,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Horse Traders",
+        "types": {Action, Reaction},
+        "advTags": {
+            _AttackResponse,
+            _Buys,
+            _Cost4,
+            _Discard,
+            _FutureDraw1,
+            _Money3,
+            _Saver,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Tournament",
+        "types": {Action},
+        "advTags": {
+            _Cost4,
+            _DeckSeeder,
+            _Discard,
+            _Interactive,
+            _Peddler,
+            _Prize,
+            _Reveal,
+            _VictoryGainer,
+        },
+    },
+]
+Cornucopia.secondEdition = Cornucopia.cards(
+    "Carnival", "Farmhands", "Ferryman", "Joust", "Shop"
 )
 
 Hinterlands = Set("Hinterlands")
@@ -2435,7 +2465,7 @@ Guilds.AddCards(
         {
             "name": "Baker",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _FutureMoney1},
+            "advTags": {_Cost5, _FutureMoney1, _Peddler},
         },
         {
             "name": "Candlestick Maker",
@@ -2448,9 +2478,14 @@ Guilds.AddCards(
             "advTags": {_Cost5, _FutureMoney2, _Remodeler, _Terminal, _Trasher},
         },
         {
-            "name": "Doctor",
+            "name": "Farrier",
             "types": {Action},
-            "advTags": {_Cost3, _Overpay, _Reveal, _Terminal, _Thinner},
+            "advTags": {_Buys, _Cantrip, _Cost2, _Drawload, _Overpay},
+        },
+        {
+            "name": "Footpad",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Discard, _FutureMoney2, _GainLover, _Terminal},
         },
         {
             "name": "Herald",
@@ -2466,6 +2501,11 @@ Guilds.AddCards(
             },
         },
         {
+            "name": "Infirmary",
+            "types": {Action},
+            "advTags": {_Cost3, _Draw1, _Overpay, _Splitter, _Thinner, _Trasher},
+        },
+        {
             "name": "Journeyman",
             "types": {Action},
             "advTags": {
@@ -2477,11 +2517,6 @@ Guilds.AddCards(
                 _Sifter,
                 _Terminal,
             },
-        },
-        {
-            "name": "Masterpiece",
-            "types": {Treasure},
-            "advTags": {_Cost3, _Money1, _Overpay, _Payload},
         },
         {
             "name": "Merchant Guild",
@@ -2503,22 +2538,35 @@ Guilds.AddCards(
             "types": {Action, Attack},
             "advTags": {_Cost5, _Curser, _FutureMoney2, _Interactive, _Terminal},
         },
-        {
-            "name": "Taxman",
-            "types": {Action, Attack},
-            "advTags": {
-                _BadSifter,
-                _Cost4,
-                _DeckSeeder,
-                _Discard,
-                _Remodeler,
-                _Reveal,
-                _Terminal,
-                _Trasher,
-            },
-        },
     ]
 )
+Guilds.firstEdition = [
+    {
+        "name": "Doctor",
+        "types": {Action},
+        "advTags": {_Cost3, _Overpay, _Reveal, _Terminal, _Thinner},
+    },
+    {
+        "name": "Masterpiece",
+        "types": {Treasure},
+        "advTags": {_Cost3, _Money1, _Overpay, _Payload},
+    },
+    {
+        "name": "Taxman",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadSifter,
+            _Cost4,
+            _DeckSeeder,
+            _Discard,
+            _Remodeler,
+            _Reveal,
+            _Terminal,
+            _Trasher,
+        },
+    },
+]
+Guilds.secondEdition = Guilds.cards("Farrier", "Footpad", "Infirmary")
 
 Adventures = Set("Adventures")
 Adventures.AddCards(
@@ -5683,6 +5731,28 @@ def RandomizeDominion(setNames=None, options=None):
             else:
                 Base.AddCards(Base.secondEdition)
 
+        if Cornucopia in sets:
+            if options.get("cornucopia-first-edition"):
+                Cornucopia.AddCards(Cornucopia.firstEdition)
+            else:
+                Cornucopia.RemoveCards(Cornucopia.firstEdition)
+
+            if not options.get("cornucopia-second-edition", True):
+                Cornucopia.RemoveCards(Cornucopia.secondEdition)
+            else:
+                Cornucopia.AddCards(Cornucopia.secondEdition)
+
+        if Guilds in sets:
+            if options.get("guilds-first-edition"):
+                Guilds.AddCards(Guilds.firstEdition)
+            else:
+                Guilds.RemoveCards(Guilds.firstEdition)
+
+            if not options.get("guilds-second-edition", True):
+                Guilds.RemoveCards(Guilds.secondEdition)
+            else:
+                Guilds.AddCards(Guilds.secondEdition)
+
         if Intrigue in sets:
             if options.get("intrigue-first-edition"):
                 Intrigue.AddCards(Intrigue.firstEdition)
@@ -5869,6 +5939,34 @@ def RandomizeDominion(setNames=None, options=None):
             )[0]
         mouseSet.add(mouseCard)
 
+    # Get card for Ferryman. These are 3 or 4 cost kingdom cards. The card chosen for
+    # Ferryman should not be used when determining most additional card rules.
+    includeFerryman = RisingSun.cards("Ferryman").intersection(resultSet)
+    ferrymanSet = set()
+    if includeFerryman:
+        cost3or4Cards = set(
+            kingdomPile
+            for kingdomPile in kingdomSet
+            if "_Cost3" in kingdomPile.advTags or "_Cost4" in kingdomPile.advTags
+        )
+        eligibleFerrymen = cost3or4Cards - resultSet
+        if not eligibleFerrymen:
+            # All eligible Ferrymen are already part of the randomized set!
+            # (This is nearly impossible.) Get a Ferryman from the randomized
+            # cards, add a new card to the set, and remove the Ferryman from the
+            # set.
+            eligibleFerrymen = resultSet & cost3or4Cards
+            ferrymanCard = random.sample(eligibleFerrymen, 1)[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                )
+            )
+            resultSet.remove(ferrymanCard)
+        else:
+            ferrymanCard = random.sample(eligibleFerrymen, 1)[0]
+        ferrymanSet.add(ferrymanCard)
+
     # Get card for Riverboat. These are 5-cost non-duration actions. The card chosen for
     # Riverboat should not be used when determining most additional card rules.
     includeRiverboat = RisingSun.cards("Riverboat").intersection(resultSet)
@@ -5912,57 +6010,67 @@ def RandomizeDominion(setNames=None, options=None):
     includePotions = Alchemy.potionCards & resultSet
 
     # Check for Prizes
-    includePrizes = Cornucopia.cards("Tournament") & resultSet
+    includePrizes = Cornucopia.cards("Tournament") & (resultSet | ferrymanSet)
+    includeRewards = Cornucopia.cards("Joust") & (resultSet | riverboatSet)
 
     # Check for Shelters
     includeShelters = DarkAges in sets and ShelterLove.intersection(
         random.sample(fullResults, 1)
     )
+    extraKingdomSet = ferrymanSet | mouseSet | riverboatSet
     # Check for Ruins
-    includeRuins = LooterCards & (resultSet | riverboatSet)
+    includeRuins = LooterCards & (resultSet | extraKingdomSet)
     # Check for Madman
-    includeMadman = DarkAges.cards("Hermit") & resultSet
+    # mice and riverboat cards can't be exchanged for madman
+    includeMadman = DarkAges.cards("Hermit") & (resultSet | ferrymanSet)
     # Check for Mercenary
-    includeMercenary = DarkAges.cards("Urchin") & resultSet
+    # mice and riverboat cards can't be exchanged for mercenary
+    includeMercenary = DarkAges.cards("Urchin") & (resultSet | ferrymanSet)
     # Check for Spoils
-    includeSpoils = SpoilsCards & (resultSet | riverboatSet)
+    # Spoils are only gained by 4 or 5 cost cards
+    includeSpoils = SpoilsCards & (resultSet | extraKingdomSet)
 
     # Check for special Nocturne cards
-    includeGhost = resultSet & Nocturne.cards(
+    includeGhost = (resultSet | extraKingdomSet) & Nocturne.cards(
         "Cemetary + Haunted Mirror (Heirloom)", "Exorcist"
     )
 
-    includeBoons = BoonCards & (resultSet | mouseSet | riverboatSet)
+    includeBoons = BoonCards & (resultSet | extraKingdomSet)
 
-    includeHexes = HexCards & (resultSet | mouseSet | riverboatSet)
+    includeHexes = HexCards & (resultSet | extraKingdomSet)
 
-    includeWisp = includeBoons or (Nocturne.cards("Exorcist") & resultSet)
+    includeWisp = includeBoons or (
+        Nocturne.cards("Exorcist") & (resultSet | extraKingdomSet)
+    )
 
+    # Vampires cannot be exchanged if they are the riverboat card
     includeBat = Nocturne.cards("Vampire") & resultSet
 
-    includeImp = (resultSet | riverboatSet) & Nocturne.cards(
+    includeImp = (resultSet | extraKingdomSet) & Nocturne.cards(
         "Devil's Workshop", "Exorcist", "Tormentor"
     )
 
-    includeWish = (resultSet | mouseSet) & Nocturne.cards(
+    includeWish = (resultSet | extraKingdomSet) & Nocturne.cards(
         "Leprechaun", "Secret Cave + Magic Lamp (Heirloom)"
     )
 
     # Check for Horses
-    includeHorse = HorseCards & (fullResults | mouseSet | riverboatSet)
+    includeHorse = HorseCards & (fullResults | extraKingdomSet)
 
     # Check for Liaisons (for a random Ally Card)
-    includeAlly = LiaisonCards & (fullResults | mouseSet | riverboatSet)
+    includeAlly = LiaisonCards & (fullResults | extraKingdomSet)
 
     # Check for Loot cards
-    includeLoot = LootCards & (fullResults | mouseSet | riverboatSet)
+    includeLoot = LootCards & (fullResults | extraKingdomSet)
 
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
         random.sample(fullResults, 1)
     )
 
-    includeProphecy = any(result for result in fullResults if "Omen" in result.types)
+    includeProphecy = any(
+        result for result in (resultSet | extraKingdomSet) if "Omen" in result.types
+    )
 
     # Create final list
     additionalCards = set()
@@ -5993,6 +6101,17 @@ def RandomizeDominion(setNames=None, options=None):
                 "Cornucopia: Followers",
                 "Cornucopia: Princess",
                 "Cornucopia: Trusty Steed",
+            )
+        )
+    if includeRewards:
+        additionalCards.update(
+            (
+                "Cornucopia: Coronet",
+                "Cornucopia: Courser",
+                "Cornucopia: Demesne",
+                "Cornucopia: Housecarl",
+                "Cornucopia: Huge Turnip",
+                "Cornucopia: Renown",
             )
         )
     if includeGhost:
@@ -6056,9 +6175,10 @@ def RandomizeDominion(setNames=None, options=None):
         ally = random.sample(AllyCards, 1)[0]
         finalResult.append(ally)
     finalResult.extend(sorted(landscapeList))
+    if includeFerryman:
+        finalResult.append("Ferryman is {}".format(ferrymanCard))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
-
     if includeRiverboat:
         finalResult.append("Riverboat is {}".format(riverboatCard))
 
