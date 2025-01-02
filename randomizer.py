@@ -309,7 +309,7 @@ _Shadow = AdvTag("Shadow")
 _Townsfolk = AdvTag("Townsfolk")
 _Traveller = AdvTag("Traveller")
 _Treasure = AdvTag("Treasure")
-_VictoryGainer = AdvTag("Victory")
+_Victory = AdvTag("Victory")
 _Wizard = AdvTag("Wizard")
 
 _ActionLover = AdvTag("_ActionLover")  # wants a lot of actions in play
@@ -594,7 +594,7 @@ _TrashGainer = AdvTag(
 )  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
 _TreasuresMatter = AdvTag(
     "_TreasuresMatter", bonusToTags=[_Treasure, _Potion, _Prize]
-)  # Increases in power if there are more differently named Treasures in tha game
+)  # Increases in power if there are more differently named Treasures in the game
 _Twin = AdvTag(
     "_Twin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
@@ -5253,146 +5253,29 @@ AllyCards = Allies.allyCards
 
 # Define randomizer rules
 # PlatinumLove cards grant additional value to other cards or care about extra buys
-PlatinumLove = Prosperity.cards.union(
-    Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
-    Intrigue.cards("Harem", "Nobles"),
-    Seaside.cards("Explorer", "Treasure Map", "Pirate"),
-    Alchemy.cards("Philosopher's Stone"),
-    Cornucopia.cards("Tournament"),
-    Hinterlands.cards(
-        "Border Village",
-        "Cache",
-        "Duchess",
-        "Embassy",
-        "Fool's Gold",
-        "Nomads",
-        "Cauldron",
-        "Souk",
-    ),
-    DarkAges.cards("Altar", "Counterfeit", "Hunting Grounds", "Poor House"),
-    Guilds.cards("Masterpiece", "Soothsayer"),
-    Adventures.cards(
-        "Hireling", "Lost City", "Page", "Treasure Trove", "Seaway", "Training"
-    ),
-    Empires.cards(
-        "Capital",
-        "Castles",
-        "Chariot Race",
-        "Crown",
-        "Encampment/Plunder",
-        "Farmers' Market",
-        "Gladiator/Fortune",
-        "Groundskeeper",
-        "Legionary",
-        "Patrician/Emporium",
-        "Sacrifice",
-        "Temple",
-        "Wild Hunt",
-        "Triumph",
-        "Delve",
-        "Wedding",
-        "Conquest",
-        "Dominate",
-        "Basilica",
-        "Keep",
-    ),
-    Nocturne.cards(
-        "Pooka + Cursed Gold (Heirloom)",
-        "Raider",
-        "Sacred Grove",
-        "Secret Cave + Magic Lamp (Heirloom)",
-        "Tragic Hero",
-    ),
-    Renaissance.cards("Ducat", "Scepter", "Spices", "Capitalism", "Guildhall"),
-    Menagerie.cards(
-        "Supplies",
-        "Camel Train",
-        "Stockpile",
-        "Livery",
-        "Animal Fair",
-        "Commerce",
-        "Enclave",
-        "Way of the Chameleon",
-    ),
-    Antiquities.cards(
-        "Agora",
-        "Archaeologist",
-        "Curio",
-        "Discovery",
-        "Encroach",
-        "Gamepiece",
-        "Moundbuilder Village",
-        "Pharaoh",
-        "Pyramid",
-        "Snake Charmer",
-        "Stoneworks",
-    ),
-    Allies.cards("Town", "Galleria", "Marquis"),
-    Plunder.cards(
-        "Search",
-        "Fortune Hunter",
-        "Harbor Village",
-        "Mining Road",
-        "Pendant",
-        "King's Cache",
-        "Deliver",
-        "Prosper",
-    ),
-)
+PlatinumLove = set()
+for cardSet in AllSets.values():
+    if cardSet.name == "Prosperity":
+        PlatinumLove.update(cardSet.cards)
+    else:
+        for card in cardSet.cards:
+            if (
+                "_Cost6" in card.advTags
+                or "_Cost7" in card.advTags
+                or "_PlatinumLover" in card.advTags
+                or "_Buys" in card.advTags.bonusToTags
+            ):
+                PlatinumLove.add(card)
 
 # ShelterLove cards are cards that trash for benefit, or gain victory cards.
-# Hypothetically, ShelterLove could also include terminal cards, which would
-# mean adding a ShelterHate for villages and reducing the chances for each
-# ShelterHate.
-ShelterLove = DarkAges.cards.union(
-    Base.cards("Remodel", "Mine"),
-    Intrigue.cards("Replace", "Upgrade"),
-    Seaside.cards("Salvager", "Sailor"),
-    Alchemy.cards("Apprentice", "Scrying Pool"),
-    Prosperity.cards(
-        "Bishop",
-        "Expand",
-        "Forge",
-        "Investment",
-        "Crystal Ball",
-    ),
-    Cornucopia.cards("Remake"),
-    Hinterlands.cards("Develop", "Farmland", "Trader", "Souk"),
-    Adventures.cards("Raze", "Transmogrify", "Trade"),
-    Empires.cards(
-        "Catapult/Rocks", "Sacrifice", "Fountain", "Labyrinth", "Museum", "Tomb"
-    ),
-    Guilds.cards("Butcher", "Journeyman", "Stonemason", "Taxman"),
-    Nocturne.cards(
-        "Cemetary + Haunted Mirror (Heirloom)", "Exorcist", "Necromancer + Zombies"
-    ),
-    Renaissance.cards("Priest", "Pageant"),
-    Menagerie.cards(
-        "Camel Train", "Scrap", "Displace", "Enhance", "Way of the Butterfly"
-    ),
-    Antiquities.cards(
-        "Collector",
-        "Graveyard",
-        "Mendicant",
-        "Pharaoh",
-        "Profiteer",
-        "Shipwreck",
-        "Snake Charmer",
-        "Stoneworks",
-    ),
-    Allies.cards("Broker", "Carpenter", "Modify"),
-    Plunder.cards(
-        "Cage",
-        "Jewelled Egg",
-        "Search",
-        "Shaman",
-        "Enlarge",
-        "Peril",
-        "Scrounge",
-        "Invasion",
-        "Inherited",
-    ),
-)
+ShelterLove = set()
+for cardSet in AllSets.values():
+    if cardSet.name == "Dark Ages":
+        ShelterLove.update(cardSet.cards)
+    else:
+        for card in cardSet.cards:
+            if "_TrashResponse" in card.advTags or "_VictoryGainer" in card.advTags:
+                ShelterLove.add(card)
 
 LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
 
@@ -5462,357 +5345,31 @@ LootCards = Plunder.cards(
 
 # TrapLove: cards that care about discarding, sifting, extra kingdom pile
 # gains, and value for multiple gains
-TrapLove = Antiquities.cards.union(
-    Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
-    Intrigue.cards(
-        "Courtyard",
-        "Lurker",
-        "Masquerade",
-        "Swindler",
-        "Ironworks",
-        "Minion",
-        "Replace",
-        "Upgrade",
-    ),
-    Seaside.cards(
-        "Lookout",
-        "Warehouse",
-        "Navigator",
-        "Salvager",
-        "Monkey",
-        "Sailor",
-        "Sea Witch",
-    ),
-    Alchemy.cards("University"),
-    Prosperity.cards(
-        "Loan",
-        "Watchtower",
-        "Bishop",
-        "Vault",
-        "Venture",
-        "Goons",
-        "Expand",
-        "Forge",
-        "Tiara",
-        "Crystal Ball",
-    ),
-    Cornucopia.cards(
-        "Fortune Teller",
-        "Menagerie",
-        "Farming Village",
-        "Remake",
-        "Young Witch",
-        "Harvest",
-        "Hunting Party",
-    ),
-    Hinterlands.cards(
-        "Develop",
-        "Oracle",
-        "Trader",
-        "Cartographer",
-        "Embassy",
-        "Haggler",
-        "Margrave",
-        "Border Village",
-        "Farmland",
-        "Wheelwright",
-    ),
-    DarkAges.cards(
-        "Hermit",
-        "Storeroom",
-        "Urchin",
-        "Feodum",
-        "Rats",
-        "Wandering Minstrel",
-        "Catacombs",
-        "Rebuild",
-        "Rogue",
-    ),
-    Guilds.cards("Stonemason", "Butcher"),
-    Adventures.cards(
-        "Raze",
-        "Guide",
-        "Duplicate",
-        "Magpie",
-        "Messenger",
-        "Transmogrify",
-        "Scouting Party",
-    ),
-    Empires.cards(
-        "Engineer",
-        "Farmers' Market",
-        "Catapult/Rocks",
-        "Gladiator/Fortune",
-        "Temple",
-        "Forum",
-        "Legionary",
-        "Triumph",
-        "Ritual",
-        "Conquest",
-        "Labyrinth",
-        "Museum",
-    ),
-    Nocturne.cards(
-        "Monastery",
-        "Changeling",
-        "Secret Cave + Magic Lamp (Heirloom)",
-        "Devil's Workshop",
-        "Exorcist",
-        "Cobbler",
-        "Vampire",
-        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
-    ),
-    Renaissance.cards(
-        "Experiment",
-        "Inventor",
-        "Research",
-        "Recruiter",
-        "Scholar",
-        "Sculptor",
-        "Villain",
-    ),
-    Menagerie.cards(
-        "Camel Train",
-        "Scrap",
-        "Bounty Hunter",
-        "Groom",
-        "Hunting Lodge",
-        "Displace",
-        "Kiln",
-        "Livery",
-        "Destrier",
-        "Enhance",
-        "Commerce",
-        "Populate",
-        "Way of the Mole",
-    ),
-    Allies.cards(
-        "Sycophant",
-        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
-        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
-        "Forts: Tent + Garrison + Hill Fort + Stronghold",
-        "Importer",
-        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
-        "Sentinel",
-        "Broker",
-        "Carpenter",
-        "Courier",
-        "Innkeeper",
-        "Capital City",
-        "Galleria",
-        "Guildmaster",
-        "Hunter",
-        "Specialist",
-        "Swap",
-        "Marquis",
-        "Architect's Guild",
-        "Coastal Haven",
-        "Desert Guides",
-    ),
-    Plunder.cards(
-        "Cage",
-        "Grotto",
-        "Mapmaker",
-        "Pickaxe",
-        "Quartermaster",
-        "Avoid",
-        "Foray",
-        "Prepare",
-    ),
-)
+TrapLove = set()
+for cardSet in AllSets.values():
+    if cardSet.name == "Antiquities":
+        TrapLove.update(cardSet.cards)
+    else:
+        for card in cardSet.cards:
+            if (
+                "_Discard" in card.advTags
+                or "_Sifter" in card.advTags
+                or "_Kingdom" in card.advTags
+                or "_GainLover" in card.advTags
+            ):
+                TrapLove.add(card)
 
-BaneCards = set().union(
-    Adventures.cards(
-        "Amulet",
-        "Caravan Guard",
-        "Coin of the Realm",
-        "Dungeon",
-        "Gear",
-        "Guide",
-        "Page",
-        "Peasant",
-        "Ratcatcher",
-        "Raze",
-    ),
-    Alchemy.cards("Herbalist"),
-    Allies.cards(
-        "Bauble",
-        "Sycophant",
-        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
-        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
-        "Clashes: Battle Plan + Archer + Warlord + Territory",
-        "Forts: Tent + Garrison + Hill Fort + Stronghold",
-        "Merchant Camp",
-        "Importer",
-        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
-        "Sentinel",
-        "Underling",
-        "Wizards: Student, Conjurer, Sorcerer, Lich",
-    ),
-    Antiquities.cards(
-        "Discovery",
-        "Gamepiece",
-        "Grave Watcher",
-        "Inscription",
-        "Inspector",
-        "Profiteer",
-        "Shipwreck",
-        "Tomb Raider",
-        "Miner",
-    ),
-    Base.cards(
-        "Cellar",
-        "Chancellor",
-        "Chapel",
-        "Harbinger",
-        "Merchant",
-        "Moat",
-        "Vassal",
-        "Village",
-        "Woodcutter",
-        "Workshop",
-    ),
-    Cornucopia.cards("Fortune Teller", "Hamlet", "Menagerie"),
-    DarkAges.cards(
-        "Beggar",
-        "Forager",
-        "Hermit",
-        "Market Square",
-        "Sage",
-        "Squire",
-        "Storeroom",
-        "Urchin",
-        "Vagrant",
-    ),
-    Empires.cards(
-        "Castles",
-        "Catapult/Rocks",
-        "Chariot Race",
-        "Encampment/Plunder",
-        "Enchantress",
-        "Farmers' Market",
-        "Gladiator/Fortune",
-        "Patrician/Emporium",
-        "Settlers/Bustling Village",
-    ),
-    Guilds.cards("Candlestick Maker", "Doctor", "Masterpiece", "Stonemason"),
-    Hinterlands.cards(
-        "Crossroads",
-        "Develop",
-        "Duchess",
-        "Fool's Gold",
-        "Oasis",
-        "Scheme",
-        "Tunnel",
-        "Guard Dog",
-    ),
-    Intrigue.cards(
-        "Courtyard",
-        "Great Hall",
-        "Lurker",
-        "Masquerade",
-        "Pawn",
-        "Secret Chamber",
-        "Shanty Town",
-        "Steward",
-        "Swindler",
-        "Wishing Well",
-    ),
-    Menagerie.cards(
-        "Black Cat",
-        "Camel Train",
-        "Goatherd",
-        "Scrap",
-        "Sheepdog",
-        "Sleigh",
-        "Snowy Village",
-        "Stockpile",
-        "Supplies",
-    ),
-    Nocturne.cards(
-        "Changeling",
-        "Druid",
-        "Faithful Hound",
-        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
-        "Ghost Town",
-        "Guardian",
-        "Leprechaun",
-        "Monastery",
-        "Night Watchman",
-        "Pixie + Goat (Heirloom)",
-        "Secret Cave + Magic Lamp (Heirloom)",
-        "Tracker + Pouch (Heirloom)",
-    ),
-    Prosperity.cards(
-        "Anvil",
-        "Loan",
-        "Trade Route",
-        "Watchtower",
-    ),
-    Renaissance.cards(
-        "Acting Troupe",
-        "Border Guard",
-        "Cargo Ship",
-        "Ducat",
-        "Experiment",
-        "Improve",
-        "Lackeys",
-    ),
-    Seaside.cards(
-        "Ambassador",
-        "Astrolabe",
-        "Embargo",
-        "Fishing Village",
-        "Haven",
-        "Lighthouse",
-        "Lookout",
-        "Monkey",
-        "Native Village",
-        "Pearl Diver",
-        "Sea Chart",
-        "Smugglers",
-        "Warehouse",
-    ),
-    Plunder.cards(
-        "Cage",
-        "Grotto",
-        "Jewelled Egg",
-        "Search",
-        "Shaman",
-        "Secluded Shrine",
-        "Siren",
-        "Stowaway",
-        "Taskmaster",
-    ),
-)
+BaneCards = set()
+for cardSet in AllSets.values():
+    for card in cardSet.cards:
+        if "_Cost2" in card.advTags or "_Cost3" in card.advTags:
+            BaneCards.add(card)
 
-CannotHaveTraits = set().union(
-    Base.cards("Gardens"),
-    Seaside.cards("Astrolabe"),
-    Alchemy.cards("Vineyard"),
-    Cornucopia.cards("Fairgrounds"),
-    Hinterlands.cards(
-        "Tunnel",
-        "Silk Road",
-    ),
-    DarkAges.cards("Feodum"),
-    Empires.cards("Castles"),
-    Nocturne.cards(
-        "Guardian",
-        "Monastery",
-        "Changeling",
-        "Ghost Town",
-        "Night Watchman",
-        "Cemetary",
-        "Devil's Workshop",
-        "Exorcist",
-        "Cobbler",
-        "Crypt",
-        "Den of Sin",
-        "Vampire",
-        "Raider",
-    ),
-)
+CannotHaveTraits = set()
+for cardSet in AllSets.values():
+    for card in cardSet.cards:
+        if "Action" not in card.types and "Treasure" not in card.types:
+            CannotHaveTraits.add(card)
 
 
 def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
