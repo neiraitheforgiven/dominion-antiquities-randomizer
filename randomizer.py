@@ -5308,10 +5308,10 @@ for cardSet in AllSets.values():
     else:
         for card in cardSet.cards:
             if (
-                "_Cost6" in card.advTags
-                or "_Cost7" in card.advTags
-                or "_PlatinumLover" in card.advTags
-                or "_Buys" in card.advTags.bonusToTags
+                _Cost6 in card.advTags
+                or _Cost7 in card.advTags
+                or _PlatinumLover in card.advTags
+                or _Buys in card.advTags.bonusToTags
             ):
                 PlatinumLove.add(card)
 
@@ -5322,7 +5322,7 @@ for cardSet in AllSets.values():
         ShelterLove.update(cardSet.cards)
     else:
         for card in cardSet.cards:
-            if "_TrashResponse" in card.advTags or "_VictoryGainer" in card.advTags:
+            if _TrashResponse in card.advTags or _VictoryGainer in card.advTags:
                 ShelterLove.add(card)
 
 LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
@@ -5400,23 +5400,23 @@ for cardSet in AllSets.values():
     else:
         for card in cardSet.cards:
             if (
-                "_Discard" in card.advTags
-                or "_Sifter" in card.advTags
-                or "_Kingdom" in card.advTags
-                or "_GainLover" in card.advTags
+                _Discard in card.advTags
+                or _Sifter in card.advTags
+                or _Kingdom in card.advTags
+                or _GainLover in card.advTags
             ):
                 TrapLove.add(card)
 
 BaneCards = set()
 for cardSet in AllSets.values():
     for card in cardSet.cards:
-        if "_Cost2" in card.advTags or "_Cost3" in card.advTags:
+        if _Cost2 in card.advTags or _Cost3 in card.advTags:
             BaneCards.add(card)
 
 CannotHaveTraits = set()
 for cardSet in AllSets.values():
     for card in cardSet.cards:
-        if "Action" not in card.types and "Treasure" not in card.types:
+        if Action not in card.types and Treasure not in card.types:
             CannotHaveTraits.add(card)
 
 
