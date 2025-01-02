@@ -5767,6 +5767,31 @@ def RandomizeDominion(setNames=None, options=None):
                 options, advTagDict, completeSet
             )
 
+    # Get card for Approaching Army. These are attacks. The card chosen for Approaching
+    # Army should be largely indistinguishable from other kingdom cards, so add it to
+    # resultSet
+    includeApproachingArmy = RisingSun.cards("Approaching Army").intersection(resultSet)
+    if includeApproachingArmy:
+        attackCards = set(
+            kingdomPile for kingdomPile in kingdomSet if "Attack" in kingdomPile.types
+        )
+        eligibleApproachingArmies = attackCards - resultSet
+        if not eligibleApproachingArmies:
+            # All eligible Approaching Armies are already part of the randomized set!
+            # (This is nearly impossible.) Get an Approaching Army from the randomized
+            # cards, add a new card to the set, and remove the Approaching Army from the
+            # set.
+            eligibleApproachingArmies = resultSet & attackCards
+            approachingArmyCard = random.sample(eligibleApproachingArmies, 1)[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                )
+            )
+        else:
+            approachingArmyCard = random.sample(eligibleApproachingArmies, 1)[0]
+        resultSet.add(approachingArmyCard)
+
     # Enforce Alchemy rule
     if (options or {}).get("enforce-alchemy-rule", True):
         alchemyCards = Alchemy.cards & resultSet
@@ -6033,6 +6058,9 @@ def RandomizeDominion(setNames=None, options=None):
     finalResult.extend(sorted(landscapeList))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
+
+    if includeRiverboat:
+        finalResult.append("Riverboat is {}".format(riverboatCard))
 
     return [str(card) for card in finalResult]
 
