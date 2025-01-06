@@ -2331,7 +2331,6 @@ DarkAges.AddCards(
                 _FutureMoney2,  # Sir Vander
                 _Gainer3,  # Dame Natalie
                 _Money2,  # Dame Sylvia
-                # all
                 _Reveal,  # all
                 _SplitPile,  # all
                 _StationaryLover4,  # most cost 5 but this can be 4 for Sir Martin
@@ -4105,7 +4104,7 @@ Menagerie.AddCards(
             "advTags": {_Cost4, _Drawload, _GainResponse6, _Piler, _Saver},
         },
         {"name": "March", "types": {Event}, "advTags": {_Chainer, _Cost3}},
-        {"name": "Populate", "types": {Event}, "advTags": {_Cost10, _Gainer6}},
+        {"name": "Populate", "types": {Event}, "advTags": {_Cost10, _Gainer8}},
         {
             "name": "Pursue",
             "types": {Event},
@@ -4835,7 +4834,15 @@ Plunder.AddCards(
         {
             "name": "Invasion",
             "types": {Event},
-            "advTags": {_AttackResponse, _Chainer, _Cost10, _Money3, _VictoryGainer},
+            "advTags": {
+                _AttackResponse,
+                _Cost10,
+                _DeckSeeder,
+                _FreeAction,
+                _Gainer7,
+                _Prize,
+                _VictoryGainer,
+            },
         },
         {
             "name": "Journey",
@@ -4867,7 +4874,7 @@ Plunder.AddCards(
         {
             "name": "Prosper",
             "types": {Event},
-            "advTags": {_Cost10, _FutureMoney2, _Gainer3, _Gainer6},
+            "advTags": {_Cost10, _Payload, _Prize},
         },
         {
             "name": "Rush",
