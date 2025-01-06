@@ -365,6 +365,7 @@ _Discard = AdvTag("_Discard")  # discards cards because sometimes you want to do
 _DiscardResponse = AdvTag(
     "_DiscardResponse", wantsTags=["_Discard"]
 )  # Reaction triggered by discards other than cleanup. Wants _Discard
+_DoubleChain = AdvTag("_DoubleChain")  # Gives extra action plays, but no card draw.
 _DoubleDouble = AdvTag(
     "_DoubleDouble"
 )  # gives 2 actions and 2 draw. OP with a downside.
@@ -522,6 +523,10 @@ _Interactive = AdvTag(
     "_Interactive"
 )  # does something to other players that is not an attack
 _Lab = AdvTag("_Lab")  # gives +2 Cards and +1 Action
+_HandLover = AdvTag(
+    "_HandLover",
+    bonusToTags=[_Drawload, _Filler, _Lab, _Draw3, _Draw4, _Draw5, _Draw6, _Draw7],
+)  # wants a lot of cards in hand. Synnergizes with _Drawload, _Filler, _Lab, _Draw3 or higher.
 _LimitsPlays = AdvTag("_LimitsPlays")  # limits the number of cards you can play
 _Junker = AdvTag("_Junker")  # attacker gives opponents bad cards
 _Money1 = AdvTag("_Money1")  # gives +1 Money
@@ -881,7 +886,6 @@ Intrigue.AddCards(
                 _DoubleDouble,
                 _Reveal,
                 _Sifter,
-                _Terminal,
             },
         },
         {"name": "Duke", "types": {Victory}, "advTags": {_Cost5}},
@@ -965,12 +969,12 @@ Intrigue.AddCards(
         {
             "name": "Secret Passage",
             "types": {Action},
-            "advTags": {_Lab, _Cost4, _DeckSeeder},
+            "advTags": {_Cantrip, _Cost4, _DeckSeeder, _Sifter},
         },
         {
             "name": "Shanty Town",
             "types": {Action},
-            "advTags": {_Cost3, _Draw2, _Reveal, _Twin, _Village},
+            "advTags": {_Cost3, _DoubleDouble, _Reveal},
         },
         {
             "name": "Steward",
@@ -1008,7 +1012,7 @@ Intrigue.AddCards(
         {
             "name": "Wishing Well",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost3, _DeckGuesser, _Draw2, _Reveal},
+            "advTags": {_Cost3, _DeckGuesser, _Lab, _Reveal},
         },
     ]
 )
@@ -1034,7 +1038,7 @@ Intrigue.firstEdition = [
     {
         "name": "Scout",
         "types": {Action},
-        "advTags": {_Cantrip, _Cost4, _DeckSeeder, _Drawload, _Reveal, _Sifter},
+        "advTags": {_Cantrip, _Cost4, _DeckSeeder, _Draw4, _Reveal, _Sifter},
     },
     {
         "name": "Secret Chamber",
@@ -1157,7 +1161,7 @@ Seaside.AddCards(
         {
             "name": "Native Village",
             "types": {Action},
-            "advTags": {_Choice, _Cost2, _Drawload, _Saver, _Thinner, _Village},
+            "advTags": {_Choice, _Cost2, _DoubleChain, _Drawload, _Saver, _Thinner},
         },
         {
             "name": "Outpost",
@@ -1197,7 +1201,7 @@ Seaside.AddCards(
         {
             "name": "Sea Chart",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost3, _DeckGuesser, _Draw2, _Reveal, _Twin},
+            "advTags": {_Cost3, _DeckGuesser, _Lab, _Reveal, _Twin},
         },
         {
             "name": "Sea Witch",
@@ -1325,7 +1329,7 @@ Alchemy.AddCards(
         {
             "name": "Alchemist",
             "types": {Action, Potion},
-            "advTags": {_Cantrip, _Cost3, _DeckSeeder, _Draw2, _ExtraCost},
+            "advTags": {_Cost3, _DeckSeeder, _ExtraCost, _Lab},
         },
         {
             "name": "Apothecary",
@@ -1335,7 +1339,7 @@ Alchemy.AddCards(
         {
             "name": "Apprentice",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Drawload, _Thinner, _Trasher},
+            "advTags": {_Cost5, _Drawload, _Lab, _Thinner, _Trasher},
         },
         {
             "name": "Familiar",
@@ -1355,12 +1359,12 @@ Alchemy.AddCards(
         {
             "name": "Philosopher's Stone",
             "types": {Treasure, Potion},
-            "advTags": {_ExtraCost, _Payload},
+            "advTags": {_Cost3, _ExtraCost, _Payload},
         },
         {
             "name": "Possession",
             "types": {Action, Potion},
-            "advTags": {_Buys, _Draw5, _ExtraCost, _Terminal},
+            "advTags": {_Buys, _Discard, _Draw5, _ExtraCost, _Terminal},
         },
         {
             "name": "Scrying Pool",
@@ -1369,11 +1373,11 @@ Alchemy.AddCards(
                 _BadSifter,
                 _Cantrip,
                 _Cost2,
+                _DeckSeeder,
                 _Discard,
                 _Drawload,
                 _ExtraCost,
                 _Reveal,
-                _Sifter,
             },
         },
         {
@@ -1384,6 +1388,7 @@ Alchemy.AddCards(
                 _FutureMoney2,
                 _MultiTypeLove,
                 _Terminal,
+                _Thinner,
                 _Trasher,
                 _VictoryGainer,
             },
@@ -1430,10 +1435,10 @@ Prosperity.AddCards(
             "types": {Action},
             "advTags": {
                 _Buys,
-                _Cantrip,
                 _Cost5,
                 _DoubleDouble,
                 _Empty,
+                _Peddler,
             },
         },
         {
@@ -1730,7 +1735,7 @@ Cornucopia.AddCards(
         {
             "name": "Menagerie",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost3, _Draw3, _NamesMatter, _Reveal},
+            "advTags": {_Cost3, _Draw3, _Lab, _NamesMatter, _Reveal},
         },
         {
             "name": "Remake",
@@ -1855,7 +1860,7 @@ Hinterlands.AddCards(
         {
             "name": "Crossroads",
             "types": {Action},
-            "advTags": {_Cost2, _Drawload, _Reveal, _Village},
+            "advTags": {_Cost2, _DoubleDouble, _Drawload, _Reveal},
         },
         {
             "name": "Develop",
@@ -1993,7 +1998,7 @@ Hinterlands.AddCards(
         {
             "name": "Stables",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Discard, _Draw3},
+            "advTags": {_Cost5, _Discard, _Draw3, _Lab},
         },
         {
             "name": "Trader",
@@ -2275,6 +2280,7 @@ DarkAges.AddCards(
                 _Drawload,  # Madman
                 _Exchange,  # Hermit
                 _Gainer3,  # Hermit
+                _Piler,  # Madman
                 _Terminal,  # Hermit
                 _Thinner,  # Madman
                 _Trasher,  # Hermit
@@ -2479,7 +2485,7 @@ DarkAges.AddCards(
         {
             "name": "Vagrant",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost2, _DeckGuesser, _Draw2, _Reveal},
+            "advTags": {_Cost2, _DeckGuesser, _Lab, _Reveal},
         },
         {
             "name": "Wandering Minstrel",
@@ -2820,7 +2826,7 @@ Adventures.AddCards(
         {
             "name": "Storyteller",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Drawload, _PhaseBreaker},
+            "advTags": {_Cost5, _Drawload, _Lab, _PhaseBreaker},
         },
         {
             "name": "Swamp Hag",
@@ -2988,7 +2994,7 @@ Empires.AddCards(
         {
             "name": "City Quarter",
             "types": {Action},
-            "advTags": {_Cost8, _Debt, _Drawload, _ExtraCost, _Reveal, _Village},
+            "advTags": {_Cost0, _Debt, _Drawload, _ExtraCost, _Reveal, _Village},
         },
         {
             "name": "Crown",
@@ -3001,12 +3007,12 @@ Empires.AddCards(
             "advTags": {
                 _Cost2,  # Encampment
                 _Cost5,  # Plunder
-                _Draw2,  # Encampment
+                _DoubleDouble,  # Encampment
                 _Money2,  # Plunder
+                _Piler,  # Encampment
                 _Reveal,  # Encampment
                 _SplitPile,
                 _VictoryGainer,  # Plunder
-                _Village,  # Encampment
             },
         },
         {
@@ -3017,7 +3023,7 @@ Empires.AddCards(
         {
             "name": "Engineer",
             "types": {Action},
-            "advTags": {_Cost4, _Debt, _ExtraCost, _Gainer4, _Trasher},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _Gainer4, _Trasher},
         },
         {
             "name": "Farmers' Market",
@@ -3046,18 +3052,18 @@ Empires.AddCards(
             "name": "Gladiator/Fortune",
             "types": {Action, Treasure},
             "advTags": {
-                _Buys,
+                _Buys,  # Fortune
                 _Cost3,  # Gladiator
-                _Cost16,
-                _Debt,
-                _ExtraCost,
+                _Cost8,  # Fortune
+                _Debt,  # Fortune
+                _ExtraCost,  # Fortune
                 _Money3,  # Gladiator
-                _Payload,
+                _Payload,  # Fortune
                 _Reveal,  # Gladiator
                 _SplitPile,
-                _Terminal,
-                _Twin,
-                _Trasher,
+                _Terminal,  # Gladiator
+                _Twin,  # Gladiator
+                _Trasher,  # Gladiator
             },
         },
         {
@@ -3073,18 +3079,18 @@ Empires.AddCards(
         {
             "name": "Overlord",
             "types": {Action, Command},
-            "advTags": {_Command5, _Cost8, _Debt, _ExtraCost, _Terminal},
+            "advTags": {_Command5, _Cost0, _Debt, _ExtraCost, _Terminal},
         },
         {
             "name": "Patrician/Emporium",
             "types": {Action},
             "advTags": {
                 _ActionLover,  # Emporium
-                _Cantrip,  # Patrician
                 _Cost2,  # Patrician
                 _Cost5,  # Emporium
                 _Draw2,  # Patrician
                 _GainResponse5,  # Emporium
+                _Lab,  # Patrician
                 _Peddler,  # Emporium
                 _Reveal,  # Patrician
                 _SplitPile,
@@ -3094,7 +3100,7 @@ Empires.AddCards(
         {
             "name": "Royal Blacksmith",
             "types": {Action},
-            "advTags": {_Cost8, _Debt, _Discard, _Draw5, _Reveal, _Terminal},
+            "advTags": {_Cost0, _Debt, _Discard, _Draw5, _Reveal, _Terminal},
         },
         {
             "name": "Sacrifice",
@@ -3154,7 +3160,7 @@ Empires.AddCards(
         {
             "name": "Annex",
             "types": {Event},
-            "advTags": {_Cost8, _Debt, _ExtraCost, _Sifter, _VictoryGainer},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _Sifter, _VictoryGainer},
         },
         {"name": "Banquet", "types": {Event}, "advTags": {_Cost3, _Gainer5, _Junker}},
         {
@@ -3171,7 +3177,7 @@ Empires.AddCards(
         {
             "name": "Donate",
             "types": {Event},
-            "advTags": {_Cost8, _Debt, _ExtraCost, _Shuffler, _Thinner},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _Shuffler, _Thinner, _Trasher},
         },
         {
             "name": "Salt the Earth",
@@ -3192,12 +3198,12 @@ Empires.AddCards(
         {
             "name": "Triumph",
             "types": {Event},
-            "advTags": {_Cost5, _Debt, _ExtraCost, _VictoryGainer},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _GainLover, _VictoryGainer},
         },
         {
             "name": "Wedding",
             "types": {Event},
-            "advTags": {_Cost7, _Debt, _ExtraCost, _FutureMoney2, _VictoryGainer},
+            "advTags": {_Cost4, _Debt, _ExtraCost, _FutureMoney2, _VictoryGainer},
         },
         {"name": "Windfall", "types": {Event}, "advTags": {_Cost5, _FutureMoney6}},
         # Landmark Cards
@@ -3334,7 +3340,7 @@ Nocturne.AddCards(
         {
             "name": "Crypt",
             "types": {Night, Duration},
-            "advTags": {_Cost5, _Payload, _Saver},
+            "advTags": {_CardLover, _Cost5, _Payload, _Saver},
         },
         {
             "name": "Cursed Village",
@@ -3344,17 +3350,16 @@ Nocturne.AddCards(
         {
             "name": "Den of Sin",
             "types": {Night, Duration},
-            "advTags": {_Cost5, _Draw2, _GainResponse5},
+            "advTags": {_Cost5, _FutureDraw2, _GainResponse5},
         },
         {
             "name": "Devil's Workshop",
             "types": {Night},
             "advTags": {
                 _Cost4,  # Devil's Workshop,
-                _FutureDraw2,  # Imp,
+                _FutureDraw1,  # Imp,
                 _FutureMoney2,  # Devil's Workshop,
                 _Gainer4,  # Devil's Workshop
-                _Lab,  # Imp
                 _NamesMatter,  # Imp
             },
         },
@@ -3629,7 +3634,14 @@ Renaissance.AddCards(
         {
             "name": "Experiment",
             "types": {Action},
-            "advTags": {_Cost3, _GainResponse3, _Lab, _Piler, _StationaryLover3},
+            "advTags": {
+                _Cost3,
+                _GainResponse3,
+                _Lab,
+                _Piler,
+                _StationaryLover3,
+                _Thinner,
+            },
         },
         {
             "name": "Flag Bearer",
@@ -3695,7 +3707,15 @@ Renaissance.AddCards(
         {
             "name": "Recruiter",
             "types": {Action},
-            "advTags": {_Cost5, _Draw2, _Playload, _Terminal, _Thinner, _Trasher},
+            "advTags": {
+                _Cost5,
+                _Draw1,
+                _Playload,
+                _Sifter,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
         },
         {
             "name": "Research",
@@ -3720,7 +3740,7 @@ Renaissance.AddCards(
         {
             "name": "Seer",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _DeckSeeder, _Draw4, _Reveal},
+            "advTags": {_Cost5, _DeckSeeder, _Draw4, _Lab, _Reveal},
         },
         {
             "name": "Silk Merchant",
@@ -4009,7 +4029,7 @@ Menagerie.AddCards(
         {
             "name": "Sheepdog",
             "types": {Action, Reaction},
-            "advTags": {_Cost3, _Draw2, _FreeAction, _GainResponse6, _Terminal},
+            "advTags": {_Cost3, _Draw2, _FreeAction, _GainResponse8, _Terminal},
         },
         {
             "name": "Sleigh",
@@ -4153,7 +4173,7 @@ Menagerie.AddCards(
         {
             "name": "Way of the Horse",
             "types": {Way},
-            "advTags": {_Draw2, _StationaryLover7, _Thinner},
+            "advTags": {_Draw2, _StationaryLover7, _Piler, _Thinner},
         },
         {
             "name": "Way of the Mole",
@@ -4233,7 +4253,7 @@ Allies.AddCards(
         {
             "name": "Capital City",
             "types": {Action},
-            "advTags": {_Cost5, _Discard, _DoubleDouble, _Draw2, _Money2},
+            "advTags": {_Cost5, _Discard, _DoubleDouble, _Draw3, _Money2},
         },
         {
             "name": "Carpenter",
@@ -4251,17 +4271,18 @@ Allies.AddCards(
             "name": "Clashes: Battle Plan + Archer + Warlord + Territory",
             "types": {Action, Attack, Duration, Victory, Clash},
             "advTags": {
-                _AttackResponse,
-                _BadSifter,
+                _AttackResponse,  # Battle Plan
+                _BadSifter,  # Archer
                 _Chainer,  # Warlord
-                _Cost3,
+                _Cost3,  # Battle Plan
                 _Cost4,  # Archer
                 _Cost5,  # Warlord
-                _Cost6,
+                _Cost6,  # Territory
                 _Discard,  # Archer
                 _Empty,  # Territory
                 _FutureDraw2,  # Warlord
-                _GainResponse6,
+                _GainResponse6,  # Territory
+                _Lab,  # Battle Plan
                 _Money2,  # Archer
                 _NamesMatter,  # Territory
                 _Payload,  # Territory
@@ -4288,7 +4309,7 @@ Allies.AddCards(
         {
             "name": "Emissary",
             "types": {Action, Liaison},
-            "advTags": {_Cost5, _Draw3, _Lab, _Terminal},
+            "advTags": {_Cost5, _Draw3, _Lab},
         },
         {
             "name": "Forts: Tent + Garrison + Hill Fort + Stronghold",
@@ -4792,7 +4813,7 @@ Plunder.AddCards(
         {
             "name": "Swamp Shacks",
             "types": {Action},
-            "advTags": {_Cost4, _CardLover, _Drawload, _Village},
+            "advTags": {_Cost4, _CardLover, _Drawload, _DoubleDouble},
         },
         {
             "name": "Taskmaster",
@@ -4928,7 +4949,7 @@ RisingSun.AddCards(
         {
             "name": "Artist",
             "types": {Action},
-            "advTags": {_Cost8, _Cantrip, _Debt, _Drawload, _NamesMatter},
+            "advTags": {_Cost0, _Cantrip, _Debt, _Drawload, _NamesMatter},
         },
         {
             "name": "Change",
@@ -4951,7 +4972,7 @@ RisingSun.AddCards(
         {
             "name": "Daimyo",
             "types": {Action, Command},
-            "advTags": {_Cost6, _Debt, _Cantrip, _Splitter},
+            "advTags": {_Cost0, _Cantrip, _Debt, _ExtraCost, _Splitter},
         },
         {
             "name": "Fishmonger",
@@ -4981,7 +5002,7 @@ RisingSun.AddCards(
         {
             "name": "Mountain Shrine",
             "types": {Action, Omen},
-            "advTags": {_Cost5, _Debt, _Draw2, _Money2, _Thinner, _Trasher},
+            "advTags": {_Cost0, _Debt, _Draw2, _Money2, _Thinner, _Trasher},
         },
         {
             "name": "Ninja",
@@ -4991,7 +5012,7 @@ RisingSun.AddCards(
         {
             "name": "Poet",
             "types": {Action, Omen},
-            "advTags": {_Cantrip, _Cost4, _Reveal, _Sifter},
+            "advTags": {_Cost4, _Lab, _Reveal},
         },
         {
             "name": "Rice",
@@ -5063,10 +5084,9 @@ RisingSun.AddCards(
             "name": "Continue",
             "types": {Event},
             "advTags": {
-                _Cost8,
+                _Cost0,
                 _Chainer,
                 _Debt,
-                _FreeAction,
                 _FreeEvent,
                 _Gainer4,
                 _PhaseBreaker,
