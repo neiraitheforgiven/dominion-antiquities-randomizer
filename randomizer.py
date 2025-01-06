@@ -345,6 +345,7 @@ _Cost6 = AdvTag("_Cost6")  # card costs 6
 _Cost7 = AdvTag("_Cost7")  # card costs 7
 _Command7.bonusToTags = [_Cost7]
 _Cost8 = AdvTag("_Cost8")  # card costs 8
+_Cost9 = AdvTag("_Cost9")  # card costs 9
 _Cost10 = AdvTag("_Cost10")  # card costs 10
 _Cost14 = AdvTag("_Cost14")  # card costs 14
 _Cost16 = AdvTag("_Cost16")  # card costs 16
@@ -494,10 +495,20 @@ _GainResponse5 = AdvTag(
     "_GainResponse5", bonusToTags=[_ExactGainer5, _Exchange, _Gainer5, _Gainer6]
 )  # Reaction triggered by gains.
 _GainResponse6 = AdvTag(
-    "_GainResponse6", bonusToTags=[_ExactGainer6, _Gainer6, _Exchange]
+    "_GainResponse6",
+    bonusToTags=[
+        _ExactGainer6,
+        _Gainer6,
+    ],
 )  # Reaction triggered by gains.
 _GainResponse7 = AdvTag(
-    "_GainResponse7", bonusToTags=[_Gainer7, _Exchange]
+    "_GainResponse7", bonusToTags=[_Gainer7]
+)  # Reaction triggered by gains.
+_GainResponse8 = AdvTag(
+    "_GainResponse8",
+    bonusToTags=[
+        _Gainer8,
+    ],
 )  # Reaction triggered by gains.
 _Exchange.bonusToTags = [
     _GainResponse3,
@@ -598,10 +609,17 @@ _TreasuresMatter = AdvTag(
 _Twin = AdvTag(
     "_Twin"
 )  # Donald X's secret type that is a good idea to buy 2 of on turn 1
-_Remodeler = AdvTag(
-    "_Remodeler",
-    bonusToTags=[_Cost3, _Cost4, _Cost5, _Cost6, _Cost7],
-)  # allows you to trash cards and replace them with better cards. Encourages an unbroken upgrade path to Province
+_Remodeler1 = AdvTag(
+    "_Remodeler1", bonusToTags=[_Cost2, _Cost3, _Cost4, _Cost5, _Cost6, _Cost7]
+)  # allows you to replace cards with cards that cost 1 more. Encourages an unbroken upgrade path to Province
+_Remodeler2 = AdvTag(
+    "_Remodeler2",
+    bonusToTags=[_Cost2, _Cost4],
+)  # allows you to replace cards with cards that cost 2 more. Encourages an unbroken upgrade path to Gold and then to Province
+_Remodeler3 = AdvTag(
+    "_Remodeler3",
+    bonusToTags=[_Cost2, _Cost5],
+)  # allows you to replace cards with cards that cost 3 more. Encourages an unbroken upgrade path to Province
 _VictoryGainer = AdvTag("_VictoryGainer")  # gains you victory cards or points
 _VictoryResponse = AdvTag(
     "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_VictoryGainer]
@@ -693,7 +711,7 @@ Base.AddCards(
         {
             "name": "Mine",
             "types": {Action},
-            "advTags": {_Cost5, _Remodeler, _Terminal, _Trasher, _TreasuresMatter},
+            "advTags": {_Cost5, _Remodeler3, _Terminal, _Trasher, _TreasuresMatter},
         },
         {
             "name": "Moat",
@@ -713,7 +731,7 @@ Base.AddCards(
         {
             "name": "Remodel",
             "types": {Action},
-            "advTags": {_Cost4, _Remodeler, _Terminal, _Trasher},
+            "advTags": {_Cost4, _Remodeler2, _Terminal, _Trasher},
         },
         {
             "name": "Sentry",
@@ -939,7 +957,7 @@ Intrigue.AddCards(
                 _Cost5,
                 _Curser,
                 _DeckSeeder,
-                _Remodeler,
+                _Remodeler2,
                 _Terminal,
                 _Trasher,
             },
@@ -985,7 +1003,7 @@ Intrigue.AddCards(
         {
             "name": "Upgrade",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Remodeler, _Trasher},
+            "advTags": {_Cantrip, _Cost5, _Remodeler1, _Trasher},
         },
         {
             "name": "Wishing Well",
@@ -1453,12 +1471,23 @@ Prosperity.AddCards(
             "types": {Action},
             "advTags": {
                 _Cost7,
-                _Remodeler,
+                _Remodeler3,
                 _Terminal,
                 _Trasher,
             },
         },
-        {"name": "Forge", "types": {Action}, "advTags": {_Cost7, _Terminal, _Thinner}},
+        {
+            "name": "Forge",
+            "types": {Action},
+            "advTags": {
+                _Cost7,
+                _Gainer8,
+                _PlatinumLover,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
         {
             "name": "Grand Market",
             "types": {Action},
@@ -1478,7 +1507,11 @@ Prosperity.AddCards(
                 _VictoryGainer,
             },
         },
-        {"name": "King's Court", "types": {Action}, "advTags": {_Cost7, _Splitter}},
+        {
+            "name": "King's Court",
+            "types": {Action},
+            "advTags": {_Cost7, _Splitter, _Terminal},
+        },
         {
             "name": "Magnate",
             "types": {Action},
@@ -1702,7 +1735,7 @@ Cornucopia.AddCards(
         {
             "name": "Remake",
             "types": {Action},
-            "advTags": {_Cost4, _Remodeler, _Terminal, _Trasher},
+            "advTags": {_Cost4, _Remodeler1, _Terminal, _Trasher},
         },
         {
             "name": "Shop",
@@ -1827,12 +1860,12 @@ Hinterlands.AddCards(
         {
             "name": "Develop",
             "types": {Action},
-            "advTags": {_Cost3, _DeckSeeder, _Remodeler, _Terminal, _Trasher, _Twin},
+            "advTags": {_Cost3, _DeckSeeder, _Remodeler1, _Terminal, _Trasher, _Twin},
         },
         {
             "name": "Farmland",
             "types": {Victory},
-            "advTags": {_Cost6, _Remodeler, _Trasher},
+            "advTags": {_Cost6, _Remodeler2, _Trasher},
         },
         {
             "name": "Fool's Gold",
@@ -2011,7 +2044,7 @@ Hinterlands.AddCards(
         {
             "name": "Wheelwright",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Discard, _Gainer7, _Remodeler},
+            "advTags": {_Cantrip, _Cost5, _Discard, _Gainer7},
         },
         {
             "name": "Witch's Hut",
@@ -2255,7 +2288,7 @@ DarkAges.AddCards(
                 _Cost5,
                 _DeckSeeder,
                 _Gainer6,
-                _Remodeler,
+                _Remodeler3,
                 _Terminal,
                 _Trasher,
                 _TrashGainer,
@@ -2355,7 +2388,7 @@ DarkAges.AddCards(
         {
             "name": "Procession",
             "types": {Action},
-            "advTags": {_Cost4, _Splitter, _Remodeler, _Trasher},
+            "advTags": {_Cost4, _Splitter, _Remodeler1, _Trasher},
         },
         {
             "name": "Rats",
@@ -2369,7 +2402,7 @@ DarkAges.AddCards(
                 _Chainer,
                 _Cost5,
                 _Discard,
-                _Remodeler,
+                _Remodeler3,
                 _Reveal,
                 _Trasher,
                 _VictoryGainer,
@@ -2478,7 +2511,7 @@ Guilds.AddCards(
         {
             "name": "Butcher",
             "types": {Action},
-            "advTags": {_Cost5, _FutureMoney2, _Remodeler, _Terminal, _Trasher},
+            "advTags": {_Cost5, _FutureMoney2, _Remodeler1, _Terminal, _Trasher},
         },
         {
             "name": "Farrier",
@@ -2533,7 +2566,7 @@ Guilds.AddCards(
         {
             "name": "Stonemason",
             "types": {Action},
-            "advTags": {_Cost2, _Gainer6, _Overpay, _Remodeler, _Trasher},
+            "advTags": {_Cost2, _Gainer6, _Overpay, _Remodeler1, _Trasher},
         },
         {
             "name": "Soothsayer",
@@ -2561,7 +2594,7 @@ Guilds.firstEdition = [
             _Cost4,
             _DeckSeeder,
             _Discard,
-            _Remodeler,
+            _Remodeler3,
             _Reveal,
             _Terminal,
             _Trasher,
@@ -2803,7 +2836,7 @@ Adventures.AddCards(
         {
             "name": "Transmogrify",
             "types": {Action, Reserve},
-            "advTags": {_Chainer, _Cost4, _FreeAction, _Remodeler, _Trasher},
+            "advTags": {_Chainer, _Cost4, _FreeAction, _Remodeler1, _Trasher},
         },
         {
             "name": "Treasure Trove",
@@ -2893,19 +2926,26 @@ Empires.AddCards(
                 _Cost4,  # Crumbling Castle
                 _Cost5,  # Small Castle
                 _Cost6,  # Haunted Castle
+                _Cost7,  # Opulent Castle
+                _Cost8,  # Sprawling Castle
+                _Cost9,  # Grand Castle
+                _Cost10,  # King's Castle
                 # Omitting Gainer because it only gains other cards in the same pile
                 _DeckSeeder,  # Haunted Castle
+                _Discard,  # Opulent Castle
                 _GainResponse4,  # Crumbling Castle
                 _GainResponse6,  # Haunted Castle
+                _GainResponse8,  # Sprawling Castle
+                # Omitting GainResponse9 because there are no cards that gain it explicitly
                 _FutureMoney1,  # Crumbling Castle
                 _FutureMoney2,  # Haunted Castle
                 _Money1,  # Humble Castle
-                _Payload,
-                _Reveal,
+                _Payload,  # Opulent Castle
+                _Reveal,  # Grand Castle
                 _SplitPile,
                 _Trasher,  # Small Castle
                 _TrashResponse,  # Crumbling Castle
-                _VictoryGainer,  # Crumbling Castle
+                _VictoryGainer,  # Crumbling Castle, Sprawling Castle
             },
         },
         {
@@ -3395,7 +3435,7 @@ Nocturne.AddCards(
                 _Discard,  # Zombie Spy
                 _Draw3,  # Zombie Apprentice
                 _Kingdom,  # Necromancer
-                _Remodeler,  # Zombie Mason
+                _Remodeler1,  # Zombie Mason
                 _Sifter,  # Zombie Spy
                 _Thinner,  # Zombie Apprentice
                 _Trasher,  # Zombie Apprentice
@@ -3612,7 +3652,7 @@ Renaissance.AddCards(
         {
             "name": "Improve",
             "types": {Action},
-            "advTags": {_Cost3, _Money2, _Remodeler, _Terminal, _Trasher},
+            "advTags": {_Cost3, _Money2, _Remodeler1, _Terminal, _Trasher},
         },
         {
             "name": "Inventor",
@@ -3803,6 +3843,7 @@ Menagerie.AddCards(
                 _Money4,
                 _Terminal,
                 _Thinner,
+                _Trasher,
             },
         },
         {
@@ -3870,7 +3911,7 @@ Menagerie.AddCards(
         {
             "name": "Displace",
             "types": {Action},
-            "advTags": {_Cost5, _Remodeler, _Terminal},
+            "advTags": {_Cost5, _Remodeler2, _Terminal},
         },
         {
             "name": "Falconer",
@@ -4051,7 +4092,7 @@ Menagerie.AddCards(
         {
             "name": "Enhance",
             "types": {Event},
-            "advTags": {_Cost3, _Remodeler, _Trasher},
+            "advTags": {_Cost3, _Remodeler2, _Trasher},
         },
         {
             "name": "Gamble",
@@ -4078,7 +4119,7 @@ Menagerie.AddCards(
                 _Sifter,
             },
         },
-        {"name": "Reap", "types": {Event}, "advTags": {_Cost7, _FutureMoney2, _Money3}},
+        {"name": "Reap", "types": {Event}, "advTags": {_Cost7, _FutureMoney3}},
         {"name": "Ride", "types": {Event}, "advTags": {_Cost2, _Draw1}},
         {
             "name": "Seize the Day",
@@ -4101,7 +4142,11 @@ Menagerie.AddCards(
             "advTags": {_Cost3, _DeckSeeder, _Gainer6},
         },
         # Way
-        {"name": "Way of the Butterfly", "types": {Way}, "advTags": {_Remodeler}},
+        {
+            "name": "Way of the Butterfly",
+            "types": {Way},
+            "advTags": {_Piler, _Remodeler1},
+        },
         {"name": "Way of the Camel", "types": {Way}, "advTags": {_FutureMoney2}},
         {"name": "Way of the Chameleon", "types": {Way}},
         {"name": "Way of the Frog", "types": {Way}, "advTags": {_Chainer, _DeckSeeder}},
@@ -4199,7 +4244,7 @@ Allies.AddCards(
                 _Cost4,
                 _Empty,
                 _Gainer4,
-                _Remodeler,
+                _Remodeler2,
                 _Trasher,
             },
         },
@@ -4215,12 +4260,12 @@ Allies.AddCards(
                 _Cost5,  # Warlord
                 _Cost6,
                 _Discard,  # Archer
-                _Empty,
+                _Empty,  # Territory
                 _FutureDraw2,  # Warlord
                 _GainResponse6,
                 _Money2,  # Archer
-                # Archer
-                _Payload,
+                _NamesMatter,  # Territory
+                _Payload,  # Territory
                 _LimitsPlays,  # Warlord
                 _Reveal,  # Archer
                 _Terminal,  # Archer
@@ -4257,8 +4302,8 @@ Allies.AddCards(
                 _Cost5,  # Hill Fort
                 _Cost6,  # Stronghold
                 _DeckSeeder,
-                _Draw3,  # Stronghold
                 _Drawload,  # Garrison
+                _FutureDraw3,  # Stronghold
                 _Gainer4,  # Hill Fort
                 _GainResponse4,  # Hill Fort
                 _GainResponse6,  # Stronghold
@@ -4313,7 +4358,7 @@ Allies.AddCards(
         {
             "name": "Marquis",
             "types": {Action},
-            "advTags": {_Buys, _Cost6, _Discard, _Filler, _Terminal},
+            "advTags": {_Buys, _Cost6, _Discard, _Filler, _Sifter, _Terminal},
         },
         {
             "name": "Merchant Camp",
@@ -4323,7 +4368,7 @@ Allies.AddCards(
         {
             "name": "Modify",
             "types": {Action},
-            "advTags": {_Cantrip, _Choice, _Cost5, _Remodeler, _Thinner, _Trasher},
+            "advTags": {_Cantrip, _Choice, _Cost5, _Remodeler2, _Thinner, _Trasher},
         },
         {
             "name": "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
@@ -4383,7 +4428,7 @@ Allies.AddCards(
         {
             "name": "Swap",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost5, _Gainer5, _Piler, _Remodeler},
+            "advTags": {_Cantrip, _Cost5, _Gainer5, _Piler},
         },
         {
             "name": "Town",
@@ -4428,6 +4473,7 @@ Allies.AddCards(
                 _Curser,  # Sorcerer
                 _DeckGuesser,  # Sorcerer
                 _DeckSeeder,  # Student
+                _Discard,  # Lich
                 _Draw6,  # Lich
                 _Gainer4,  # Conjurer
                 _Gainer5,  # Lich
@@ -4544,7 +4590,7 @@ Plunder.AddCards(
         {
             "name": "Enlarge",
             "types": {Action, Duration},
-            "advTags": {_Cost5, _Remodeler, _Terminal, _Trasher},
+            "advTags": {_Cost5, _Remodeler2, _Terminal, _Trasher},
         },
         {
             "name": "Figurine",
@@ -4685,7 +4731,7 @@ Plunder.AddCards(
         {
             "name": "Sack of Loot",
             "types": {Treasure},
-            "advTags": {_Buys, _Cost6, _FutureMoney2, _Money1, _Prize},
+            "advTags": {_Buys, _Cost6, _Money1, _Prize},
         },
         {
             "name": "Silver Mine",
@@ -4797,7 +4843,7 @@ Plunder.AddCards(
             "advTags": {_Cost4, _Draw5, _PhaseBreaker},
         },
         {"name": "Launch", "types": {Event}, "advTags": {_Cantrip, _Cost3, _FreeEvent}},
-        {"name": "Looting", "types": {Event}, "advTags": {_Cost6, _FutureMoney2}},
+        {"name": "Looting", "types": {Event}, "advTags": {_Cost6, _Prize}},
         {
             "name": "Maelstrom",
             "types": {Event},
@@ -4880,7 +4926,15 @@ RisingSun.AddCards(
         {
             "name": "Change",
             "types": {Action},
-            "advTags": {_Cost4, _Debt, _Money3, _Remodeler, _Terminal, _Trasher},
+            "advTags": {
+                _Cost4,
+                _Debt,
+                _Gainer8,
+                _Money3,
+                _PlatinumLover,
+                _Terminal,
+                _Trasher,
+            },
         },
         {
             "name": "Craftsman",
@@ -4970,7 +5024,7 @@ RisingSun.AddCards(
         {
             "name": "Samurai",
             "types": {Action, Attack, Duration},
-            "advTags": {_Cost6, _Discard, _Money1, _Payload, _Terminal},
+            "advTags": {_Cost6, _Discard, _Payload, _Terminal},
         },
         {
             "name": "Snake Witch",
@@ -4980,7 +5034,7 @@ RisingSun.AddCards(
         {
             "name": "Tanuki",
             "types": {Action, Shadow},
-            "advTags": {_BottomSeeder, _Cost5, _Remodeler, _Terminal, _Trasher},
+            "advTags": {_BottomSeeder, _Cost5, _Remodeler2, _Terminal, _Trasher},
         },
         {
             "name": "Tea House",
@@ -5024,12 +5078,12 @@ RisingSun.AddCards(
         {
             "name": "Gather",
             "types": {Event},
-            "advTags": {_Cost7, _Gainer3, _Gainer4, _Gainer5},
+            "advTags": {_Cost7, _ExactGainer3, _ExactGainer4, _ExactGainer5},
         },
         {
             "name": "Kintsugi",
             "types": {Event},
-            "advTags": {_Cost3, _Remodeler, _Thinner},
+            "advTags": {_Cost3, _Remodeler2, _Thinner, _Trasher},
         },
         {
             "name": "Practice",
@@ -5131,7 +5185,7 @@ Antiquities.AddCards(
                 _Cost4,
                 _DeckSeeder,
                 _Interactive,
-                _Remodeler,
+                _Remodeler3,
                 _Sifter,
                 _Terminal,
                 _Trasher,
@@ -5155,7 +5209,7 @@ Antiquities.AddCards(
                 _Cost6,
                 _Discard,
                 _Filler,
-                _Remodeler,
+                _Remodeler2,
                 _Terminal,
                 _VictoryGainer,
             },
@@ -5220,7 +5274,7 @@ Antiquities.AddCards(
         {
             "name": "Miner",
             "types": {Action},
-            "advTags": {_Cantrip, _Cost3, _Discard, _Remodeler},
+            "advTags": {_Cantrip, _Cost3, _Discard, _Remodeler1},
         },
         {
             "name": "Mission House",
