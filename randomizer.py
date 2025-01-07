@@ -2117,10 +2117,9 @@ Hinterlands.firstEdition = [
             _Cost4,
             _Discard,
             _FreeAction,
-            _FutureMoney6,
-            _GainResponse4,
             _Junker,
             _Money1,
+            _Payload,
             _Reveal,
             _Terminal,
             _Trasher,
@@ -2442,7 +2441,7 @@ DarkAges.AddCards(
             "name": "Squire",
             "types": {Action},
             "advTags": {
-                _AttackResponse,
+                _AttackResponse,  # Doesn't respond to attacks, but sure likes it if there are attacks in the kingdom
                 _Buys,
                 _Choice,
                 _Cost2,
@@ -2474,11 +2473,11 @@ DarkAges.AddCards(
                 _Cantrip,  # Urchin
                 _Cost3,  # Urchin
                 _Discard,  # Urchin
-                _Draw2,
-                _Money2,
-                _Thinner,
-                _Terminal,
-                _Trasher,  # Urchin
+                _Draw2,  # Mercenary
+                _Money2,  # Mercenary
+                _Thinner,  # Mercenary
+                _Terminal,  # Mercenary
+                _Trasher,  # Urchin, Mercenary
                 _Twin,  # Urchin
             },
         },
@@ -2774,6 +2773,7 @@ Adventures.AddCards(
             "name": "Peasant",
             "types": {Action, Traveller},
             "advTags": {
+                _AttackResponse,  # Soldier
                 _Buys,  # Peasant
                 _Cantrip,  # Fugitive
                 _Cost2,  # Peasant
@@ -2781,7 +2781,6 @@ Adventures.AddCards(
                 _Exchange,
                 _Gainer7,  # Disciple
                 _Money1,  # Peasant
-                _Money2,  # Soldier
                 _Payload,  # Soldier
                 _Sifter,  # Fugitive
                 _SplitPile,
@@ -2875,7 +2874,7 @@ Adventures.AddCards(
         {
             "name": "Quest",
             "types": {Event},
-            "advTags": {_Cost0, _Discard, _FutureMoney2},
+            "advTags": {_AttackResponse, _Cost0, _Discard, _FutureMoney2, _HandLover},
         },
         {"name": "Pathfinding", "types": {Event}, "advTags": {_Cost8, _Drawload}},
         {
@@ -3409,7 +3408,7 @@ Nocturne.AddCards(
         {
             "name": "Guardian",
             "types": {Night, Duration},
-            "advTags": {_AttackResponse, _Cost2, _FutureMoney1, _Shuffler},
+            "advTags": {_AttackResponse, _Cost2, _FutureMoney1},
         },
         {"name": "Ghost Town", "types": {Night}, "advTags": {_Cantrip, _Cost3}},
         {
