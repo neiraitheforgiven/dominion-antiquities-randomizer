@@ -5603,7 +5603,7 @@ for cardSet in AllSets.values():
             CannotHaveTraits.add(card)
 
 
-def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
+def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=set()):
     """Sketch some thoughts here:
     1. Get all the Card tags and put them in a dict.
     2. Weight each of the card tags based on two things:
