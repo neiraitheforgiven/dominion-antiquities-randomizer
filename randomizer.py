@@ -5483,12 +5483,19 @@ for cardSet in AllSets.values():
 
 
 # Define Landscape cards
-Events = Adventures.events | Empires.events | Menagerie.events | Plunder.events
+Events = (
+    Adventures.events
+    | Empires.events
+    | Menagerie.events
+    | Plunder.events
+    | RisingSun.events
+)
 Landmarks = Empires.landmarks
 Projects = Renaissance.projects
 Ways = Menagerie.ways
 Traits = Plunder.traits
-LandscapeCards = Events | Landmarks | Projects | Ways | Traits
+Prophecies = RisingSun.prophecies
+LandscapeCards = Events | Landmarks | Projects | Ways | Traits | Prophecies
 
 # Define action cards
 Actions = set().union(*(cardSet.actions for cardSet in AllSets.values()))
