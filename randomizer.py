@@ -6027,6 +6027,7 @@ def RandomizeDominion(setNames=None, options=None):
     completeSet = completeSet - AllyCards
     landscapeSet = set()
     advTagDict = {}
+    allChosenCardsSet = set()
 
     if completeSet & LandscapeCards:
         # Handle sets that include landscape cards
@@ -6084,17 +6085,18 @@ def RandomizeDominion(setNames=None, options=None):
         else:
             approachingArmyCard = random.sample(eligibleApproachingArmies, 1)[0]
         approachingArmySet.add(approachingArmyCard)
+    allChosenCardsSet = resultSet | waySet | approachingArmySet | landscapeSet
 
     # Enforce Alchemy rule
     if (options or {}).get("enforce-alchemy-rule", True):
-        alchemyCards = Alchemy.cards & resultSet
+        alchemyCards = Alchemy.cards & allChosenCardsSet
         if len(alchemyCards) == 1:
             # If there's only 1 Alchemy card, remove Alchemy from the options
             # and draw an addtional Kingdom card
             resultSet -= alchemyCards
             resultSet.update(
                 SampleDominion(
-                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
                 )
             )
         elif len(alchemyCards) == 2:
@@ -6106,25 +6108,25 @@ def RandomizeDominion(setNames=None, options=None):
                     options, advTagDict, Alchemy.cards - alchemyCards, completeSet, 1
                 )
             )
-            resultSet = alchemyCards.union(random.sample(resultSet, 7))
+            resultSet = alchemyCards.union(random.sample(allChosenCardsSet, 7))
         # If there are 3 or more Alchemy cards, let it lie.
 
     # Young Witch support
-    includeBane = resultSet & Cornucopia.cards("Young Witch")
+    includeBane = allChosenCardsSet & Cornucopia.cards("Young Witch")
     baneSet = set()
     if includeBane:
-        eligibleBanes = (kingdomSet & BaneCards) - resultSet
+        eligibleBanes = (kingdomSet & BaneCards) - allChosenCardsSet
         if not eligibleBanes:
             # All eligible Bane cards are already part of the randomized set!
             # Add a new card to the set and pull a Bane from the randomized
             # cards.
             resultSet.update(
                 SampleDominion(
-                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
                 )
             )
             baneCard = SampleDominion(
-                options, advTagDict, resultSet & BaneCards, completeSet, 1
+                options, advTagDict, allChosenCardsSet & BaneCards, completeSet, 1
             )[0]
             resultSet.remove(baneCard)
         else:
@@ -6132,6 +6134,7 @@ def RandomizeDominion(setNames=None, options=None):
                 options, advTagDict, eligibleBanes, completeSet, 1
             )[0]
         baneSet.add(baneCard)
+    allChosenCardsSet.update(baneSet)
 
     # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
     # select a card from the Bane Cards. The card chosen for Way of the Mouse
@@ -6139,13 +6142,13 @@ def RandomizeDominion(setNames=None, options=None):
     includeMouse = Menagerie.cards("Way of the Mouse").intersection(landscapeList)
     mouseSet = set()
     if includeMouse:
-        eligibleMice = (kingdomSet & BaneCards) - resultSet
+        eligibleMice = (kingdomSet & BaneCards) - allChosenCardsSet
         if not eligibleMice:
             # All eligible Mouse cards are already part of the randomized set!
             # (This is nearly impossible.) Get a Mouse from the randomized
             # cards, add a new card to the set, and remove the mouse from the
             # set.
-            eligibleMice = resultSet & BaneCards
+            eligibleMice = allChosenCardsSet & BaneCards
             if includeBane:
                 eligibleMice.remove(baneCard)
 
@@ -6154,7 +6157,7 @@ def RandomizeDominion(setNames=None, options=None):
             )[0]
             resultSet.update(
                 SampleDominion(
-                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
                 )
             )
             resultSet.remove(mouseCard)
@@ -6163,10 +6166,12 @@ def RandomizeDominion(setNames=None, options=None):
                 options, advTagDict, eligibleMice, completeSet, 1
             )[0]
         mouseSet.add(mouseCard)
+    allChosenCardsSet.update(mouseSet)
 
     # Get card for Ferryman. These are 3 or 4 cost kingdom cards. The card chosen for
     # Ferryman should not be used when determining most additional card rules.
-    includeFerryman = Cornucopia.cards("Ferryman").intersection(resultSet)
+    # at this point, the Ferryman could be the bane or the mouse card
+    includeFerryman = Cornucopia.cards("Ferryman").intersection(allChosenCardsSet)
     ferrymanSet = set()
     if includeFerryman:
         cost3or4Cards = set(
@@ -6176,29 +6181,57 @@ def RandomizeDominion(setNames=None, options=None):
                 tag for tag in kingdomPile.advTags if tag.name in ("_Cost3", "_Cost4")
             )
         )
-        eligibleFerrymen = cost3or4Cards - resultSet
+        eligibleFerrymen = cost3or4Cards - (allChosenCardsSet)
         if not eligibleFerrymen:
             # All eligible Ferrymen are already part of the randomized set!
             # (This is nearly impossible.) Get a Ferryman from the randomized
             # cards, add a new card to the set, and remove the Ferryman from the
             # set.
-            eligibleFerrymen = resultSet & cost3or4Cards
+            eligibleFerrymen = allChosenCardsSet & cost3or4Cards
             ferrymanCard = random.sample(eligibleFerrymen, 1)[0]
             resultSet.update(
                 SampleDominion(
-                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
                 )
             )
             resultSet.remove(ferrymanCard)
         else:
             ferrymanCard = random.sample(eligibleFerrymen, 1)[0]
         ferrymanSet.add(ferrymanCard)
+    allChosenCardsSet.update(ferrymanSet)
+
+    # Guess what? The ferryman bonus card could be a young witch again. Yay!
+    if not includeBane:
+        includeBane = allChosenCardsSet & Cornucopia.cards("Young Witch")
+        if includeBane:
+            eligibleBanes = (kingdomSet & BaneCards) - allChosenCardsSet
+            if not eligibleBanes:
+                # All eligible Bane cards are already part of the randomized set!
+                # Add a new card to the set and pull a Bane from the randomized
+                # cards.
+                resultSet.update(
+                    SampleDominion(
+                        options,
+                        advTagDict,
+                        kingdomSet - allChosenCardsSet,
+                        completeSet,
+                        1,
+                    )
+                )
+                baneCard = SampleDominion(
+                    options, advTagDict, allChosenCardsSet & BaneCards, completeSet, 1
+                )[0]
+                resultSet.remove(baneCard)
+            else:
+                baneCard = SampleDominion(
+                    options, advTagDict, eligibleBanes, completeSet, 1
+                )[0]
+            baneSet.add(baneCard)
+    allChosenCardsSet.update(baneSet)
 
     # Get card for Riverboat. These are 5-cost non-duration actions. The card chosen for
     # Riverboat should not be used when determining most additional card rules.
-    includeRiverboat = RisingSun.cards("Riverboat").intersection(
-        resultSet
-    ) or RisingSun.cards("Riverboat").intersection(ferrymanSet)
+    includeRiverboat = RisingSun.cards("Riverboat").intersection(allChosenCardsSet)
     riverboatSet = set()
     if includeRiverboat:
         cost5NonDurationActions = set(
@@ -6210,23 +6243,24 @@ def RandomizeDominion(setNames=None, options=None):
                 and Duration not in kingdomPile.types
             )
         )
-        eligibleRiverboats = cost5NonDurationActions - resultSet
+        eligibleRiverboats = cost5NonDurationActions - allChosenCardsSet
         if not eligibleRiverboats:
             # All eligible Riverboats are already part of the randomized set!
             # (This is nearly impossible.) Get a Riverboat from the randomized
             # cards, add a new card to the set, and remove the Riverboat from the
             # set.
-            eligibleRiverboats = resultSet & cost5NonDurationActions
+            eligibleRiverboats = allChosenCardsSet & cost5NonDurationActions
             riverboatCard = random.sample(eligibleRiverboats, 1)[0]
             resultSet.update(
                 SampleDominion(
-                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
                 )
             )
             resultSet.remove(riverboatCard)
         else:
             riverboatCard = random.sample(eligibleRiverboats, 1)[0]
         riverboatSet.add(riverboatCard)
+    allChosenCardsSet.update(riverboatSet)
 
     fullResults = resultSet.union(landscapeList)
 
