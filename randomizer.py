@@ -6020,19 +6020,14 @@ def RandomizeDominion(setNames=None, options=None):
         resultSet = set()
         waySet = set()
 
-        # for testing only
-        advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
-            options, advTagDict, completeSet, landscapeSet
-        )
-
-        # if options and options.get("advanced-randomization"):
-        #    advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
-        #        options, advTagDict, completeSet, landscapeSet
-        #    )
-        # else:
-        #    advTagDict, landscapeList, resultSet, waySet = BasicRandomize(
-        #        options, advTagDict, completeSet, landscapeSet
-        #    )
+        if options and options.get("advanced-randomization"):
+            advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+                options, advTagDict, completeSet, landscapeSet
+            )
+        else:
+            advTagDict, landscapeList, resultSet, waySet = BasicRandomize(
+                options, advTagDict, completeSet, landscapeSet
+            )
     else:
         kingdomSet = completeSet
         landscapeList = []
