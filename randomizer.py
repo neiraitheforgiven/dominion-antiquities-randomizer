@@ -6372,18 +6372,18 @@ def RandomizeDominion(setNames=None, options=None):
         finalResult.append("Bane is {}".format(baneCard))
     else:
         finalResult = sorted(resultSet | additionalCards)
+    if includeFerryman:
+        finalResult.append("Ferryman is {}".format(ferrymanCard))
+    if includeRiverboat:
+        finalResult.append("Riverboat is {}".format(riverboatCard))
 
     # Add non-kingdom cards
     if includeAlly:
         ally = random.sample(AllyCards, 1)[0]
         finalResult.append(ally)
     finalResult.extend(sorted(landscapeList))
-    if includeFerryman:
-        finalResult.append("Ferryman is {}".format(ferrymanCard))
     if includeMouse:
         finalResult.append("Mouse is {}".format(mouseCard))
-    if includeRiverboat:
-        finalResult.append("Riverboat is {}".format(riverboatCard))
 
     return [str(card) for card in finalResult]
 
