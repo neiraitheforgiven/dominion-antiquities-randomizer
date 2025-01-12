@@ -5495,7 +5495,7 @@ Projects = Renaissance.projects
 Ways = Menagerie.ways
 Traits = Plunder.traits
 Prophecies = RisingSun.prophecies
-LandscapeCards = Events | Landmarks | Projects | Ways | Traits | Prophecies
+LandscapeCards = Events | Landmarks | Projects | Ways | Traits
 
 # Define action cards
 Actions = set().union(*(cardSet.actions for cardSet in AllSets.values()))
@@ -5889,6 +5889,7 @@ def BasicRandomize(options, advTagDict, completeSet, landscapes=False):
         resultSet = set()
         waySet = set()
         landscapeSet = set()
+        prophecySet = set()
         counter = 0
         while not landscapeSet and counter < 3:
             # Shuffle all cards
@@ -5901,6 +5902,8 @@ def BasicRandomize(options, advTagDict, completeSet, landscapes=False):
                     waySet.add(card)
                 elif card.types & {Event, Landmark, Project, Trait}:
                     landscapeSet.add(card)
+                elif card.types & {Prophecy}:
+                    prophecySet.add(card)
                 else:
                     resultSet.add(card)
 
@@ -5909,13 +5912,19 @@ def BasicRandomize(options, advTagDict, completeSet, landscapes=False):
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
             landscapeList = random.sample(waySet, len(waySet))[:1]
+            if prophecySet:
+                prophecyCard = random.sample(prophecySet, 1)[0]
+                landscapeList.extend([prophecyCard])
             landscapeList.extend(
                 random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
             )
         else:
             landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+            if prophecySet:
+                prophecyCard = random.sample(prophecySet, 1)[0]
+                landscapeList.extend([prophecyCard])
             landscapeList.extend(random.sample(waySet, len(waySet))[:1])
-        return landscapeList, resultSet, waySet
+        return advTagDict, landscapeList, resultSet, waySet
     else:
         resultSet = set(random.sample(completeSet, 10))
         return advTagDict, [], resultSet, set()
@@ -6051,10 +6060,13 @@ def RandomizeDominion(setNames=None, options=None):
     # Get card for Approaching Army. These are attacks. The card chosen for Approaching
     # Army should be largely indistinguishable from other kingdom cards, so add it to
     # resultSet
-    includeApproachingArmy = RisingSun.cards("Approaching Army").intersection(resultSet)
+    includeApproachingArmy = RisingSun.cards("Approaching Army").intersection(
+        landscapeList
+    )
+    approachingArmySet = set()
     if includeApproachingArmy:
         attackCards = set(
-            kingdomPile for kingdomPile in kingdomSet if "Attack" in kingdomPile.types
+            kingdomPile for kingdomPile in kingdomSet if Attack in kingdomPile.types
         )
         eligibleApproachingArmies = attackCards - resultSet
         if not eligibleApproachingArmies:
@@ -6071,7 +6083,7 @@ def RandomizeDominion(setNames=None, options=None):
             )
         else:
             approachingArmyCard = random.sample(eligibleApproachingArmies, 1)[0]
-        resultSet.add(approachingArmyCard)
+        approachingArmySet.add(approachingArmyCard)
 
     # Enforce Alchemy rule
     if (options or {}).get("enforce-alchemy-rule", True):
@@ -6099,6 +6111,7 @@ def RandomizeDominion(setNames=None, options=None):
 
     # Young Witch support
     includeBane = resultSet & Cornucopia.cards("Young Witch")
+    baneSet = set()
     if includeBane:
         eligibleBanes = (kingdomSet & BaneCards) - resultSet
         if not eligibleBanes:
@@ -6113,11 +6126,12 @@ def RandomizeDominion(setNames=None, options=None):
             baneCard = SampleDominion(
                 options, advTagDict, resultSet & BaneCards, completeSet, 1
             )[0]
+            resultSet.remove(baneCard)
         else:
             baneCard = SampleDominion(
                 options, advTagDict, eligibleBanes, completeSet, 1
             )[0]
-            resultSet.add(baneCard)
+        baneSet.add(baneCard)
 
     # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
     # select a card from the Bane Cards. The card chosen for Way of the Mouse
@@ -6232,7 +6246,9 @@ def RandomizeDominion(setNames=None, options=None):
     includeShelters = DarkAges in sets and ShelterLove.intersection(
         random.sample(fullResults, 1)
     )
-    extraKingdomSet = ferrymanSet | mouseSet | riverboatSet
+    extraKingdomSet = (
+        approachingArmySet | baneSet | ferrymanSet | mouseSet | riverboatSet
+    )
     # Check for Ruins
     includeRuins = LooterCards & (resultSet | extraKingdomSet)
     # Check for Madman
@@ -6369,13 +6385,14 @@ def RandomizeDominion(setNames=None, options=None):
             )
 
     # Create final card list
+
+    # remove the bane and re-add it.
+    finalResult = []
+    finalResult = sorted(resultSet | additionalCards)
+    if includeApproachingArmy:
+        finalResult.append(f"Approaching Army is {approachingArmyCard}")
     if includeBane:
-        # Append Bane Card to end of list
-        resultSet.remove(baneCard)
-        finalResult = sorted(resultSet | additionalCards)
         finalResult.append("Bane is {}".format(baneCard))
-    else:
-        finalResult = sorted(resultSet | additionalCards)
     if includeFerryman:
         finalResult.append("Ferryman is {}".format(ferrymanCard))
     if includeRiverboat:
