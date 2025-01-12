@@ -29,6 +29,7 @@
         <div class="wrapper">
             <form id="options">
                 <fieldset id="sets">
+                    <header>Official sets</header>
                     <span>
                         <input
                             type="checkbox"
@@ -217,6 +218,33 @@
                             checked
                         />
                         <label for="Cornucopia">Cornucopia</label>
+                        <fieldset class="set-options" id="cornucopia-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="cornucopia-first-edition"
+                                    id="cornucopia-first-edition"
+                                    value="cornucopia-first-edition"
+                                />
+                                <label for="cornucopia-first-edition"
+                                    >Include first edition cards</label
+                                >
+                            </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="cornucopia-second-edition"
+                                    id="cornucopia-second-edition"
+                                    value="cornucopia-second-edition"
+                                    checked
+                                />
+                                <label for="cornucopia-second-edition"
+                                    >Include second edition cards</label
+                                >
+                            </span>
+                        </fieldset>
                     </span>
                     <span>
                         <input
@@ -277,6 +305,33 @@
                             checked
                         />
                         <label for="Guilds">Guilds</label>
+                        <fieldset class="set-options" id="guilds-options">
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="guilds-first-edition"
+                                    id="guilds-first-edition"
+                                    value="guilds-first-edition"
+                                />
+                                <label for="guilds-first-edition"
+                                    >Include first edition cards</label
+                                >
+                            </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    class="set-option"
+                                    name="guilds-second-edition"
+                                    id="guilds-second-edition"
+                                    value="guilds-second-edition"
+                                    checked
+                                />
+                                <label for="guilds-second-edition"
+                                    >Include second edition cards</label
+                                >
+                            </span>
+                        </fieldset>
                     </span>
                     <span>
                         <input
@@ -355,6 +410,17 @@
                         />
                         <label for="Plunder">Plunder</label>
                     </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            class="set"
+                            name="RisingSun"
+                            id="RisingSun"
+                            value="Rising Sun"
+                            checked
+                        />
+                        <label for="RisingSun">Rising Sun</label>
+                    </span>
                 </fieldset>
                 <fieldset id="fan-sets">
                     <header>Fan sets</header>
@@ -370,6 +436,7 @@
                     </span>
                 </fieldset>
                 <fieldset id="moreOptions">
+                    <header>Options</header>
                     <span>
                         <input
                             type="checkbox"
@@ -379,6 +446,18 @@
                         />
                         <label for="limit-landscapes"
                             >Maximum 2 landscape cards</label
+                        >
+                    </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            name="advanced-randomization"
+                            id="advanced-randomization"
+                            value="advanced-randomization"
+                            checked
+                        />
+                        <label for="advanced-randomization"
+                            >Use advanced randomization</label
                         >
                     </span>
                 </fieldset>
