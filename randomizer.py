@@ -6180,7 +6180,9 @@ def RandomizeDominion(setNames=None, options=None):
 
     # Get card for Riverboat. These are 5-cost non-duration actions. The card chosen for
     # Riverboat should not be used when determining most additional card rules.
-    includeRiverboat = RisingSun.cards("Riverboat").intersection(resultSet)
+    includeRiverboat = RisingSun.cards("Riverboat").intersection(
+        resultSet
+    ) or RisingSun.cards("Riverboat").intersection(ferrymanSet)
     riverboatSet = set()
     if includeRiverboat:
         cost5NonDurationActions = set(
