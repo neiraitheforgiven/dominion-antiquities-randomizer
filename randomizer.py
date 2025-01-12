@@ -6139,7 +6139,9 @@ def RandomizeDominion(setNames=None, options=None):
         cost3or4Cards = set(
             kingdomPile
             for kingdomPile in kingdomSet
-            if "_Cost3" in kingdomPile.advTags or "_Cost4" in kingdomPile.advTags
+            if any(
+                tag for tag in kingdomPile.advTags if tag.name in ("_Cost3", "_Cost4")
+            )
         )
         eligibleFerrymen = cost3or4Cards - resultSet
         if not eligibleFerrymen:
@@ -6168,9 +6170,9 @@ def RandomizeDominion(setNames=None, options=None):
             kingdomPile
             for kingdomPile in kingdomSet
             if (
-                "_Cost5" in kingdomPile.advTags
-                and "Action" in kingdomPile.types
-                and "Duration" not in kingdomPile.types
+                any(tag for tag in kingdomPile.advTags if tag.name == "_Cost5")
+                and Action in kingdomPile.types
+                and Duration not in kingdomPile.types
             )
         )
         eligibleRiverboats = cost5NonDurationActions - resultSet
