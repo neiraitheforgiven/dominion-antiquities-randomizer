@@ -1,12 +1,24 @@
+import math
 import random
 
 
 AllSets = {}
 
 
+class AdvTag(object):
+    def __init__(self, name, bonusToTags=[], wantsTags=[], badTags=[]):
+        self.name = name
+        self.bonusToTags = bonusToTags
+        self.wantsTags = wantsTags
+        self.badTags = badTags
+
+
 class CardType(object):
     def __init__(self, name):
         self.name = name
+
+    def __repr__(self):
+        return self.name
 
 
 class CardList(set):
@@ -26,7 +38,7 @@ class CardList(set):
 
 
 class Card(object):
-    def __init__(self, name, types=None, cardSet=None, extras=None):
+    def __init__(self, name, types=None, cardSet=None, advTags=None):
         self.name = name
         self.set = cardSet
 
@@ -37,12 +49,16 @@ class Card(object):
         else:
             self.types = set(types)
 
-        if isinstance(extras, set):
-            self.extras = extras
-        elif extras is None:
-            self.extras = set()
+        if isinstance(advTags, set):
+            self.advTags = advTags
+        elif advTags is None:
+            self.advTags = set()
         else:
-            self.extras = set(extras)
+            self.advTags = set(advTags)
+
+        # create an entry in self.advTags for each type in self.types
+        for type in self.types:
+            self.advTags.add(AdvTag(f"_{type.name}"))
 
     def __hash__(self):
         return hash(str(self))
@@ -69,9 +85,28 @@ class Card(object):
             formatStr = "({} Ally): {}"
         elif Trait in self.types:
             formatStr = "({} Trait): {}"
+        elif Prophecy in self.types:
+            formatStr = "({} Prophecy): {}"
         else:
             formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
+
+    def IsKingdomPile(self):
+        if Event in self.types:
+            return False
+        if Landmark in self.types:
+            return False
+        if Project in self.types:
+            return False
+        if Way in self.types:
+            return False
+        if Ally in self.types:
+            return False
+        if Trait in self.types:
+            return False
+        if Prophecy in self.types:
+            return False
+        return True
 
 
 class Set(object):
@@ -85,11 +120,12 @@ class Set(object):
         self._events = None
         self._landmarks = None
         self._projects = None
-        self._potionCards = None
+        self.PotionCards = None
         self._ways = None
         self._actions = None
         self._allyCards = None
         self._traits = None
+        self._prophecies = None
 
         AllSets[self.name] = self
 
@@ -182,6 +218,14 @@ class Set(object):
         return self._projects
 
     @property
+    def prophecies(self):
+        if self._prophecies is None:
+            self._prophecies = CardList(
+                card for card in self._cards if card.types & {Prophecy}
+            )
+        return self._prophecies
+
+    @property
     def traits(self):
         if self._traits is None:
             self._traits = CardList(
@@ -197,62 +241,614 @@ class Set(object):
 
     @property
     def potionCards(self):
-        if self._potionCards is None:
-            self._potionCards = CardList(
+        if self.PotionCards is None:
+            self.PotionCards = CardList(
                 card for card in self._cards if card.types & {Potion}
             )
-        return self._potionCards
+        return self.PotionCards
 
 
 # Define card types
+# Donald X Landmarky Things
+Ally = CardType("Ally")
 Event = CardType("Event")
 Landmark = CardType("Landmark")
 Project = CardType("Project")
-Way = CardType("Way")
-Potion = CardType("Potion")
-Ally = CardType("Ally")
+Prophecy = CardType("Prophecy")
 Trait = CardType("Trait")
+Way = CardType("Way")
+# Donald X types
+# Potion isn't written on the card
 Action = CardType("Action")
+Attack = CardType("Attack")
+Augur = CardType("Augur")
+Castle = CardType("Castle")
+Castle = CardType("Castle")
+Clash = CardType("Clash")
+Command = CardType("Command")
+Doom = CardType("Doom")
+Duration = CardType("Duration")
+Fate = CardType("Fate")
+Fort = CardType("Fort")
+Gathering = CardType("Gathering")
+Heirloom = CardType("Heirloom")
+Knight = CardType("Knight")
+Liaison = CardType("Liaison")
+Looter = CardType("Looter")
+Night = CardType("Night")
+Odyssey = CardType("Odyssey")
+Omen = CardType("Omen")
+Potion = CardType("Potion")
+Reaction = CardType("Reaction")
+Reserve = CardType("Reserve")
+Shadow = CardType("Shadow")
+Townsfolk = CardType("Townsfolk")
+Traveller = CardType("Traveller")
+Treasure = CardType("Treasure")
+Victory = CardType("Victory")
+Wizard = CardType("Wizard")
+
+
+# for enhanced randomizer
+# Define card types
+# Donald X Landmarky Things
+_Ally = AdvTag("Ally")
+_Event = AdvTag("Event")
+_Landmark = AdvTag("Landmark")
+_Project = AdvTag("Project")
+_Prophecy = AdvTag("Prophecy")
+_Trait = AdvTag("Trait")
+_Way = AdvTag("Way")
+# Donald X types
+# Potion isn't written on the card
+_Action = AdvTag("Action")
+_Attack = AdvTag("Attack")
+_Augur = AdvTag("Augur")
+_Castle = AdvTag("Castle")
+_Clash = AdvTag("Clash")
+_Command = AdvTag("Command")
+_Doom = AdvTag("Doom")
+_Duration = AdvTag("Duration")
+_Fate = AdvTag("Fate")
+_Fort = AdvTag("Fort")
+_Gathering = AdvTag("Gathering")
+_Heirloom = AdvTag("Heirloom")
+_Knight = AdvTag("Knight")
+_Liaison = AdvTag("Liaison")
+_Looter = AdvTag("Looter")
+_Night = AdvTag("Night")
+_Odyssey = AdvTag("Odyssey")
+_Omen = AdvTag("Omen")
+_Potion = AdvTag("Potion")
+_Reaction = AdvTag("Reaction")
+_Reserve = AdvTag("Reserve")
+_Shadow = AdvTag("Shadow")
+_Townsfolk = AdvTag("Townsfolk")
+_Traveller = AdvTag("Traveller")
+_Treasure = AdvTag("Treasure")
+_Victory = AdvTag("Victory")
+_Wizard = AdvTag("Wizard")
+
+_ActionLover = AdvTag("_ActionLover")  # wants a lot of actions in play
+_AttackResponse = AdvTag(
+    "_AttackResponse", wantsTags=[_Attack]
+)  # allows you to respond to attacks. Wants for Attacks
+_BadSifter = AdvTag("_BadSifter")  # attacks by messing up your deck
+_BadThinner = AdvTag("_BadThinner")  # attacks by trashing good things
+_BottomSeeder = AdvTag("_BottomSeeder")  # puts cards on the bottom of your deck.
+_Buys = AdvTag("_Buys")  # allow you to buy more cards in a turn.
+_Cantrip = AdvTag(
+    "_Cantrip"
+)  # card draws and chains, which essentially makes it a free bonus card
+_CardLover = AdvTag("_CardLover")  # wants a lot of cards in play
+_Chainer = AdvTag("_Chainer")  # allows you to play another action after it is done
+_Choice = AdvTag("_Choice")  # gives you a set of choices
+_Cost0 = AdvTag("_Cost0")  # card costs 0
+_Cost1 = AdvTag("_Cost1")  # card costs 1
+_Cost2 = AdvTag("_Cost2")  # card costs 2
+_Cost2Response = AdvTag("_Cost2Response", wantsTags=[_Cost2])  # Wants cards that cost 2
+_Cost3 = AdvTag("_Cost3")  # card costs 3
+_Cost4 = AdvTag("_Cost4")  # card costs 4
+_Command4 = AdvTag(
+    "_Command4", [_Cost4]
+)  # allows you to play cards costing up to 4. Synnergizes with _Cost4.
+_Cost5 = AdvTag("_Cost5")  # card costs 5
+_Command3 = AdvTag("_Command3", [_Cost3])  # allows you to play cards costing up to 3
+_Command5 = AdvTag(
+    "_Command5", [_Cost5]
+)  # allows you to play cards costing up to 5. Synnergizes with _Cost5.
+_Command7 = AdvTag("_Command7")  # allows you to play cards costing up to 7
+_Cost6 = AdvTag("_Cost6")  # card costs 6
+_Cost7 = AdvTag("_Cost7")  # card costs 7
+_Command7.bonusToTags = [_Cost7]
+_Cost8 = AdvTag("_Cost8")  # card costs 8
+_Cost9 = AdvTag("_Cost9")  # card costs 9
+_Cost10 = AdvTag("_Cost10")  # card costs 10
+_Cost14 = AdvTag("_Cost14")  # card costs 14
+_Cost16 = AdvTag("_Cost16")  # card costs 16
+_CostReducer = AdvTag(
+    "_CostReducer", [_Buys]
+)  # reduces the cost of cards. synnergizes with _Buys and _Gainer
+_CostVaries = AdvTag("_CostVaries")  # Gets cheaper or more expensive.
+_Curser = AdvTag("_Curser")  # gives other players curses
+_Debt = AdvTag("_Debt")  # using this card gives you debt
+_DeckSeeder = AdvTag(
+    "_DeckSeeder",
+)  # allows you to manipulate your deck; synnergizes with _DeckGuesser
+_DeckGuesser = AdvTag(
+    "_DeckGuesser", bonusToTags=["_DeckSeeder"]
+)  # allows you to guess cards from the top of your deck. wants for _DeckSeeder
+_Discard = AdvTag("_Discard")  # discards cards because sometimes you want to do that
+_DiscardResponse = AdvTag(
+    "_DiscardResponse", wantsTags=["_Discard"]
+)  # Reaction triggered by discards other than cleanup. Wants _Discard
+_DoubleChain = AdvTag("_DoubleChain")  # Gives extra action plays, but no card draw.
+_DoubleDouble = AdvTag(
+    "_DoubleDouble"
+)  # gives 2 actions and 2 draw. OP with a downside.
+_Downgrader = AdvTag("_Downgrader")  # attack card that does upgrades in reverse
+_Draw1 = AdvTag("_Draw1")  # draws 1 card
+_Draw2 = AdvTag("_Draw2")  # draws 2 cards
+_Draw3 = AdvTag("_Draw3")  # draws 3 cards
+_Draw4 = AdvTag("_Draw4")  # draws 4 cards
+_Draw5 = AdvTag("_Draw5")  # draws 5 cards
+_Draw6 = AdvTag("_Draw6")  # draws 6 cards
+_Draw7 = AdvTag("_Draw7")  # draws 7 cards
+_Drawload = AdvTag("_Drawload")  # draws potentially infinite numbers of cards
+_Piler = AdvTag("_Piler")  # empties or refills piles
+_Empty = AdvTag("_Empty")  # cares about empty supply piles
+_Piler.bonusToTags = [_Empty]
+_Empty.bonusToTags = [_Piler]
+_Exchange = AdvTag(
+    "_Exchange"
+)  # allows you to exchange cards, triggering on-gain effects before the exchange
+_ExtraCost = AdvTag(
+    "_ExtraCost"
+)  # has an extra cost, preventing gainers from gaining it. Bad synnergy with gainers
+_Filler = AdvTag(
+    "_Filler", [_Discard]
+)  # fills hand up to a certain point; synnergizes with _Discard
+_FreeAction = AdvTag(
+    "_FreeAction"
+)  # card that can play itself without expending actions
+_FreeEvent = AdvTag(
+    "_FreeEvent"
+)  # event that gives you one buy, and therefore essentially costs no buy.
+_FutureAction = AdvTag(
+    "_FutureAction"
+)  # gives a bonus action at the start of next turn
+_FutureDraw1 = AdvTag("_FutureDraw1")  # gives a draw at the start of a future turn
+_FutureDraw2 = AdvTag("_FutureDraw2")  # gives draw 2 at the start of a future turn
+_FutureDraw3 = AdvTag("_FutureDraw3")  # gives draw 3 at the start of a future turn
+_FutureDraw5 = AdvTag("_FutureDraw5")  # gives draw 5 at the start of a future turn
+_FutureMoney1 = AdvTag(
+    "_FutureMoney1"
+)  # gives you future money, such as by giving 1 coffer or gaining a silver
+_FutureMoney2 = AdvTag(
+    "_FutureMoney2"
+)  # gives you future money, such as by giving 2 coffers or gaining a gold
+_FutureMoney3 = AdvTag(
+    "_FutureMoney3"
+)  # gives you future money, such as by giving 3 coffers or gaining a gold and a silver
+_FutureMoney4 = AdvTag(
+    "_FutureMoney4"
+)  # gives you future money, such as by gaining 2 spoils
+_FutureMoney6 = AdvTag(
+    "_FutureMoney6"
+)  # gives you future money, such as by gaining 3 golds
+_ExactGainer3 = AdvTag(
+    "_ExactGainer3",
+    bonusToTags=[_Cost3, _CostReducer],
+    badTags=["_ExtraCost"],
+    wantsTags=[_Cost3],
+)  # allows you to gain cards from the supply costing exactly 3; synnergizes with _Cost3, _CostReducer
+_ExactGainer4 = AdvTag(
+    "_ExactGainer4",
+    bonusToTags=[_Cost4, _CostReducer],
+    badTags=["_ExtraCost"],
+    wantsTags=[_Cost4],
+)  # allows you to gain cards from the supply costing exactly 4; synnergizes with _Cost4, _CostReducer
+_ExactGainer5 = AdvTag(
+    "_ExactGainer5",
+    bonusToTags=[_Cost5, _CostReducer],
+    badTags=["_ExtraCost"],
+    wantsTags=[_Cost5],
+)  # allows you to gain cards from the supply costing exactly 5; synnergizes with _Cost5, _CostReducer
+_ExactGainer6 = AdvTag(
+    "_ExactGainer6",
+    bonusToTags=[_Cost6, _CostReducer],
+    badTags=["_ExtraCost"],
+    wantsTags=[_Cost6],
+)  # allows you to gain cards from the supply costing exactly 6; synnergizes with _Cost6, _CostReducer
+_Gainer3 = AdvTag(
+    "_Gainer3", bonusToTags=[_Cost3, _CostReducer], badTags=["_ExtraCost"]
+)  # allows you to gain cards from the supply costing up to 3; synnergizes with _CostReducer, _Cost3
+_Gainer4 = AdvTag(
+    "_Gainer4", bonusToTags=[_Cost4, _CostReducer], badTags=["_ExtraCost"]
+)  # allows you to gain cards from the supply costing up to 4; synnergizes with _CostReducer, _Cost4
+_Gainer5 = AdvTag(
+    "_Gainer5", bonusToTags=[_Cost5, _CostReducer], badTags=["_ExtraCost"]
+)  # allows you to gain cards from the supply costing up to 5; synnergizes with _CostReducer, _Cost5
+_Gainer6 = AdvTag(
+    "_Gainer6", bonusToTags=[_Cost6, _CostReducer], badTags=["_ExtraCost"]
+)  # allows you to gain cards from the supply costing up to 6; synnergizes with _CostReducer, _Cost6
+_Gainer7 = AdvTag(
+    "_Gainer7", bonusToTags=[_Cost7, _CostReducer], badTags=["_ExtraCost"]
+)  # allows you to gain cards from the supply costing up to 7; synnergizes with _CostReducer, _Cost7
+_Gainer8 = AdvTag(
+    "_Gainer8", bonusToTags=[_Cost8, _CostReducer], badTags=["_ExtraCost"]
+)  # allows you to gain cards from the supply costing up to 8; synnergizes with _CostReducer, _Cost8
+_GainLover = AdvTag(
+    "_GainLover",
+    bonusToTags=[
+        _Buys,
+        _ExactGainer3,
+        _ExactGainer4,
+        _ExactGainer5,
+        _ExactGainer6,
+        _Gainer3,
+        _Gainer4,
+        _Gainer5,
+        _Gainer6,
+        _Gainer7,
+        _Gainer8,
+    ],
+)  # wants a lot of gains
+_GainResponse3 = AdvTag(
+    "_GainResponse3",
+    bonusToTags=[
+        _ExactGainer3,
+        _Exchange,
+        _Gainer3,
+        _Gainer4,
+        _Gainer5,
+        _Gainer6,
+    ],
+)  # Reaction triggered by gains.
+_GainResponse4 = AdvTag(
+    "_GainResponse4",
+    bonusToTags=[_ExactGainer4, _Exchange, _Gainer4, _Gainer5, _Gainer6],
+)  # Reaction triggered by gains.
+_GainResponse5 = AdvTag(
+    "_GainResponse5", bonusToTags=[_ExactGainer5, _Exchange, _Gainer5, _Gainer6]
+)  # Reaction triggered by gains.
+_GainResponse6 = AdvTag(
+    "_GainResponse6",
+    bonusToTags=[
+        _ExactGainer6,
+        _Gainer6,
+    ],
+)  # Reaction triggered by gains.
+_GainResponse7 = AdvTag(
+    "_GainResponse7", bonusToTags=[_Gainer7]
+)  # Reaction triggered by gains.
+_GainResponse8 = AdvTag(
+    "_GainResponse8",
+    bonusToTags=[
+        _Gainer8,
+    ],
+)  # Reaction triggered by gains.
+_HandLimit = AdvTag(
+    "_HandLimit", bonusToTags=["_Filler"]
+)  # limits the number of cards you can have in hand
+_Exchange.bonusToTags = [
+    _GainResponse3,
+    _GainResponse4,
+    _GainResponse5,
+    _GainResponse6,
+    _GainResponse7,
+]
+_Kingdom = AdvTag("_Kingdom")  # Adds cards to the kingdom
+_Interactive = AdvTag(
+    "_Interactive"
+)  # does something to other players that is not an attack
+_Lab = AdvTag("_Lab")  # gives +2 Cards and +1 Action
+_HandLover = AdvTag(
+    "_HandLover",
+    bonusToTags=[_Drawload, _Filler, _Lab, _Draw3, _Draw4, _Draw5, _Draw6, _Draw7],
+)  # wants a lot of cards in hand. Synnergizes with _Drawload, _Filler, _Lab, _Draw3 or higher.
+_LimitsPlays = AdvTag("_LimitsPlays")  # limits the number of cards you can play
+_Junker = AdvTag("_Junker")  # attacker gives opponents bad cards
+_Money1 = AdvTag("_Money1")  # gives +1 Money
+_Money2 = AdvTag("_Money2")  # gives +2 Money
+_Money3 = AdvTag("_Money3")  # gives +3 Money
+_Money4 = AdvTag("_Money4")  # gives +4 Money
+_Money5 = AdvTag("_Money5")  # gives +5 Money
+_Money6 = AdvTag("_Money6")  # gives +6 Money
+_MultiType = AdvTag("_MultiType")  # has more than two types
+_MultiTypeLove = AdvTag(
+    "_MultiTypeLove", wantsTags=[_MultiType]
+)  # Wants cards with more than two types
+_Payload = AdvTag("_Payload")  # a card that adds variable, potentially infinite money.
+_NoHandsPlay = AdvTag(
+    "_NoHandsPlay"
+)  # allows you to play cards without having them in your hand
+_HandLimit.bonusToTags.append(_NoHandsPlay)
+_Overpay = AdvTag(
+    "_Overpay", [_FutureMoney2, _Money3, _Money4, _Money5, _Money6, _Payload]
+)  # Allows you to pay more for more functionality. Synnergizes with _Money3, _Money4, _Money5, _Payload.
+_Peddler = AdvTag(
+    "_Peddler"
+)  # cantrip that give +1 Money; seperate class for randomizer reasons
+_PlatinumLover = AdvTag(
+    "_PlatinumLover"
+)  # Really does better if there are 9-cost treasures
+_Playload = AdvTag("_Playload")  # Allows you to play many cards into the play area
+_Terminal = AdvTag(
+    "_Terminal"
+)  # doesn't allow more actions to be played. synnergizes with _Splitter and _Village
+_LimitsPlays.bonusToTags = [_NoHandsPlay, _Terminal]
+_PhaseBreaker = AdvTag(
+    "_PhaseBreaker", bonusToTags=[_Buys, _Terminal]
+)  # messes with the phases. I want this separate because it's interesting
+_PlayArea = AdvTag(
+    "_PlayArea"
+)  # Affects the play area. I want this seperate because it's interesting
+_Prize = AdvTag("_Prize")  # the card gives access to powerful prizes
+_Random = AdvTag("_Random")  # a card with seemly random effects (as opposed to _Choice)
+_Reveal = AdvTag(
+    "_Reveal"
+)  # a card that makes you reveal other cards, explicitly using the word reveal
+_RevealResponse = AdvTag(
+    "_RevealResponse", [_Doom, _Reveal]
+)  # a card that reacts to being revealed, Wants _Reveal or Doom
+_Saver = AdvTag(
+    "_Saver"
+)  # puts cards from this hand into future hands, without discards or draws
+_ShuffleIn = AdvTag("_ShuffleIn")  # shuffles cards into other piles
+_Shuffler = AdvTag("_Shuffler")  # triggers the next shuffle right away
+_Sifter = AdvTag(
+    "_Sifter", bonusToTags=[_Discard]
+)  # draws and discards cards to improve future hands
+_SplitPile = AdvTag("_SplitPile")  # There's more than one named thing in here!
+_NamesMatter = AdvTag(
+    "_NamesMatter", [_Looter, _Kingdom, _Prize, _SplitPile]
+)  # Wants a lot of different names in the game. Synnergizes with Looter, _SplitPile, etc
+_Splitter = AdvTag(
+    "_Splitter", bonusToTags=[_Omen, _Terminal]
+)  # allows you to play cards multiple times.
+_StationaryLover3 = AdvTag(
+    "StationaryLover3", bonusToTags=[_Command3, _Command4, _Command7]
+)  # this card costs 3 and would be even better if it didn't move when it was played!
+_StationaryLover4 = AdvTag(
+    "StationaryLover4", bonusToTags=[_Command4, _Command7]
+)  # this card costs 4 and would be even better if it didn't move when it was played!
+_StationaryLover7 = AdvTag(
+    "StationaryLover7", bonusToTags=[_Command7]
+)  # this card costs 7 and would be even better if it didn't move when it was played!
+_Command4.bonusToTags = [_StationaryLover3, _StationaryLover4]
+_Command7.bonusToTags = [_StationaryLover3, _StationaryLover4, _StationaryLover7]
+_Thinner = AdvTag(
+    "_Thinner"
+)  # Puts cards into the trash and leaves you with a smaller deck
+_Trasher = AdvTag("_Trasher")  # Puts cards into the trash, but doesn't thin your deck
+_TrashResponse = AdvTag(
+    "_TrashResponse", wantsTags=[_Trasher]
+)  # Responds to trashing or being trashed. Wants for _Trasher
+_TrashGainer = AdvTag(
+    "_TrashGainer", wantsTags=[_Trasher]
+)  # Gets cards out of the trash or gains cards in response to trashing. Wants for _Trasher
+_TreasuresMatter = AdvTag(
+    "_TreasuresMatter", bonusToTags=[_Treasure, _Potion, _Prize]
+)  # Increases in power if there are more differently named Treasures in the game
+_Twin = AdvTag(
+    "_Twin"
+)  # Donald X's secret type that is a good idea to buy 2 of on turn 1
+_Remodeler1 = AdvTag(
+    "_Remodeler1", bonusToTags=[_Cost2, _Cost3, _Cost4, _Cost5, _Cost6, _Cost7]
+)  # allows you to replace cards with cards that cost 1 more. Encourages an unbroken upgrade path to Province
+_Remodeler2 = AdvTag(
+    "_Remodeler2",
+    bonusToTags=[_Cost2, _Cost4],
+)  # allows you to replace cards with cards that cost 2 more. Encourages an unbroken upgrade path to Gold and then to Province
+_Remodeler3 = AdvTag(
+    "_Remodeler3",
+    bonusToTags=[_Cost2, _Cost5],
+)  # allows you to replace cards with cards that cost 3 more. Encourages an unbroken upgrade path to Province
+_VictoryGainer = AdvTag("_VictoryGainer")  # gains you victory cards or points
+_VictoryResponse = AdvTag(
+    "_AttackResponse", bonusToTags=[_Gainer5], wantsTags=[_VictoryGainer]
+)  # allows you to respond to other players gaining victory cards. Wants for victory cards, encourages gainers
+_Village = AdvTag(
+    "_Village", bonusToTags=[_Shadow, _Terminal]
+)  # replaces itself and allows multiple terminals to be played
+_ActionLover.bonusToTags = [_Village]
+_CardLover.bonusToTags = [_Cantrip, _Playload, _Village]
+
 
 # Define sets
 Base = Set("Base")
 Base.AddCards(
     [
-        "Gardens",
-        {"name": "Artisan", "types": {Action}},
-        {"name": "Cellar", "types": {Action}},
-        {"name": "Chapel", "types": {Action}},
-        {"name": "Moat", "types": {Action}},
-        {"name": "Harbinger", "types": {Action}},
-        {"name": "Merchant", "types": {Action}},
-        {"name": "Village", "types": {Action}},
-        {"name": "Workshop", "types": {Action}},
-        {"name": "Vassal", "types": {Action}},
-        {"name": "Bureaucrat", "types": {Action}},
-        {"name": "Militia", "types": {Action}},
-        {"name": "Moneylender", "types": {Action}},
-        {"name": "Poacher", "types": {Action}},
-        {"name": "Remodel", "types": {Action}},
-        {"name": "Smithy", "types": {Action}},
-        {"name": "Throne Room", "types": {Action}},
-        {"name": "Bandit", "types": {Action}},
-        {"name": "Council Room", "types": {Action}},
-        {"name": "Festival", "types": {Action}},
-        {"name": "Laboratory", "types": {Action}},
-        {"name": "Library", "types": {Action}},
-        {"name": "Market", "types": {Action}},
-        {"name": "Mine", "types": {Action}},
-        {"name": "Sentry", "types": {Action}},
-        {"name": "Witch", "types": {Action}},
+        {
+            "name": "Artisan",
+            "types": {Action},
+            "advTags": {_Cost6, _DeckSeeder, _Gainer5, _Terminal},
+        },
+        {
+            "name": "Bandit",
+            "types": {Action, Attack},
+            "advTags": {
+                _BadThinner,
+                _Cost5,
+                _Discard,
+                _FutureMoney2,
+                _Reveal,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Bureaucrat",
+            "types": {Action, Attack},
+            "advTags": {
+                _BadSifter,
+                _Cost4,
+                _DeckSeeder,
+                _FutureMoney1,
+                _HandLimit,
+                _Reveal,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Cellar",
+            "types": {Action},
+            "advTags": {_Chainer, _Cost2, _Discard, _Drawload},
+        },
+        {
+            "name": "Chapel",
+            "types": {Action},
+            "advTags": {_Cost2, _Terminal, _Thinner, _Trasher},
+        },
+        {
+            "name": "Council Room",
+            "types": {Action},
+            "advTags": {_Buys, _Cost5, _Draw4, _Interactive, _Terminal},
+        },
+        {
+            "name": "Festival",
+            "types": {Action},
+            "advTags": {_Buys, _Cost5, _Money2, _Village},
+        },
+        {"name": "Gardens", "types": {Victory}, "advTags": {_Cost4}},
+        {
+            "name": "Harbinger",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost3, _DeckSeeder},
+        },
+        {
+            "name": "Laboratory",
+            "types": {Action},
+            "advTags": {_Cost5, _Lab},
+        },
+        {
+            "name": "Library",
+            "types": {Action},
+            "advTags": {_Cost5, _Discard, _Filler, _Sifter, _Terminal},
+        },
+        {"name": "Market", "types": {Action}, "advTags": {_Buys, _Cost5, _Peddler}},
+        {"name": "Merchant", "types": {Action}, "advTags": {_Cost3, _Peddler}},
+        {
+            "name": "Militia",
+            "types": {Action, Attack},
+            "advTags": {_Cost4, _Discard, _HandLimit, _Money2, _Terminal},
+        },
+        {
+            "name": "Mine",
+            "types": {Action},
+            "advTags": {_Cost5, _Remodeler3, _Terminal, _Trasher, _TreasuresMatter},
+        },
+        {
+            "name": "Moat",
+            "types": {Action, Reaction},
+            "advTags": {_AttackResponse, _Cost2, _Draw2, _Terminal},
+        },
+        {
+            "name": "Moneylender",
+            "types": {Action},
+            "advTags": {_Cost4, _Money3, _Terminal, _Thinner, _Trasher},
+        },
+        {
+            "name": "Poacher",
+            "types": {Action},
+            "advTags": {_Cost4, _Discard, _Empty, _Peddler},
+        },
+        {
+            "name": "Remodel",
+            "types": {Action},
+            "advTags": {_Cost4, _Remodeler2, _Terminal, _Trasher},
+        },
+        {
+            "name": "Sentry",
+            "types": {Action},
+            "advTags": {
+                _Cantrip,
+                _Cost5,
+                _DeckSeeder,
+                _Discard,
+                _Sifter,
+                _Trasher,
+                _Thinner,
+            },
+        },
+        {"name": "Smithy", "types": {Action}, "advTags": {_Cost4, _Draw3, _Terminal}},
+        {"name": "Throne Room", "types": {Action}, "advTags": {_Cost4, _Splitter}},
+        {
+            "name": "Workshop",
+            "types": {Action},
+            "advTags": {_Cost3, _Gainer4, _Terminal},
+        },
+        {
+            "name": "Vassal",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost3,
+                _DeckGuesser,
+                _Discard,
+                _Money2,
+                _NoHandsPlay,
+                _Twin,
+            },
+        },
+        {"name": "Village", "types": {Action}, "advTags": {_Cost3, _Village}},
+        {
+            "name": "Witch",
+            "types": {Action},
+            "advTags": {_Cost5, _Curser, _Draw2, _Terminal},
+        },
     ]
 )
 Base.firstEdition = [
-    {"name": "Adventurer", "types": {Action}},
-    {"name": "Chancellor", "types": {Action}},
-    {"name": "Feast", "types": {Action}},
-    {"name": "Spy", "types": {Action}},
-    {"name": "Thief", "types": {Action}},
-    {"name": "Woodcutter", "types": {Action}},
+    {
+        "name": "Adventurer",
+        "types": {Action},
+        "advTags": {_Cost6, _Draw2, _Reveal, _Sifter, _Terminal},
+    },
+    {
+        "name": "Chancellor",
+        "types": {Action},
+        "advTags": {_Cost3, _Money2, _Shuffler, _Terminal},
+    },
+    {
+        "name": "Feast",
+        "types": {Action},
+        "advTags": {_Cost4, _Gainer5, _StationaryLover4, _Terminal, _Trasher},
+    },
+    {
+        "name": "Spy",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadSifter,
+            _Cantrip,
+            _Cost4,
+            _DeckSeeder,
+            _Discard,
+            _Reveal,
+            _Sifter,
+        },
+    },
+    {
+        "name": "Thief",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadThinner,
+            _Cost4,
+            _Discard,
+            _Gainer7,
+            _Payload,
+            _PlatinumLover,
+            _Reveal,
+            _Terminal,
+            _Trasher,
+        },
+    },
+    {
+        "name": "Woodcutter",
+        "types": {Action},
+        "advTags": {_Buys, _Cost3, _Money2, _Terminal},
+    },
 ]
 Base.secondEdition = Base.cards(
     "Artisan",
@@ -267,41 +863,241 @@ Base.secondEdition = Base.cards(
 Intrigue = Set("Intrigue")
 Intrigue.AddCards(
     [
-        "Harem",
-        {"name": "Courtyard", "types": {Action}},
-        {"name": "Lurker", "types": {Action}},
-        {"name": "Pawn", "types": {Action}},
-        {"name": "Masquerade", "types": {Action}},
-        {"name": "Shanty Town", "types": {Action}},
-        {"name": "Steward", "types": {Action}},
-        {"name": "Swindler", "types": {Action}},
-        {"name": "Wishing Well", "types": {Action}},
-        {"name": "Baron", "types": {Action}},
-        {"name": "Bridge", "types": {Action}},
-        {"name": "Conspirator", "types": {Action}},
-        {"name": "Diplomat", "types": {Action}},
-        {"name": "Ironworks", "types": {Action}},
-        {"name": "Mill", "types": {Action}},
-        {"name": "Mining Village", "types": {Action}},
-        {"name": "Secret Passage", "types": {Action}},
-        {"name": "Courtier", "types": {Action}},
-        {"name": "Duke", "types": {Action}},
-        {"name": "Minion", "types": {Action}},
-        {"name": "Patrol", "types": {Action}},
-        {"name": "Replace", "types": {Action}},
-        {"name": "Torturer", "types": {Action}},
-        {"name": "Trading Post", "types": {Action}},
-        {"name": "Upgrade", "types": {Action}},
-        {"name": "Nobles", "types": {Action}},
+        {
+            "name": "Baron",
+            "types": {Action},
+            "advTags": {_Buys, _Cost4, _Discard, _Money4, _Terminal, _VictoryGainer},
+        },
+        {
+            "name": "Bridge",
+            "types": {Action},
+            "advTags": {_Buys, _Cost4, _CostReducer, _Money1, _Terminal},
+        },
+        {
+            "name": "Conspirator",
+            "types": {Action},
+            "advTags": {_ActionLover, _Cost4, _Cantrip, _Money2},
+        },
+        {
+            "name": "Courtier",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Chainer,
+                _Choice,
+                _Cost5,
+                _FutureMoney2,
+                _Money3,
+                _MultiTypeLove,
+                _Reveal,
+            },
+        },
+        {
+            "name": "Courtyard",
+            "types": {Action},
+            "advTags": {_Cost2, _DeckSeeder, _Draw2, _Terminal},
+        },  # draws 2 and seeds 1
+        {
+            "name": "Diplomat",
+            "types": {Action, Reaction},
+            "advTags": {
+                _ActionLover,
+                _AttackResponse,
+                _Cost4,
+                _Discard,
+                _DoubleDouble,
+                _Reveal,
+                _Sifter,
+            },
+        },
+        {"name": "Duke", "types": {Victory}, "advTags": {_Cost5}},
+        {
+            "name": "Harem/Farm",
+            "types": {Treasure, Victory},
+            "advTags": {_Cost6, _Money2},
+        },
+        {
+            "name": "Ironworks",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost4, _Gainer4, _Money1, _MultiTypeLove},
+        },
+        {
+            "name": "Lurker",
+            "types": {Action},
+            "advTags": {_Cost2, _Chainer, _Piler, _Trasher, _TrashGainer},
+        },
+        {
+            "name": "Masquerade",
+            "types": {Action},
+            "advTags": {
+                _Cost3,
+                _Draw2,
+                _Interactive,
+                _Junker,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Mill",
+            "types": {Action, Victory},
+            "advTags": {_Cantrip, _Cost4, _Discard, _Money2},
+        },
+        {
+            "name": "Mining Village",
+            "types": {Action},
+            "advTags": {_Cost4, _Money2, _Thinner, _Trasher, _Village},
+        },
+        {
+            "name": "Minion",
+            "types": {Action, Attack},
+            "advTags": {
+                _Chainer,
+                _Choice,
+                _Cost5,
+                _Discard,
+                _HandLimit,
+                _Filler,
+                _Money2,
+            },
+        },
+        {
+            "name": "Nobles",
+            "types": {Action, Victory},
+            "advTags": {_Choice, _Cost6, _Draw3, _Village},
+        },
+        {
+            "name": "Patrol",
+            "types": {Action},
+            "advTags": {_Cost5, _DeckSeeder, _Draw3, _Reveal, _Sifter, _Terminal},
+        },
+        {
+            "name": "Pawn",
+            "types": {Action},
+            "advTags": {_Buys, _Cantrip, _Choice, _Cost2, _Draw1, _Money1},
+        },
+        {
+            "name": "Replace",
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost5,
+                _Curser,
+                _DeckSeeder,
+                _Remodeler2,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Secret Passage",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost4, _DeckSeeder, _Sifter},
+        },
+        {
+            "name": "Shanty Town",
+            "types": {Action},
+            "advTags": {_Cost3, _DoubleDouble, _Reveal},
+        },
+        {
+            "name": "Steward",
+            "types": {Action},
+            "advTags": {
+                _Choice,
+                _Cost3,
+                _Draw2,
+                _Money2,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Swindler",
+            "types": {Action, Attack},
+            "advTags": {_Cost3, _Junker, _Money2, _Terminal, _Trasher},
+        },
+        {
+            "name": "Torturer",
+            "types": {Action, Attack},
+            "advTags": {
+                _Choice,
+                _Cost5,
+                _Curser,
+                _Discard,
+                _Draw3,
+                _HandLimit,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Trading Post",
+            "types": {Action},
+            "advTags": {_Cost5, _FutureMoney1, _Terminal, _Thinner, _Trasher},
+        },
+        {
+            "name": "Upgrade",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost5, _Remodeler1, _Trasher},
+        },
+        {
+            "name": "Wishing Well",
+            "types": {Action},
+            "advTags": {_Cost3, _DeckGuesser, _Lab, _Reveal},
+        },
     ]
 )
 Intrigue.firstEdition = [
-    {"name": "Coppersmith", "types": {Action}},
-    {"name": "Great Hall", "types": {Action}},
-    {"name": "Saboteur", "types": {Action}},
-    {"name": "Scout", "types": {Action}},
-    {"name": "Secret Chamber", "types": {Action}},
-    {"name": "Tribute", "types": {Action}},
+    {
+        "name": "Coppersmith",
+        "types": {Action},
+        "advTags": {_Cost4, _Payload, _Terminal},
+    },
+    {"name": "Great Hall", "types": {Action, Victory}, "advTags": {_Cantrip, _Cost3}},
+    {
+        "name": "Saboteur",
+        "types": {Action, Attack},
+        "advTags": {
+            _Downgrader,
+            _Cost5,
+            _Discard,
+            _Reveal,
+            _Terminal,
+            _Trasher,
+        },
+    },
+    {
+        "name": "Scout",
+        "types": {Action},
+        "advTags": {_Cantrip, _Cost4, _DeckSeeder, _Draw4, _Reveal, _Sifter},
+    },
+    {
+        "name": "Secret Chamber",
+        "types": {Action, Reaction},
+        "advTags": {
+            _AttackResponse,
+            _Cost2,
+            _DeckSeeder,
+            _Discard,
+            _Payload,
+            _Sifter,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Tribute",
+        "types": {Action},
+        "advTags": {
+            _Cost5,
+            _Discard,
+            _Draw2,
+            _Money2,
+            _MultiTypeLove,
+            _NamesMatter,
+            _Reveal,
+            _Village,
+        },
+    },
 ]
 Intrigue.secondEdition = Intrigue.cards(
     "Courtier", "Diplomat", "Lurker", "Mill", "Patrol", "Replace", "Secret Passage"
@@ -310,48 +1106,239 @@ Intrigue.secondEdition = Intrigue.cards(
 Seaside = Set("Seaside")
 Seaside.AddCards(
     [
-        "Astrolabe",
-        {"name": "Bazaar", "types": {Action}},
-        {"name": "Blockade", "types": {Action}},
-        {"name": "Caravan", "types": {Action}},
-        {"name": "Corsair", "types": {Action}},
-        {"name": "Cutpurse", "types": {Action}},
-        {"name": "Fishing Village", "types": {Action}},
-        {"name": "Haven", "types": {Action}},
-        {"name": "Island", "types": {Action}, "extras": {"Island Mat"}},
-        {"name": "Lighthouse", "types": {Action}},
-        {"name": "Lookout", "types": {Action}},
-        {"name": "Merchant Ship", "types": {Action}},
-        {"name": "Monkey", "types": {Action}},
-        {"name": "Native Village", "types": {Action}, "extras": {"Native Village Mat"}},
-        {"name": "Outpost", "types": {Action}},
-        {"name": "Pirate", "types": {Action}},
-        {"name": "Sailor", "types": {Action}},
-        {"name": "Salvager", "types": {Action}},
-        {"name": "Sea Chart", "types": {Action}},
-        {"name": "Sea Witch", "types": {Action}},
-        {"name": "Smugglers", "types": {Action}},
-        {"name": "Tactician", "types": {Action}},
-        {"name": "Tide Pools", "types": {Action}},
-        {"name": "Treasure Map", "types": {Action}},
-        {"name": "Treasury", "types": {Action}},
-        {"name": "Warehouse", "types": {Action}},
-        {"name": "Wharf", "types": {Action}},
+        {
+            "name": "Astrolabe",
+            "types": {Treasure, Duration},
+            "advTags": {_Buys, _Cost3, _FutureMoney1, _Money1},
+        },
+        {"name": "Bazaar", "types": {Action}, "advTags": {_Cost5, _Peddler, _Village}},
+        {
+            "name": "Blockade",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _Cost4,
+                _Curser,
+                _Gainer4,
+                _GainResponse4,
+                _Saver,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Caravan",
+            "types": {Action, Duration},
+            "advTags": {_Cantrip, _Cost4, _FutureDraw1},
+        },
+        {
+            "name": "Corsair",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _BadThinner,
+                _Cost5,
+                _FutureDraw1,
+                _Money2,
+                _Trasher,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Cutpurse",
+            "types": {Action, Attack},
+            "advTags": {_Cost4, _Discard, _HandLimit, _Money2, _Reveal, _Terminal},
+        },
+        {
+            "name": "Fishing Village",
+            "types": {Action, Duration},
+            "advTags": {_Cost3, _FutureAction, _FutureMoney1, _Money1, _Village},
+        },
+        {
+            "name": "Haven",
+            "types": {Action, Duration},
+            "advTags": {_Cantrip, _Cost2, _Saver},
+        },
+        {
+            "name": "Island",
+            "types": {Action, Victory},
+            "advTags": {_Cost4, _StationaryLover4, _Terminal, _Thinner},
+        },
+        {
+            "name": "Lighthouse",
+            "types": {Action, Duration},
+            "advTags": {_AttackResponse, _Chainer, _Cost2, _FutureMoney1, _Money1},
+        },
+        {
+            "name": "Lookout",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost3,
+                _DeckSeeder,
+                _Discard,
+                _Sifter,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Merchant Ship",
+            "types": {Action, Duration},
+            "advTags": {_Cost5, _FutureMoney2, _Money2, _Terminal},
+        },
+        {
+            "name": "Monkey",
+            "types": {Action, Duration},
+            "advTags": {_Cost3, _GainResponse6, _FutureDraw1, _Terminal},
+        },
+        {
+            "name": "Native Village",
+            "types": {Action},
+            "advTags": {_Choice, _Cost2, _DoubleChain, _Drawload, _Saver, _Thinner},
+        },
+        {
+            "name": "Outpost",
+            "types": {Action, Duration},
+            "advTags": {_Cost5, _FutureDraw3, _PhaseBreaker, _Terminal},
+        },
+        {
+            "name": "Pirate",
+            "types": {Action, Duration, Reaction},
+            "advTags": {
+                _Cost5,
+                _FreeAction,
+                _FutureMoney2,
+                _Gainer6,
+                _GainResponse6,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Sailor",
+            "types": {Action, Duration},
+            "advTags": {
+                _Cost4,
+                _GainResponse6,
+                _FutureMoney2,
+                _Shuffler,
+                _Thinner,
+                _Trasher,
+                _Village,
+            },
+        },
+        {
+            "name": "Salvager",
+            "types": {Action},
+            "advTags": {_Buys, _Cost4, _Payload, _Terminal, _Thinner, _Trasher},
+        },
+        {
+            "name": "Sea Chart",
+            "types": {Action},
+            "advTags": {_Cost3, _DeckGuesser, _Lab, _Reveal, _Twin},
+        },
+        {
+            "name": "Sea Witch",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _Cost5,
+                _Curser,
+                _Discard,
+                _Draw2,
+                _Sifter,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Smugglers",
+            "types": {Action},
+            "advTags": {_Cost3, _Gainer6, _GainResponse6, _Terminal},
+        },
+        {
+            "name": "Tactician",
+            "types": {Action, Duration},
+            "advTags": {
+                _Buys,
+                _Cost5,
+                _Discard,
+                _FutureAction,
+                _FutureDraw5,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Tide Pools",
+            "types": {Action, Duration},
+            "advTags": {_Cantrip, _Cost4, _Discard, _Sifter},
+        },
+        {
+            "name": "Treasure Map",
+            "types": {Action},
+            "advTags": {_Cost4, _DeckSeeder, _FutureMoney6, _Trasher, _Terminal},
+        },
+        {
+            "name": "Treasury",
+            "types": {Action},
+            "advTags": {_Cost5, _DeckSeeder, _Peddler},
+        },
+        {
+            "name": "Warehouse",
+            "types": {Action},
+            "advTags": {_Chainer, _Cost3, _Discard, _Sifter},
+        },
+        {
+            "name": "Wharf",
+            "types": {Action, Duration},
+            "advTags": {_Buys, _Cost5, _Draw2, _FutureDraw2, _Terminal},
+        },
     ]
 )
 Seaside.firstEdition = [
-    {"name": "Embargo", "types": {Action}, "extras": {"Embargo Tokens"}},
-    {"name": "Pearl Diver", "types": {Action}},
-    {"name": "Ambassador", "types": {Action}},
-    {"name": "Navigator", "types": {Action}},
+    {
+        "name": "Ambassador",
+        "types": {Action, Attack},
+        "advTags": {_Cost3, _Junker, _Piler, _Reveal, _Terminal, _Thinner},
+    },
+    {
+        "name": "Embargo",
+        "types": {Action},
+        "advTags": {_Cost2, _Curser, _Money2, _Thinner, _Trasher},
+    },
+    {
+        "name": "Explorer",
+        "types": {Action},
+        "advTags": {
+            _Cost5,
+            _FutureMoney1,
+            _FutureMoney2,
+            _Money2,
+            _Money3,
+            _Reveal,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Ghost Ship",
+        "types": {Action, Attack},
+        "advTags": {_Cost5, _DeckSeeder, _Draw2, _HandLimit, _Terminal},
+    },
+    {
+        "name": "Navigator",
+        "types": {Action},
+        "advTags": {_Cost4, _DeckSeeder, _Discard, _Money2, _Sifter, _Terminal},
+    },
+    {
+        "name": "Pearl Diver",
+        "types": {Action},
+        "advTags": {_Cantrip, _Cost2, _DeckSeeder},
+    },
     {
         "name": "Pirate Ship",
-        "types": {Action},
-        "extras": {"Coin Tokens", "Pirate Ship Mat"},
+        "types": {Action, Attack},
+        "advTags": {_BadThinner, _Cost4, _Discard, _Payload, _Reveal, _Terminal},
     },
-    {"name": "Sea Hag", "types": {Action}},
-    {"name": "Explorer", "types": {Action}},
-    {"name": "Ghost Ship", "types": {Action}},
+    {
+        "name": "Sea Hag",
+        "types": {Action, Attack},
+        "advTags": {_Cost4, _Curser, _DeckSeeder, _Discard, _Terminal},
+    },
 ]
 Seaside.secondEdition = Seaside.cards(
     "Astrolabe",
@@ -368,63 +1355,347 @@ Seaside.secondEdition = Seaside.cards(
 Alchemy = Set("Alchemy")
 Alchemy.AddCards(
     [
-        {"name": "Herbalist", "types": {Action}},
-        {"name": "Apprentice", "types": {Action}},
-        {"name": "Transmute", "types": {Action, Potion}},
-        {"name": "Vineyard", "types": {Potion}},
-        {"name": "Apothecary", "types": {Action, Potion}},
-        {"name": "Scrying Pool", "types": {Action, Potion}},
-        {"name": "University", "types": {Action, Potion}},
-        {"name": "Alchemist", "types": {Action, Potion}},
-        {"name": "Familiar", "types": {Action, Potion}},
-        {"name": "Philosopher's Stone", "types": {Potion}},
-        {"name": "Golem", "types": {Action, Potion}},
-        {"name": "Possession", "types": {Action, Potion}},
+        # the main point of _Cost# is synnergy with _Gainer#, so cards that can't be
+        # gained don't have cost
+        {
+            "name": "Alchemist",
+            "types": {Action, Potion},
+            "advTags": {_Cost3, _DeckSeeder, _ExtraCost, _Lab},
+        },
+        {
+            "name": "Apothecary",
+            "types": {Action, Potion},
+            "advTags": {_DeckSeeder, _ExtraCost, _Money4, _Reveal, _Sifter, _Peddler},
+        },
+        {
+            "name": "Apprentice",
+            "types": {Action},
+            "advTags": {_Cost5, _Drawload, _Lab, _Thinner, _Trasher},
+        },
+        {
+            "name": "Familiar",
+            "types": {Action, Attack, Potion},
+            "advTags": {_Cantrip, _Cost3, _Curser, _ExtraCost},
+        },
+        {
+            "name": "Golem",
+            "types": {Action, Potion},
+            "advTags": {_ExtraCost, _NoHandsPlay, _Reveal, _Village},
+        },
+        {
+            "name": "Herbalist",
+            "types": {Action},
+            "advTags": {_Buys, _Cost2, _DeckSeeder, _Money1, _PlayArea, _Terminal},
+        },
+        {
+            "name": "Philosopher's Stone",
+            "types": {Treasure, Potion},
+            "advTags": {_Cost3, _ExtraCost, _Payload},
+        },
+        {
+            "name": "Possession",
+            "types": {Action, Potion},
+            "advTags": {_Buys, _Discard, _Draw5, _ExtraCost, _Terminal},
+        },
+        {
+            "name": "Scrying Pool",
+            "types": {Action, Attack, Potion},
+            "advTags": {
+                _BadSifter,
+                _Cantrip,
+                _Cost2,
+                _DeckSeeder,
+                _Discard,
+                _Drawload,
+                _ExtraCost,
+                _Reveal,
+            },
+        },
+        {
+            "name": "Transmute",
+            "types": {Action, Potion},
+            "advTags": {
+                _ExtraCost,
+                _FutureMoney2,
+                _MultiTypeLove,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "University",
+            "types": {Action, Potion},
+            "advTags": {_Cost2, _ExtraCost, _Gainer5, _Village},
+        },
+        {"name": "Vineyard", "types": {Victory, Potion}, "advTags": {_ExtraCost}},
     ]
 )
 
 Prosperity = Set("Prosperity")
 Prosperity.AddCards(
     [
-        "Anvil",
-        "Bank",
-        {"name": "Collection", "extras": {"Victory Tokens"}},
-        "Hoard",
-        {"name": "Investment", "extras": {"Victory Tokens"}},
-        "Quarry",
-        "Tiara",
-        "War Chest",
-        {"name": "Bishop", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Charlatan", "types": {Action}},
-        {"name": "City", "types": {Action}},
-        {"name": "Clerk", "types": {Action}},
-        {"name": "Expand", "types": {Action}},
-        {"name": "Forge", "types": {Action}},
-        {"name": "Grand Market", "types": {Action}},
-        {"name": "King's Court", "types": {Action}},
-        {"name": "Magnate", "types": {Action}},
-        {"name": "Mint", "types": {Action}},
-        {"name": "Monument", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Peddler", "types": {Action}},
-        {"name": "Rabble", "types": {Action}},
-        {"name": "Vault", "types": {Action}},
-        {"name": "Watchtower", "types": {Action}},
-        {"name": "Worker's Village", "types": {Action}},
+        {
+            "name": "Anvil",
+            "types": {Treasure},
+            "advTags": {_Cost3, _Discard, _Gainer4, _Money1},
+        },
+        {"name": "Bank", "types": {Treasure}, "advTags": {_Cost7, _Payload}},
+        {
+            "name": "Bishop",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _Interactive,
+                _Money1,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+                _TrashResponse,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Charlatan",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Curser, _Money3, _Terminal},
+        },
+        {
+            "name": "City",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost5,
+                _DoubleDouble,
+                _Empty,
+                _Peddler,
+            },
+        },
+        {
+            "name": "Clerk",
+            "types": {Action, Reaction, Attack},
+            "advTags": {
+                _Cost4,
+                _DeckSeeder,
+                _FreeAction,
+                _HandLimit,
+                _Money2,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Collection",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost5, _Money2, _GainResponse7, _VictoryGainer},
+        },
+        {
+            "name": "Crystal Ball",
+            "types": {Treasure},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _Money1,
+                _NoHandsPlay,
+                _PhaseBreaker,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Expand",
+            "types": {Action},
+            "advTags": {
+                _Cost7,
+                _Remodeler3,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Forge",
+            "types": {Action},
+            "advTags": {
+                _Cost7,
+                _Gainer8,
+                _PlatinumLover,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Grand Market",
+            "types": {Action},
+            "advTags": {_Buys, _Cost6, _Money2, _Peddler},
+        },
+        {"name": "Hoard", "types": {Treasure}, "advTags": {_Cost6, _Money2, _Payload}},
+        {
+            "name": "Investment",
+            "types": {Treasure},
+            "advTags": {
+                _Cost4,
+                _Money1,
+                _Reveal,
+                _Thinner,
+                _Trasher,
+                _TreasuresMatter,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "King's Court",
+            "types": {Action},
+            "advTags": {_Cost7, _Splitter, _Terminal},
+        },
+        {
+            "name": "Magnate",
+            "types": {Action},
+            "advTags": {_Cost5, _Drawload, _Reveal, _Terminal},
+        },
+        {
+            "name": "Mint",
+            "types": {Action},
+            "advTags": {
+                _Cost5,
+                _Gainer7,
+                _GainResponse7,
+                _PlatinumLover,
+                _Reveal,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Monument",
+            "types": {Action},
+            "advTags": {_Cost4, _Money2, _Terminal, _VictoryGainer},
+        },
+        {
+            "name": "Peddler",
+            "types": {Action},
+            "advTags": {
+                _ActionLover,
+                _Cost8,
+                _CostVaries,
+                _Peddler,
+            },
+        },
+        {
+            "name": "Quarry",
+            "types": {Treasure},
+            "advTags": {_Cost4, _CostReducer, _Money1},
+        },
+        {
+            "name": "Rabble",
+            "types": {Action, Attack},
+            "advTags": {
+                _BadSifter,
+                _Cost5,
+                _DeckSeeder,
+                _Discard,
+                _Draw3,
+                _Reveal,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Tiara",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost4, _DeckSeeder, _GainResponse6, _Splitter},
+        },
+        {
+            "name": "War Chest",
+            "types": {Treasure},
+            "advTags": {_Cost5, _Gainer5, _NamesMatter},
+        },
+        {
+            "name": "Vault",
+            "types": {Action},
+            "advTags": {_Cost5, _Draw2, _Discard, _Interactive, _Payload, _Terminal},
+        },
+        {
+            "name": "Watchtower",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cost3,
+                _DeckSeeder,
+                _Filler,
+                _GainResponse6,
+                _Reveal,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Worker's Village",
+            "types": {Action},
+            "advTags": {_Buys, _Cost4, _Village},
+        },
     ]
 )
 Prosperity.firstEdition = [
-    "Contraband",
-    "Loan",
-    "Royal Seal",
-    "Talisman",
-    "Venture",
-    {"name": "Counting House", "types": {Action}},
-    {"name": "Goons", "types": {Action}, "extras": {"Victory Tokens"}},
-    {"name": "Mountebank", "types": {Action}},
+    {
+        "name": "Contraband",
+        "types": {Treasure},
+        "advTags": {_Buys, _Cost5, _Money3, _NamesMatter},
+    },
+    {
+        "name": "Counting House",
+        "types": {Action},
+        "advTags": {_Cost5, _Payload, _Reveal, _Terminal},
+    },
+    {
+        "name": "Goons",
+        "types": {Action, Attack},
+        "advTags": {
+            _Buys,
+            _Cost6,
+            _Discard,
+            _HandLimit,
+            _Money2,
+            _Terminal,
+            _VictoryGainer,
+        },
+    },
+    {
+        "name": "Loan",
+        "types": {Treasure},
+        "advTags": {_Cost3, _Discard, _Money1, _Reveal, _Thinner, _Trasher},
+    },
+    {
+        "name": "Mountebank",
+        "types": {Action, Attack},
+        "advTags": {_Cost5, _Curser, _Discard, _Junker, _Money2, _Terminal},
+    },
+    {
+        "name": "Royal Seal",
+        "types": {Treasure},
+        "advTags": {_Cost5, _DeckSeeder, _Money2, _GainResponse7, _PlatinumLover},
+    },
+    {
+        "name": "Talisman",
+        "types": {Treasure},
+        "advTags": {_Cost4, _Gainer4, _GainResponse4, _Money1},
+    },
     {
         "name": "Trade Route",
         "types": {Action},
-        "extras": {"Coin Tokens", "Trade Route Mat"},
+        "advTags": {_Buys, _Cost3, _Payload, _Thinner, _Trasher, _VictoryResponse},
+    },
+    {
+        "name": "Venture",
+        "types": {Treasure},
+        "advTags": {
+            _Chainer,
+            _Cost5,
+            _Discard,
+            _Money1,
+            _NoHandsPlay,
+            _Reveal,
+        },
     },
 ]
 Prosperity.secondEdition = Prosperity.cards(
@@ -443,63 +1714,470 @@ Prosperity.secondEdition = Prosperity.cards(
 Cornucopia = Set("Cornucopia")
 Cornucopia.AddCards(
     [
-        "Fairgrounds",
-        "Horn of Plenty",
-        {"name": "Hamlet", "types": {Action}},
-        {"name": "Fortune Teller", "types": {Action}},
-        {"name": "Menagerie", "types": {Action}},
-        {"name": "Farming Village", "types": {Action}},
-        {"name": "Horse Traders", "types": {Action}},
-        {"name": "Remake", "types": {Action}},
-        {"name": "Tournament", "types": {Action}},
-        {"name": "Young Witch", "types": {Action}},
-        {"name": "Harvest", "types": {Action}},
-        {"name": "Hunting Party", "types": {Action}},
-        {"name": "Jester", "types": {Action}},
+        {
+            "name": "Carnival",
+            "types": {Action},
+            "advTags": {_Cost5, _Draw4, _NamesMatter, _Reveal, _Terminal},
+        },
+        {"name": "Fairgrounds", "types": {Victory}, "advTags": {_Cost6, _NamesMatter}},
+        {
+            "name": "Farmhands",
+            "types": {Action},
+            "advTags": {_Cost4, _FreeAction, _GainResponse4, _Saver, _Village},
+        },
+        {
+            "name": "Ferryman",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost5, _Kingdom, _GainResponse5, _Sifter},
+        },
+        {
+            "name": "Hamlet",
+            "types": {Action},
+            "advTags": {_Buys, _Cantrip, _Choice, _Cost2, _Discard, _Village},
+        },
+        {
+            "name": "Horn of Plenty",
+            "types": {Treasure},
+            "advTags": {_Cost5, _Gainer8, _NamesMatter, _Trasher},
+        },
+        {
+            "name": "Hunting Party",
+            "types": {Action},
+            "advTags": {_Cost5, _Discard, _Lab, _NamesMatter, _Reveal},
+        },
+        {
+            "name": "Jester",
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost5,
+                _Curser,
+                _Discard,
+                _Junker,
+                _Gainer7,
+                _Money2,
+                _PlatinumLover,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Joust",
+            "types": {Action},
+            "advTags": {_Cost5, _Peddler, _Prize, _Reveal},
+        },
+        {
+            "name": "Menagerie",
+            "types": {Action},
+            "advTags": {_Cost3, _Draw3, _Lab, _NamesMatter, _Reveal},
+        },
+        {
+            "name": "Remake",
+            "types": {Action},
+            "advTags": {_Cost4, _Remodeler1, _Terminal, _Trasher},
+        },
+        {
+            "name": "Shop",
+            "types": {Action},
+            "advTags": {_Cost3, _NamesMatter, _Peddler},
+        },
+        {
+            "name": "Young Witch",
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost4,
+                _Curser,
+                _Discard,
+                _Kingdom,
+                _Reveal,
+                _Sifter,
+                _Terminal,
+            },
+        },
     ]
+)
+Cornucopia.firstEdition = [
+    {
+        "name": "Farming Village",
+        "types": {Action},
+        "advTags": {_Cost4, _Discard, _Sifter, _Reveal, _Village},
+    },
+    {
+        "name": "Fortune Teller",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadSifter,
+            _Cost3,
+            _DeckSeeder,
+            _Discard,
+            _Money2,
+            _Reveal,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Harvest",
+        "types": {Action},
+        "advTags": {
+            _Cost5,
+            _Discard,
+            _Money4,
+            _NamesMatter,
+            _Reveal,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Horse Traders",
+        "types": {Action, Reaction},
+        "advTags": {
+            _AttackResponse,
+            _Buys,
+            _Cost4,
+            _Discard,
+            _FutureDraw1,
+            _Money3,
+            _Saver,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Tournament",
+        "types": {Action},
+        "advTags": {
+            _Cost4,
+            _DeckSeeder,
+            _Discard,
+            _Interactive,
+            _Peddler,
+            _Prize,
+            _Reveal,
+            _VictoryGainer,
+        },
+    },
+]
+Cornucopia.secondEdition = Cornucopia.cards(
+    "Carnival", "Farmhands", "Ferryman", "Joust", "Shop"
 )
 
 Hinterlands = Set("Hinterlands")
 Hinterlands.AddCards(
     [
-        "Cauldron",
-        "Farmland",
-        "Fool's Gold",
-        "Tunnel",
-        {"name": "Berserker", "types": {Action}},
-        {"name": "Border Village", "types": {Action}},
-        {"name": "Cartographer", "types": {Action}},
-        {"name": "Crossroads", "types": {Action}},
-        {"name": "Develop", "types": {Action}},
-        {"name": "Guard Dog", "types": {Action}},
-        {"name": "Haggler", "types": {Action}},
-        {"name": "Highway", "types": {Action}},
-        {"name": "Inn", "types": {Action}},
-        {"name": "Jack of All Trades", "types": {Action}},
-        {"name": "Margrave", "types": {Action}},
-        {"name": "Nomads", "types": {Action}},
-        {"name": "Oasis", "types": {Action}},
-        {"name": "Scheme", "types": {Action}},
-        {"name": "Souk", "types": {Action}},
-        {"name": "Spice Merchant", "types": {Action}},
-        {"name": "Stables", "types": {Action}},
-        {"name": "Trader", "types": {Action}},
-        {"name": "Trail", "types": {Action}},
-        {"name": "Weaver", "types": {Action}},
-        {"name": "Wheelwright", "types": {Action}},
-        {"name": "Witch's Hut", "types": {Action}},
+        {
+            "name": "Berserker",
+            "types": {Action, Attack},
+            "advTags": {
+                _ActionLover,
+                _Cost5,
+                _Discard,
+                _FreeAction,
+                _Gainer4,
+                _GainResponse5,
+                _HandLimit,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Border Village",
+            "types": {Action},
+            "advTags": {_Cost6, _Gainer5, _GainResponse6, _Village},
+        },
+        {
+            "name": "Cartographer",
+            "types": {Action},
+            "advTags": {_Cantrip, _DeckSeeder, _Discard, _Sifter},
+        },
+        {
+            "name": "Cauldron",
+            "types": {Treasure, Attack},
+            "advTags": {_Buys, _Cost5, _Curser, _GainLover, _Money2},
+        },
+        {
+            "name": "Crossroads",
+            "types": {Action},
+            "advTags": {_Cost2, _DoubleDouble, _Drawload, _Reveal},
+        },
+        {
+            "name": "Develop",
+            "types": {Action},
+            "advTags": {_Cost3, _DeckSeeder, _Remodeler1, _Terminal, _Trasher, _Twin},
+        },
+        {
+            "name": "Farmland",
+            "types": {Victory},
+            "advTags": {_Cost6, _Remodeler2, _Trasher},
+        },
+        {
+            "name": "Fool's Gold",
+            "types": {Treasure, Reaction},
+            "advTags": {
+                _Cost2,
+                _DeckSeeder,
+                _FutureMoney2,
+                _Money1,
+                _Money4,
+                _Trasher,
+                _VictoryResponse,
+            },
+        },
+        {
+            "name": "Guard Dog",
+            "types": {Action, Reaction},
+            "advTags": {
+                _AttackResponse,
+                _Cost3,
+                _Draw4,
+                _FreeAction,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Haggler",
+            "types": {Action},
+            "advTags": {_Cost5, _Money2, _GainResponse7, _Terminal},
+        },
+        {
+            "name": "Highway",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost5, _CostReducer},
+        },
+        {
+            "name": "Inn",
+            "types": {Action},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _GainResponse5,
+                _Reveal,
+                _Sifter,
+                _Shuffler,
+                _Village,
+            },
+        },
+        {
+            "name": "Jack of All Trades",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _Discard,
+                _Filler,
+                _FutureMoney1,
+                _Sifter,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Margrave",
+            "types": {Action, Attack},
+            "advTags": {
+                _Buys,
+                _Cost5,
+                _Discard,
+                _Draw3,
+                _HandLimit,
+                _Interactive,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Nomads",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost4,
+                _GainResponse4,
+                _Money2,
+                _Terminal,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Oasis",
+            "types": {Action},
+            "advTags": {_Chainer, _Cost3, _Discard, _Money1, _Sifter},
+            # Not actually a cantrip because you don't increase your hand size
+        },
+        {
+            "name": "Scheme",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost3, _DeckSeeder, _Saver},
+        },
+        {
+            "name": "Souk",
+            "types": {Action},
+            "advTags": {
+                _ActionLover,
+                _Buys,
+                _Cost5,
+                _GainResponse5,
+                _Payload,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Spice Merchant",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Choice,
+                _Cost4,
+                _Lab,
+                _Money2,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Stables",
+            "types": {Action},
+            "advTags": {_Cost5, _Discard, _Draw3, _Lab},
+        },
+        {
+            "name": "Trader",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cost4,
+                _Exchange,
+                _GainResponse4,
+                _Payload,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Trail",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cantrip,
+                _Cost4,
+                _DiscardResponse,
+                _FreeAction,
+                _GainResponse4,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Tunnel",
+            "types": {Victory, Reaction},
+            "advTags": {
+                _Cost3,
+                _DiscardResponse,
+                _FutureMoney2,
+            },
+        },
+        {
+            "name": "Weaver",
+            "types": {Action, Reaction},
+            "advTags": {
+                _DiscardResponse,
+                _Cost4,
+                _FreeAction,
+                _FutureMoney2,
+                _Gainer4,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Wheelwright",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost5, _Discard, _Gainer7},
+        },
+        {
+            "name": "Witch's Hut",
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost5,
+                _Curser,
+                _Discard,
+                _Draw2,
+                _Reveal,
+                _Sifter,
+                _Terminal,
+            },
+        },
     ]
 )
 Hinterlands.firstEdition = [
-    "Cache",
-    "Ill-gotten Gains",
-    "Silk Road",
-    {"name": "Duchess", "types": {Action}},
-    {"name": "Embassy", "types": {Action}},
-    {"name": "Mandarin", "types": {Action}},
-    {"name": "Noble Brigand", "types": {Action}},
-    {"name": "Nomad Camp", "types": {Action}},
-    {"name": "Oracle", "types": {Action}},
+    {
+        "name": "Cache",
+        "types": {Treasure},
+        "advTags": {_Cost5, _GainResponse5, _Junker, _Money3},
+    },
+    {
+        "name": "Duchess",
+        "types": {Action},
+        "advTags": {
+            _Cost2,
+            _Discard,
+            _GainResponse5,
+            _Interactive,
+            _Money2,
+            _Sifter,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Embassy",
+        "types": {Action},
+        "advTags": {
+            _Cost5,
+            _Discard,
+            _Draw2,
+            _GainResponse5,
+            _Interactive,
+            _Sifter,
+            _Terminal,
+        },
+    },
+    {
+        "name": "Ill-gotten Gains",
+        "types": {Treasure},
+        "advTags": {_Cost5, _Curser, _Junker, _GainResponse5, _Money2},
+    },
+    {
+        "name": "Mandarin",
+        "types": {Action},
+        "advTags": {_Cost5, _DeckSeeder, _GainResponse5, _Money3, _Terminal},
+    },
+    {
+        "name": "Noble Brigand",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadThinner,
+            _Cost4,
+            _Discard,
+            _FreeAction,
+            _Junker,
+            _Money1,
+            _Payload,
+            _Reveal,
+            _Terminal,
+            _Trasher,
+        },
+    },
+    {
+        "name": "Nomad Camp",
+        "types": {Action},
+        "advTags": {_Buys, _Cost4, _DeckSeeder, _GainResponse4, _Money2, _Terminal},
+    },
+    {
+        "name": "Oracle",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadSifter,
+            _Cost3,
+            _DeckSeeder,
+            _Discard,
+            _Draw2,
+            _Reveal,
+            _Sifter,
+            _Terminal,
+        },
+    },
+    {"name": "Silk Road", "types": {Victory}, "advTags": {_Cost4}},
 ]
 Hinterlands.secondEdition = Hinterlands.cards(
     "Berserker",
@@ -516,643 +2194,3307 @@ Hinterlands.secondEdition = Hinterlands.cards(
 DarkAges = Set("Dark Ages")
 DarkAges.AddCards(
     [
-        "Counterfeit",
-        "Feodum",
-        {"name": "Poor House", "types": {Action}},
-        {"name": "Beggar", "types": {Action}},
-        {"name": "Squire", "types": {Action}},
-        {"name": "Vagrant", "types": {Action}},
-        {"name": "Forager", "types": {Action}},
-        {"name": "Hermit", "types": {Action}},
-        {"name": "Market Square", "types": {Action}},
-        {"name": "Sage", "types": {Action}},
-        {"name": "Storeroom", "types": {Action}},
-        {"name": "Urchin", "types": {Action}},
-        {"name": "Armory", "types": {Action}},
-        {"name": "Death Cart", "types": {Action}},
-        {"name": "Fortress", "types": {Action}},
-        {"name": "Ironmonger", "types": {Action}},
-        {"name": "Marauder", "types": {Action}},
-        {"name": "Procession", "types": {Action}},
-        {"name": "Rats", "types": {Action}},
-        {"name": "Scavenger", "types": {Action}},
-        {"name": "Wandering Minstrel", "types": {Action}},
-        {"name": "Band of Misfits", "types": {Action}},
-        {"name": "Bandit Camp", "types": {Action}},
-        {"name": "Catacombs", "types": {Action}},
-        {"name": "Count", "types": {Action}},
-        {"name": "Cultist", "types": {Action}},
-        {"name": "Graverobber", "types": {Action}},
-        {"name": "Junk Dealer", "types": {Action}},
-        {"name": "Knights", "types": {Action}},
-        {"name": "Mystic", "types": {Action}},
-        {"name": "Pillage", "types": {Action}},
-        {"name": "Rebuild", "types": {Action}},
-        {"name": "Rogue", "types": {Action}},
-        {"name": "Altar", "types": {Action}},
-        {"name": "Hunting Grounds", "types": {Action}},
+        {
+            "name": "Altar",
+            "types": {Action},
+            "advTags": {_Cost6, _Gainer5, _Trasher, _Terminal},
+        },
+        {
+            "name": "Armory",
+            "types": {Action},
+            "advTags": {_Cost4, _DeckSeeder, _Gainer4, _Terminal},
+        },
+        {
+            "name": "Band of Misfits",
+            "types": {Action, Command},
+            "advTags": {_Command4, _Cost5},
+        },
+        {
+            "name": "Bandit Camp",
+            "types": {Action},
+            "advTags": {_Cost5, _FutureMoney2, _Village},
+        },
+        {
+            "name": "Beggar",
+            "types": {Action, Reaction},
+            "advTags": {
+                _AttackResponse,
+                _Cost2,
+                _DeckSeeder,
+                _FutureMoney2,
+                _Junker,
+                _Money3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Catacombs",
+            "types": {Action},
+            "advTags": {
+                _Choice,
+                _Cost5,
+                _Discard,
+                _Draw3,
+                _Gainer4,
+                _Sifter,
+                _TrashResponse,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Count",
+            "types": {Action},
+            "advTags": {
+                _Cost5,
+                _Choice,
+                _DeckSeeder,
+                _Discard,
+                _Junker,
+                _Money3,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Counterfeit",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost5, _Money1, _Splitter, _Thinner, _Trasher},
+        },
+        {
+            "name": "Cultist",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Draw3, _Junker, _Lab, _TrashResponse},
+        },
+        {
+            "name": "Death Cart",
+            "types": {Action, Looter},
+            "advTags": {
+                _Cost4,
+                _Junker,
+                _Money5,
+                _GainResponse4,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Feodum",
+            "types": {Victory},
+            "advTags": {_Cost4, _FutureMoney3, _TrashResponse},
+        },
+        {
+            "name": "Forager",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Chainer,
+                _Cost3,
+                _Payload,
+                _Thinner,
+                _Trasher,
+                _TreasuresMatter,
+            },
+        },
+        {
+            "name": "Fortress",
+            "types": {Action},
+            "advTags": {_Cost4, _TrashResponse, _Village},
+        },
+        {
+            "name": "Hermit",  # and Madman
+            "types": {Action},
+            "advTags": {
+                _Cost3,  # Hermit
+                _Drawload,  # Madman
+                _Exchange,  # Hermit
+                _Gainer3,  # Hermit
+                _Piler,  # Madman
+                _Terminal,  # Hermit
+                _Thinner,  # Madman
+                _Trasher,  # Hermit
+                _Village,  # Madman
+            },
+        },
+        {
+            "name": "Graverobber",
+            "types": {Action},
+            "advTags": {
+                _Cost5,
+                _DeckSeeder,
+                _Gainer6,
+                _Remodeler3,
+                _Terminal,
+                _Trasher,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Hunting Grounds",
+            "types": {Action},
+            "advTags": {_Cost6, _Draw4, _Terminal, _TrashResponse, _VictoryGainer},
+        },
+        {
+            "name": "Ironmonger",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _DeckGuesser,
+                _Discard,
+                _DoubleDouble,
+                _Money1,
+                _MultiTypeLove,
+                _Reveal,
+            },
+        },
+        {
+            "name": "Junk Dealer",
+            "types": {Action},
+            "advTags": {_Cost5, _Peddler, _Thinner, _Trasher},
+        },
+        {
+            "name": "Knights",
+            "types": {Action, Attack, Knight, Victory},
+            "advTags": {
+                _BadThinner,  # all
+                _Buys,  # Sir Martin
+                _Cantrip,  # Sir Bailey
+                _Cost4,  # Sir Martin
+                _Cost5,  # everyone who isn't Sir Martin
+                _Discard,  # all
+                _DoubleChain,  # Dame Molly
+                _Draw2,  # Sir Destry
+                _FutureMoney2,  # Sir Vander
+                _Gainer3,  # Dame Natalie
+                _HandLimit,  # Sir Michael
+                _Money2,  # Dame Sylvia
+                _Reveal,  # all
+                _SplitPile,  # all
+                _StationaryLover4,  # most cost 5 but this can be 4 for Sir Martin
+                _Terminal,  # almost all
+                _Thinner,  # all
+                _Trasher,  # all
+                _TrashResponse,  # all
+                _Village,  # Dame Molly
+            },
+        },
+        {
+            "name": "Marauder",
+            "types": {Action, Attack, Looter},
+            "advTags": {
+                _Cost4,
+                _FutureMoney2,
+                _Junker,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Market Square",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Buys,
+                _Cantrip,
+                _Cost3,
+                _FutureMoney2,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Mystic",
+            "types": {Action},
+            "advTags": {_Cost5, _DeckGuesser, _Peddler, _Reveal, _Money2},
+        },
+        {
+            "name": "Pillage",
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _FutureMoney4,
+                _Reveal,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Poor House",
+            "types": {Action},
+            "advTags": {_Cost1, _Money4, _Reveal, _Terminal},
+        },
+        {
+            "name": "Procession",
+            "types": {Action},
+            "advTags": {_Cost4, _Splitter, _Remodeler1, _Trasher},
+        },
+        {
+            "name": "Rats",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost4, _Draw1, _Trasher, _TrashResponse},
+        },
+        {
+            "name": "Rebuild",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost5,
+                _Discard,
+                _Remodeler3,
+                _Reveal,
+                _Trasher,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Rogue",
+            "types": {Action, Attack},
+            "advTags": {
+                _BadThinner,
+                _Cost5,
+                _Discard,
+                _Gainer6,
+                _Money2,
+                _Reveal,
+                _Terminal,
+                _Trasher,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Sage",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost3, _Discard, _Reveal, _Sifter},
+        },
+        {
+            "name": "Scavenger",
+            "types": {Action},
+            "advTags": {_Cost4, _Money2, _DeckSeeder, _Shuffler, _Terminal},
+        },
+        {
+            "name": "Squire",
+            "types": {Action},
+            "advTags": {
+                _AttackResponse,  # Doesn't respond to attacks, but sure likes it if there are attacks in the kingdom
+                _Buys,
+                _Choice,
+                _Cost2,
+                _FutureMoney1,
+                _Money1,
+                _TrashResponse,
+                _Village,
+            },
+        },
+        {
+            "name": "Storeroom",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost3,
+                _Discard,
+                _Drawload,
+                _Payload,
+                _Sifter,
+                _Terminal,
+                _Twin,
+            },
+        },
+        {
+            "name": "Urchin",
+            "types": {Action, Attack},
+            "advTags": {
+                _AttackResponse,  # Urchin
+                _Cantrip,  # Urchin
+                _Cost3,  # Urchin
+                _Discard,  # Urchin
+                _Draw2,  # Mercenary
+                _HandLimit,  # Mercenary, # Urchin
+                _Money2,  # Mercenary
+                _Thinner,  # Mercenary
+                _Terminal,  # Mercenary
+                _Trasher,  # Urchin, Mercenary
+                _Twin,  # Urchin
+            },
+        },
+        {
+            "name": "Vagrant",
+            "types": {Action},
+            "advTags": {_Cost2, _DeckGuesser, _Lab, _Reveal},
+        },
+        {
+            "name": "Wandering Minstrel",
+            "types": {Action},
+            "advTags": {_Cost4, _DeckSeeder, _Discard, _Reveal, _Sifter, _Village},
+        },
     ]
 )
 
 Guilds = Set("Guilds")
 Guilds.AddCards(
     [
-        "Masterpiece",
+        {
+            "name": "Advisor",
+            "types": {Action},
+            "advTags": {_Cost4, _Discard, _Lab, _Interactive, _Reveal},
+        },
+        {
+            "name": "Baker",
+            "types": {Action},
+            "advTags": {_Cost5, _FutureMoney1, _Peddler},
+        },
         {
             "name": "Candlestick Maker",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers Mat"},
+            "advTags": {_Buys, _Chainer, _Cost2, _FutureMoney1},
         },
-        {"name": "Stonemason", "types": {Action}},
-        {"name": "Doctor", "types": {Action}},
-        {"name": "Advisor", "types": {Action}},
-        {"name": "Plaza", "types": {Action}, "extras": {"Coin Tokens", "Coffers Mat"}},
-        {"name": "Taxman", "types": {Action}},
-        {"name": "Herald", "types": {Action}},
-        {"name": "Baker", "types": {Action}, "extras": {"Coin Tokens", "Coffers Mat"}},
         {
             "name": "Butcher",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers Mat"},
+            "advTags": {_Cost5, _FutureMoney2, _Remodeler1, _Terminal, _Trasher},
         },
-        {"name": "Journeyman", "types": {Action}},
+        {
+            "name": "Farrier",
+            "types": {Action},
+            "advTags": {_Buys, _Cantrip, _Cost2, _Drawload, _Overpay},
+        },
+        {
+            "name": "Footpad",
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _Drawload,
+                _FutureMoney2,
+                _HandLimit,
+                _GainLover,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Herald",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _DeckGuesser,
+                _DeckSeeder,
+                _NoHandsPlay,
+                _Overpay,
+                _Reveal,
+                _Village,
+            },
+        },
+        {
+            "name": "Infirmary",
+            "types": {Action},
+            "advTags": {_Cost3, _Draw1, _Overpay, _Splitter, _Thinner, _Trasher},
+        },
+        {
+            "name": "Journeyman",
+            "types": {Action},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _Draw3,
+                _NamesMatter,
+                _Reveal,
+                _Terminal,
+            },
+        },
         {
             "name": "Merchant Guild",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers Mat"},
+            "advTags": {_Buys, _Cost5, _GainLover, _Money1, _Payload, _Terminal},
         },
-        {"name": "Soothsayer", "types": {Action}},
+        {
+            "name": "Plaza",
+            "types": {Action},
+            "advTags": {_FutureMoney1, _Cost4, _Discard, _Village},
+        },
+        {
+            "name": "Stonemason",
+            "types": {Action},
+            "advTags": {_Cost2, _Gainer6, _Overpay, _Remodeler1, _Trasher},
+        },
+        {
+            "name": "Soothsayer",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Curser, _FutureMoney2, _Interactive, _Terminal},
+        },
     ]
 )
+Guilds.firstEdition = [
+    {
+        "name": "Doctor",
+        "types": {Action},
+        "advTags": {_Cost3, _Overpay, _Reveal, _Terminal, _Thinner},
+    },
+    {
+        "name": "Fortune Teller",
+        "types": {Action, Attack},
+        "advTags": {_BadSifter, _Cost3, _DeckSeeder, _Discard, _Money2, _Reveal},
+    },
+    {
+        "name": "Masterpiece",
+        "types": {Treasure},
+        "advTags": {_Cost3, _Money1, _Overpay, _Payload},
+    },
+    {
+        "name": "Taxman",
+        "types": {Action, Attack},
+        "advTags": {
+            _BadSifter,
+            _Cost4,
+            _DeckSeeder,
+            _Discard,
+            _HandLimit,
+            _Remodeler3,
+            _Reveal,
+            _Terminal,
+            _Trasher,
+        },
+    },
+]
+Guilds.secondEdition = Guilds.cards("Farrier", "Footpad", "Infirmary")
 
 Adventures = Set("Adventures")
 Adventures.AddCards(
     [
-        {"name": "Coin of the Realm", "extras": {"Tavern Mat"}},
-        {"name": "Distant Lands", "extras": {"Tavern Mat"}},
-        {"name": "Relic", "extras": {"Adventure Tokens"}},
-        "Treasure Trove",
-        {"name": "Page", "types": {Action}},
+        # Kingdom
+        {
+            "name": "Amulet",
+            "types": {Action, Duration},
+            "advTags": {
+                _Choice,
+                _Cost3,
+                _FutureMoney1,
+                _FutureMoney2,
+                _Money1,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Artificer",
+            "types": {Action},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _Gainer8,
+                _Peddler,
+            },
+        },
+        {
+            "name": "Bridge Troll",
+            "types": {Action, Duration, Attack},
+            "advTags": {_Buys, _Cost5, _CostReducer, _Terminal},
+        },
+        {
+            "name": "Caravan Guard",
+            "types": {Action, Duration, Reaction},
+            "advTags": {
+                _AttackResponse,
+                _Cantrip,
+                _Cost3,
+                _FreeAction,
+                _FutureMoney1,
+            },
+        },
+        {
+            "name": "Coin of the Realm",
+            "types": {Treasure, Reserve},
+            "advTags": {_Cost2, _PhaseBreaker, _Money1, _Village},
+        },
+        {
+            "name": "Distant Lands",
+            "types": {Action, Victory, Reserve},
+            "advTags": {_Cost5, _Terminal},
+        },
+        {
+            "name": "Dungeon",
+            "types": {Action, Duration},
+            "advTags": {_Chainer, _Cost3, _Discard, _Sifter},
+        },
+        {
+            "name": "Duplicate",
+            "types": {Action, Reserve},
+            "advTags": {_Cost4, _FreeAction, _Gainer6, _GainResponse6, _Terminal},
+        },
+        {
+            "name": "Gear",
+            "types": {Action, Duration},
+            "advTags": {_Cost3, _Saver, _Sifter, _Terminal, _Twin},
+        },
+        {
+            "name": "Giant",
+            "types": {Action, Attack},
+            "advTags": {
+                _BadThinner,
+                _Cost5,
+                _Curser,
+                _Discard,
+                _Money1,
+                _Money5,
+                _Reveal,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Guide",
+            "types": {Action, Reserve},
+            "advTags": {_Cantrip, _Cost3, _Discard, _Draw5, _FreeAction},
+        },
+        {
+            "name": "Haunted Woods",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _BadSifter,
+                _Cost5,
+                _DeckSeeder,
+                _FutureDraw3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Hireling",
+            "types": {Action, Duration},
+            "advTags": {_Cost6, _Drawload, _Terminal},
+        },
+        {
+            "name": "Lost City",
+            "types": {Action},
+            "advTags": {_Cost5, _DoubleDouble, _Interactive, _GainResponse5},
+        },
+        {
+            "name": "Magpie",
+            "types": {Action},
+            "advTags": {
+                _Cantrip,
+                _Cost4,
+                _DeckGuesser,
+                _Piler,
+                _Reveal,
+                _RevealResponse,
+            },
+        },
+        {
+            "name": "Messenger",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost4,
+                _Gainer4,
+                _Interactive,
+                _Money2,
+                _Shuffler,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Miser",
+            "types": {Action},
+            "advTags": {_Cost4, _Payload, _Terminal, _Thinner},
+        },
+        {
+            "name": "Page",
+            "types": {Action, Traveller},
+            "advTags": {
+                _AttackResponse,  # Champion
+                _BadThinner,  # Warrior
+                _Cantrip,  # Page
+                _Chainer,  # Treasure Hunter
+                _Cost2,  # Page
+                _Discard,  # Warrior
+                _Draw2,  # Warrior
+                _Exchange,
+                _Gainer7,  # Hero
+                _Money1,  # Treasure Hunter
+                _Money2,  # Hero
+                _Payload,  # Treasure Hunter
+                _Playload,  # Champion
+                _SplitPile,
+                _Terminal,  # Hero, Champion
+                _TreasuresMatter,  # Hero
+            },
+        },
         {
             "name": "Peasant",
-            "types": {Action},
-            "extras": {"Tavern Mat", "Adventure Tokens"},
+            "types": {Action, Traveller},
+            "advTags": {
+                _AttackResponse,  # Soldier
+                _Buys,  # Peasant
+                _Cantrip,  # Fugitive
+                _Cost2,  # Peasant
+                _Discard,  # Soldier
+                _Exchange,
+                _Gainer7,  # Disciple
+                _Money1,  # Peasant
+                _Payload,  # Soldier
+                _Sifter,  # Fugitive
+                _SplitPile,
+                _Splitter,  # Disciple
+                _Terminal,  # Peasant, Disciple, Teacher
+            },
         },
-        {"name": "Ratcatcher", "types": {Action}, "extras": {"Tavern Mat"}},
-        {"name": "Raze", "types": {Action}},
-        {"name": "Amulet", "types": {Action}},
-        {"name": "Caravan Guard", "types": {Action}},
-        {"name": "Dungeon", "types": {Action}},
-        {"name": "Gear", "types": {Action}},
-        {"name": "Guide", "types": {Action}, "extras": {"Tavern Mat"}},
-        {"name": "Duplicate", "types": {Action}, "extras": {"Tavern Mat"}},
-        {"name": "Magpie", "types": {Action}},
-        {"name": "Messenger", "types": {Action}},
-        {"name": "Miser", "types": {Action}, "extras": {"Tavern Mat"}},
-        {"name": "Port", "types": {Action}},
-        {"name": "Ranger", "types": {Action}, "extras": {"Adventure Tokens"}},
-        {"name": "Transmogrify", "types": {Action}, "extras": {"Tavern Mat"}},
-        {"name": "Artificer", "types": {Action}},
-        {"name": "Bridge Troll", "types": {Action}, "extras": {"Adventure Tokens"}},
-        {"name": "Giant", "types": {Action}, "extras": {"Adventure Tokens"}},
-        {"name": "Haunted Woods", "types": {Action}},
-        {"name": "Lost City", "types": {Action}},
-        {"name": "Royal Carriage", "types": {Action}, "extras": {"Tavern Mat"}},
-        {"name": "Storyteller", "types": {Action}},
-        {"name": "Swamp Hag", "types": {Action}},
-        {"name": "Wine Merchant", "types": {Action}, "extras": {"Tavern Mat"}},
-        {"name": "Hireling", "types": {Action}},
-        {"name": "Alms", "types": {Event}},
-        {"name": "Borrow", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Quest", "types": {Event}},
-        {"name": "Save", "types": {Event}},
-        {"name": "Scouting Party", "types": {Event}},
-        {"name": "Travelling Fair", "types": {Event}},
-        {"name": "Bonfire", "types": {Event}},
-        {"name": "Expedition", "types": {Event}},
-        {"name": "Ferry", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Plan", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Mission", "types": {Event}},
-        {"name": "Pilgrimage", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Ball", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Raid", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Seaway", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Lost Arts", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Training", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Inheritance", "types": {Event}, "extras": {"Adventure Tokens"}},
-        {"name": "Pathfinding", "types": {Event}, "extras": {"Adventure Tokens"}},
+        {
+            "name": "Port",
+            "types": {Action},
+            "advTags": {_Cost4, _GainResponse4, _Piler, _Village},
+        },
+        {
+            "name": "Ranger",
+            "types": {Action},
+            "advTags": {_Buys, _Cost4, _Draw5, _Terminal},
+        },
+        {
+            "name": "Ratcatcher",
+            "types": {Action, Reserve},
+            "advTags": {_Cantrip, _Cost2, _FreeAction, _Thinner, _Trasher},
+        },
+        {
+            "name": "Raze",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost2,
+                _Discard,
+                _Draw1,
+                _Sifter,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {"name": "Relic", "types": {Treasure, Attack}, "advTags": {_Cost5, _Money2}},
+        {
+            "name": "Royal Carriage",
+            "types": {Action, Reserve},
+            "advTags": {_Chainer, _Cost5, _FreeAction, _Splitter},
+        },
+        {
+            "name": "Storyteller",
+            "types": {Action},
+            "advTags": {_Cost5, _Drawload, _Lab, _PhaseBreaker},
+        },
+        {
+            "name": "Swamp Hag",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _Cost5,
+                _Curser,
+                _FutureMoney3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Transmogrify",
+            "types": {Action, Reserve},
+            "advTags": {_Chainer, _Cost4, _FreeAction, _Remodeler1, _Trasher},
+        },
+        {
+            "name": "Treasure Trove",
+            "types": {Treasure},
+            "advTags": {
+                _Cost5,
+                _FutureMoney2,
+                _Junker,
+                _Money2,
+            },
+        },
+        {
+            "name": "Wine Merchant",
+            "types": {Action},
+            "advTags": {_Buys, _Cost5, _Money4, _StationaryLover4, _Terminal},
+        },
+        # Landscapes
+        {"name": "Alms", "types": {Event}, "advTags": {_Cost0, _Gainer4}},
+        {"name": "Ball", "types": {Event}, "advTags": {_Cost5, _Gainer4}},
+        {"name": "Bonfire", "types": {Event}, "advTags": {_Cost3, _PlayArea, _Thinner}},
+        {"name": "Borrow", "types": {Event}, "advTags": {_Cost0, _FreeEvent, _Money1}},
+        {"name": "Expedition", "types": {Event}, "advTags": {_Cost3, _FutureDraw2}},
+        {"name": "Ferry", "types": {Event}, "advTags": {_Cost3, _CostReducer}},
+        {"name": "Inheritance", "types": {Event}, "advTags": {_Command4, _Cost7}},
+        {"name": "Lost Arts", "types": {Event}, "advTags": {_Cost6, _Playload}},
+        {
+            "name": "Mission",
+            "types": {Event},
+            "advTags": {_Cost4, _FutureDraw5, _PhaseBreaker},
+        },
+        {
+            "name": "Quest",
+            "types": {Event},
+            "advTags": {_AttackResponse, _Cost0, _Discard, _FutureMoney2, _HandLover},
+        },
+        {"name": "Pathfinding", "types": {Event}, "advTags": {_Cost8, _Drawload}},
+        {
+            "name": "Pilgrimage",
+            "types": {Event},
+            "advTags": {_Cost4, _Gainer6, _NamesMatter, _PlayArea},
+        },
+        {"name": "Plan", "types": {Event}, "advTags": {_Cost3, _Thinner}},
+        {"name": "Raid", "types": {Event}, "advTags": {_Cost5, _Payload}},
+        {
+            "name": "Save",
+            "types": {Event},
+            "advTags": {_Cost1, _DeckSeeder, _FreeEvent},
+        },
+        {
+            "name": "Scouting Party",
+            "types": {Event},
+            "advTags": {_Cost2, _DeckSeeder, _Discard, _FreeEvent, _Sifter},
+        },
+        {"name": "Seaway", "types": {Event}, "advTags": {_Buys, _Cost5, _Gainer4}},
+        {
+            "name": "Trade",
+            "types": {Event},
+            "advTags": {_Cost5, _FutureMoney2, _Thinner, _Trasher},
+        },
+        {"name": "Training", "types": {Event}, "advTags": {_Cost6, _Payload}},
+        {
+            "name": "Travelling Fair",
+            "types": {Event},
+            "advTags": {_Buys, _Cost2, _DeckSeeder, _FreeEvent},
+        },
     ]
 )
 
 Empires = Set("Empires")
 Empires.AddCards(
     [
-        {"name": "Castles", "extras": {"Victory Tokens"}},
-        {"name": "Capital", "extras": {"Debt Tokens"}},
-        "Charm",
-        {"name": "Engineer", "types": {Action}, "extras": {"Debt Tokens"}},
-        {"name": "City Quarter", "types": {Action}, "extras": {"Debt Tokens"}},
-        {"name": "Overlord", "types": {Action}, "extras": {"Debt Tokens"}},
-        {"name": "Royal Blacksmith", "types": {Action}, "extras": {"Debt Tokens"}},
-        {"name": "Encampment/Plunder", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Patrician/Emporium", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Settlers/Bustling Village", "types": {Action}},
-        {"name": "Catapult/Rocks", "types": {Action}},
-        {"name": "Chariot Race", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Enchantress", "types": {Action}},
-        {"name": "Farmers' Market", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Gladiator/Fortune", "types": {Action}, "extras": {"Debt Tokens"}},
-        {"name": "Sacrifice", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Temple", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Villa", "types": {Action}},
-        {"name": "Archive", "types": {Action}},
-        {"name": "Crown", "types": {Action}},
-        {"name": "Forum", "types": {Action}},
-        {"name": "Groundskeeper", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Legionary", "types": {Action}},
-        {"name": "Wild Hunt", "types": {Action}, "extras": {"Victory Tokens"}},
-        {"name": "Advance", "types": {Event}},
-        {"name": "Annex", "types": {Event}, "extras": {"Debt Tokens"}},
-        {"name": "Banquet", "types": {Event}},
-        {"name": "Conquest", "types": {Event}, "extras": {"Victory Tokens"}},
-        {"name": "Delve", "types": {Event}},
-        {"name": "Dominate", "types": {Event}, "extras": {"Victory Tokens"}},
-        {"name": "Donate", "types": {Event}, "extras": {"Debt Tokens"}},
-        {"name": "Salt the Earth", "types": {Event}, "extras": {"Victory Tokens"}},
-        {"name": "Ritual", "types": {Event}, "extras": {"Victory Tokens"}},
-        {"name": "Tax", "types": {Event}, "extras": {"Debt Tokens"}},
-        {"name": "Trade", "types": {Event}},
+        {
+            "name": "Archive",
+            "types": {Action, Duration},
+            "advTags": {_Cantrip, _Cost5, _FutureDraw2, _Saver},
+        },
+        {
+            "name": "Capital",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost5, _Debt, _Money6},
+        },
+        {
+            "name": "Castles",
+            "types": {Action, Treasure, Victory, Castle},
+            "advTags": {
+                _Cost3,  # Humble Castle
+                _Cost4,  # Crumbling Castle
+                _Cost5,  # Small Castle
+                _Cost6,  # Haunted Castle
+                _Cost7,  # Opulent Castle
+                _Cost8,  # Sprawling Castle
+                _Cost9,  # Grand Castle
+                _Cost10,  # King's Castle
+                # Omitting Gainer because it only gains other cards in the same pile
+                _DeckSeeder,  # Haunted Castle
+                _Discard,  # Opulent Castle
+                _GainResponse4,  # Crumbling Castle
+                _GainResponse6,  # Haunted Castle
+                _GainResponse8,  # Sprawling Castle
+                # Omitting GainResponse9 because there are no cards that gain it explicitly
+                _FutureMoney1,  # Crumbling Castle
+                _FutureMoney2,  # Haunted Castle
+                _Money1,  # Humble Castle
+                _Payload,  # Opulent Castle
+                _Reveal,  # Grand Castle
+                _SplitPile,
+                _Trasher,  # Small Castle
+                _TrashResponse,  # Crumbling Castle
+                _VictoryGainer,  # Crumbling Castle, Sprawling Castle
+            },
+        },
+        {
+            "name": "Catapult/Rocks",
+            "types": {Action, Attack, Treasure},
+            "advTags": {
+                _Cost3,  # Catapult
+                _Cost4,  # Rocks
+                _Curser,  # Catapult
+                _DeckSeeder,  # Rocks
+                _Discard,  # Catapult
+                _FutureMoney1,  # Rocks
+                _GainResponse4,  # Rocks
+                _HandLimit,  # Catapult
+                _Money1,  # Catapult, Rocks
+                _Money2,  # Rocks
+                _SplitPile,
+                _Terminal,  # Catapult
+                _Thinner,  # Catapult
+                _Trasher,  # Catapult
+                _TrashResponse,  # Rocks
+                _Twin,  # Catapult
+            },
+        },
+        {
+            "name": "Chariot Race",
+            "types": {Action},
+            "advTags": {_Cost3, _Peddler, _Reveal, _VictoryGainer},
+        },
+        {
+            "name": "Charm",
+            "types": {Treasure},
+            "advTags": {
+                _Buys,
+                _Choice,
+                _Cost5,
+                _GainLover,
+                _Money2,
+                _NamesMatter,
+            },
+        },
+        {
+            "name": "City Quarter",
+            "types": {Action},
+            "advTags": {_Cost0, _Debt, _Drawload, _ExtraCost, _Reveal, _Village},
+        },
+        {
+            "name": "Crown",
+            "types": {Action, Treasure},
+            "advTags": {_Cost5, _Splitter},
+        },
+        {
+            "name": "Encampment/Plunder",
+            "types": {Action, Treasure},
+            "advTags": {
+                _Cost2,  # Encampment
+                _Cost5,  # Plunder
+                _DoubleDouble,  # Encampment
+                _Money2,  # Plunder
+                _Piler,  # Encampment
+                _Reveal,  # Encampment
+                _SplitPile,
+                _VictoryGainer,  # Plunder
+            },
+        },
+        {
+            "name": "Enchantress",
+            "types": {Action, Attack, Duration},
+            "advTags": {_Cost3, _FutureDraw2, _Interactive, _Terminal},
+        },
+        {
+            "name": "Engineer",
+            "types": {Action},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _Gainer4, _Trasher},
+        },
+        {
+            "name": "Farmers' Market",
+            "types": {Action, Gathering},
+            "advTags": {
+                _Buys,
+                _Cost3,
+                _Money1,
+                _Money2,
+                _Money3,
+                _Money4,
+                _StationaryLover4,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+                _Twin,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Forum",
+            "types": {Action},
+            "advTags": {_Buys, _Cantrip, _Cost5, _Discard, _GainResponse5, _Sifter},
+        },
+        {
+            "name": "Gladiator/Fortune",
+            "types": {Action, Treasure},
+            "advTags": {
+                _Buys,  # Fortune
+                _Cost3,  # Gladiator
+                _Cost8,  # Fortune
+                _Debt,  # Fortune
+                _ExtraCost,  # Fortune
+                _Money3,  # Gladiator
+                _Payload,  # Fortune
+                _Reveal,  # Gladiator
+                _SplitPile,
+                _Terminal,  # Gladiator
+                _Twin,  # Gladiator
+                _Trasher,  # Gladiator
+            },
+        },
+        {
+            "name": "Groundskeeper",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost5, _VictoryGainer, _VictoryResponse},
+        },
+        {
+            "name": "Legionary",
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _Interactive,
+                _HandLimit,
+                _Money3,
+                _Reveal,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Overlord",
+            "types": {Action, Command},
+            "advTags": {_Command5, _Cost0, _Debt, _ExtraCost, _Terminal},
+        },
+        {
+            "name": "Patrician/Emporium",
+            "types": {Action},
+            "advTags": {
+                _ActionLover,  # Emporium
+                _Cost2,  # Patrician
+                _Cost5,  # Emporium
+                _Draw2,  # Patrician
+                _GainResponse5,  # Emporium
+                _Lab,  # Patrician
+                _Peddler,  # Emporium
+                _Reveal,  # Patrician
+                _SplitPile,
+                _VictoryGainer,  # Emporium
+            },
+        },
+        {
+            "name": "Royal Blacksmith",
+            "types": {Action},
+            "advTags": {_Cost0, _Debt, _Discard, _Draw5, _Reveal, _Terminal},
+        },
+        {
+            "name": "Sacrifice",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _DoubleDouble,
+                _Money2,
+                _MultiTypeLove,
+                _Thinner,
+                _Trasher,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Settlers/Bustling Village",
+            "types": {Action},
+            "advTags": {
+                _Cost2,  # Settlers
+                _Cost5,  # Bustling Village
+                _DoubleDouble,  # Bustling Village
+                _Peddler,  # Settlers
+                _SplitPile,
+            },
+        },
+        {
+            "name": "Temple",
+            "types": {Action, Gathering},
+            "advTags": {
+                _Cost4,
+                _GainResponse4,
+                _NamesMatter,
+                _Terminal,
+                _Thinner,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Villa",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost4,
+                _GainResponse4,
+                _Money1,
+                _PhaseBreaker,
+                _Village,
+            },
+        },
+        {
+            "name": "Wild Hunt",
+            "types": {Action},
+            "advTags": {_Cost5, _Draw3, _Terminal, _VictoryGainer},
+        },
+        # Event cards
+        {"name": "Advance", "types": {Event}, "advTags": {_Cost0, _Gainer6, _Trasher}},
+        {
+            "name": "Annex",
+            "types": {Event},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _Sifter, _VictoryGainer},
+        },
+        {"name": "Banquet", "types": {Event}, "advTags": {_Cost3, _Gainer5, _Junker}},
+        {
+            "name": "Conquest",
+            "types": {Event},
+            "advTags": {_Cost6, _FutureMoney2, _VictoryGainer},
+        },
+        {
+            "name": "Delve",
+            "types": {Event},
+            "advTags": {_Cost2, _FreeEvent, _FutureMoney1},
+        },
+        {"name": "Dominate", "types": {Event}, "advTags": {_Cost14, _VictoryGainer}},
+        {
+            "name": "Donate",
+            "types": {Event},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _Shuffler, _Thinner, _Trasher},
+        },
+        {
+            "name": "Salt the Earth",
+            "types": {Event},
+            "advTags": {_Cost4, _Piler, _Trasher, _VictoryGainer},
+        },
+        {
+            "name": "Ritual",
+            "types": {Event},
+            "advTags": {_Cost4, _Curser, _Trasher, _VictoryGainer},
+        },
+        {"name": "Tax", "types": {Event}, "advTags": {_Cost2, _Debt}},
+        {
+            "name": "Trade",
+            "types": {Event},
+            "advTags": {_Cost5, _FutureMoney2, _Trasher},
+        },
         {
             "name": "Triumph",
             "types": {Event},
-            "extras": {"Debt Tokens", "Victory Tokens"},
+            "advTags": {_Cost0, _Debt, _ExtraCost, _GainLover, _VictoryGainer},
         },
         {
             "name": "Wedding",
             "types": {Event},
-            "extras": {"Debt Tokens", "Victory Tokens"},
+            "advTags": {_Cost4, _Debt, _ExtraCost, _FutureMoney2, _VictoryGainer},
         },
-        {"name": "Windfall", "types": {Event}},
-        {"name": "Aqueduct", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Arena", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Bandit Fort", "types": {Landmark}},
-        {"name": "Basilica", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Baths", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Battlefield", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Colonnade", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Defiled Shrine", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Fountain", "types": {Landmark}},
-        {"name": "Keep", "types": {Landmark}},
-        {"name": "Labyrinth", "types": {Landmark}, "extras": {"Victory Tokens"}},
+        {"name": "Windfall", "types": {Event}, "advTags": {_Cost5, _FutureMoney6}},
+        # Landmark Cards
+        {"name": "Aqueduct", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Arena", "types": {Landmark}, "advTags": {_Discard, _VictoryGainer}},
+        {"name": "Bandit Fort", "types": {Landmark}, "advTags": {_Curser}},
+        {"name": "Basilica", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Baths", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Battlefield", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Colonnade", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {
+            "name": "Defiled Shrine",
+            "types": {Landmark},
+            "advTags": {_Curser, _VictoryGainer},
+        },
+        {"name": "Fountain", "types": {Landmark}, "advTags": {_Junker, _VictoryGainer}},
+        {"name": "Keep", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Labyrinth", "types": {Landmark}, "advTags": {_VictoryGainer}},
         {
             "name": "Mountain Pass",
             "types": {Landmark},
-            "extras": {"Debt Tokens", "Victory Tokens"},
+            "advTags": {_Debt, _VictoryGainer},
         },
-        {"name": "Museum", "types": {Landmark}},
-        {"name": "Obelisk", "types": {Landmark}},
-        {"name": "Orchard", "types": {Landmark}},
-        {"name": "Palace", "types": {Landmark}},
-        {"name": "Tomb", "types": {Landmark}, "extras": {"Victory Tokens"}},
-        {"name": "Tower", "types": {Landmark}},
-        {"name": "Triumphal Arch", "types": {Landmark}},
-        {"name": "Wall", "types": {Landmark}},
-        {"name": "Wolf Den", "types": {Landmark}},
+        {
+            "name": "Museum",
+            "types": {Landmark},
+            "advTags": {_NamesMatter, _VictoryGainer},
+        },
+        {"name": "Obelisk", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {
+            "name": "Orchard",
+            "types": {Landmark},
+            "advTags": {_NamesMatter, _VictoryGainer},
+        },
+        {"name": "Palace", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {
+            "name": "Tomb",
+            "types": {Landmark},
+            "advTags": {_TrashGainer, _VictoryGainer},
+        },
+        {"name": "Tower", "types": {Landmark}, "advTags": {_Empty, _VictoryGainer}},
+        {"name": "Triumphal Arch", "types": {Landmark}, "advTags": {_VictoryGainer}},
+        {"name": "Wall", "types": {Landmark}, "advTags": {_Curser}},
+        {"name": "Wolf Den", "types": {Landmark}, "advTags": {_Curser}},
     ]
-)
+),
 
 Nocturne = Set("Nocturne")
 Nocturne.AddCards(
     [
-        "Cemetary + Haunted Mirror (Heirloom)",
-        "Changeling",
-        "Cobbler",
-        "Crypt",
-        "Den of Sin",
-        "Devil's Workshop",
-        "Exorcist",
-        "Guardian",
-        "Ghost Town",
-        "Idol",
-        "Monastery",
-        "Night Watchman",
-        "Raider",
-        "Vampire",
-        {"name": "Bard", "types": {Action}},
-        {"name": "Blessed Village", "types": {Action}},
-        {"name": "Conclave", "types": {Action}},
-        {"name": "Cursed Village", "types": {Action}},
-        {"name": "Druid", "types": {Action}},
-        {"name": "Faithful Hound", "types": {Action}},
+        {
+            "name": "Bard",
+            "types": {Action, Fate},
+            "advTags": {
+                _Buys,
+                _Cantrip,
+                _Chainer,
+                _Cost4,
+                _DeckSeeder,
+                _Discard,
+                _Draw1,
+                _FutureDraw1,
+                _FutureDraw2,
+                _FutureMoney1,
+                _FutureMoney2,
+                _Gainer4,
+                _Money2,
+                _Money3,
+                _Random,
+                _Reveal,
+                _Sifter,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Blessed Village",
+            "types": {
+                Action,
+                Fate,
+            },  # Fate means _Buys, _Cantrip, _Chainer, _DeckSeeder, _Discard, _Draw1, _FutureDraw1, _FutureDraw2, _FutureMoney1, _FutureMoney2, _Gainer4, _Money1, _Random, _Reveal, _Sifter, _Thinner, _Trasher,
+            "advTags": {
+                _Cantrip,
+                _Chainer,
+                _Cost4,
+                _DeckSeeder,
+                _Discard,
+                _DoubleDouble,
+                _FutureDraw1,
+                _FutureDraw2,
+                _FutureMoney1,
+                _FutureMoney2,
+                _Gainer4,
+                _Money1,
+                _Random,
+                _Reveal,
+                _Sifter,
+                _Thinner,
+                _Trasher,
+                _Village,
+            },
+        },
+        {
+            "name": "Cemetery + Haunted Mirror (Heirloom)",
+            "types": {Victory, Treasure, Heirloom},
+            "advTags": {
+                _Cost4,  # Cemetary
+                _Discard,  # Ghost
+                _GainResponse4,  # Cemetary
+                _Money1,  # Haunted Mirror
+                _NoHandsPlay,  # Ghost
+                _Splitter,  # Ghost
+                _Trasher,  # Cemetary
+                _Thinner,  # Cemetary
+                _TrashResponse,  # Haunted Mirror
+            },
+        },
+        {
+            "name": "Changeling",
+            "types": {Night},
+            "advTags": {_Cost3, _Trasher, _TrashGainer},
+        },
+        {
+            "name": "Cobbler",
+            "types": {Night, Duration},
+            "advTags": {_Cost4, _FutureDraw1, _Gainer4},
+        },
+        {
+            "name": "Conclave",
+            "types": {Action},
+            "advTags": {_Cost4, _Money2, _NamesMatter, _Village},
+        },
+        {
+            "name": "Crypt",
+            "types": {Night, Duration},
+            "advTags": {_CardLover, _Cost5, _Payload, _Saver},
+        },
+        {
+            "name": "Cursed Village",
+            "types": {Action, Doom},
+            "advTags": {_Cost5, _Filler, _GainResponse5, _Village},
+        },
+        {
+            "name": "Den of Sin",
+            "types": {Night, Duration},
+            "advTags": {_Cost5, _FutureDraw2, _GainResponse5},
+        },
+        {
+            "name": "Devil's Workshop",
+            "types": {Night},
+            "advTags": {
+                _Cost4,  # Devil's Workshop,
+                _FutureDraw1,  # Imp,
+                _FutureMoney2,  # Devil's Workshop,
+                _Gainer4,  # Devil's Workshop
+                _NamesMatter,  # Imp
+            },
+        },
+        {
+            "name": "Druid",
+            "types": {Action, Fate},
+            "advTags": {_Buys, _Choice, _Cost2, _Terminal},
+        },
+        {
+            "name": "Exorcist",
+            "types": {Night},
+            "advTags": {
+                _Cantrip,  # Will-o'-Wisp
+                _Cost4,  # Exorcist
+                _Discard,  # Ghost
+                _FutureDraw2,  # Imp, Will-o'-Wisp
+                _Lab,  # Imp
+                _NamesMatter,  # Imp
+                _Reveal,  # Will-o'-Wisp
+                _Splitter,  # Ghost
+                _Terminal,  # Exorcist
+                _Trasher,  # Exorcist
+            },
+        },
+        {
+            "name": "Faithful Hound",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cost2,
+                _DiscardResponse,
+                _Draw2,
+                _Saver,
+                _Terminal,
+            },
+        },
         {
             "name": "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
-            "types": {Action},
+            "types": {Action, Fate, Treasure, Heirloom},
+            "advTags": {
+                _Cost3,
+                _Discard,
+                _FutureMoney1,  # Lucky Coin
+                _Money1,  # Lucky Coin
+                _Terminal,
+            },
         },
-        {"name": "Leprechaun", "types": {Action}},
-        {"name": "Necromancer + Zombies", "types": {Action}},
-        {"name": "Pixie + Goat (Heirloom)", "types": {Action}},
-        {"name": "Pooka + Cursed Gold (Heirloom)", "types": {Action}},
-        {"name": "Sacred Grove", "types": {Action}},
-        {"name": "Secret Cave + Magic Lamp (Heirloom)", "types": {Action}},
-        {"name": "Shepherd + Pasture (Heirloom)", "types": {Action}},
-        {"name": "Skulk", "types": {Action}},
-        {"name": "Tormentor", "types": {Action}},
-        {"name": "Tracker + Pouch (Heirloom)", "types": {Action}},
-        {"name": "Tragic Hero", "types": {Action}},
-        {"name": "Werewolf", "types": {Action}},
+        {
+            "name": "Guardian",
+            "types": {Night, Duration},
+            "advTags": {_AttackResponse, _Cost2, _FutureMoney1},
+        },
+        {"name": "Ghost Town", "types": {Night}, "advTags": {_Cantrip, _Cost3}},
+        {
+            "name": "Idol",
+            "types": {Treasure, Attack, Fate},
+            "advTags": {_Cost5, _Curser, _Money2},
+        },
+        {
+            "name": "Leprechaun",
+            "types": {Action, Doom},
+            "advTags": {_Cost3, _FutureMoney2, _Terminal},
+        },
+        {
+            "name": "Monastery",
+            "types": {Night},
+            "advTags": {_Cost2, _GainResponse6, _PlayArea, _Thinner, _Trasher},
+        },
+        {
+            "name": "Necromancer + Zombies",
+            "types": {Action},
+            "advTags": {
+                _Cantrip,  # Zombie Apprentice, Zombie Spy
+                _Chainer,  # Necromancer,  # Zombie Apprentice
+                _Cost4,  # Necromancer
+                _DeckGuesser,  # Zombie Mason
+                _DeckSeeder,  # Zombie Spy
+                _Discard,  # Zombie Spy
+                _Draw3,  # Zombie Apprentice
+                _Kingdom,  # Necromancer
+                _Remodeler1,  # Zombie Mason
+                _Sifter,  # Zombie Spy
+                _Thinner,  # Zombie Apprentice
+                _Trasher,  # Zombie Apprentice
+                _TrashResponse,  # Necromancer
+            },
+        },
+        {
+            "name": "Night Watchman",
+            "types": {Night},
+            "advTags": {_Cost3, _DeckSeeder, _Discard, _Sifter},
+        },
+        {
+            "name": "Pixie + Goat (Heirloom)",
+            "types": {Action, Fate, Treasure, Heirloom},
+            "advTags": {
+                _Cantrip,  # Pixie
+                _Cost2,  # Pixie,
+                _Money1,  # Goat
+                _Random,  # Pixie
+                _Thinner,  # Pixie + Goat
+                _Trasher,  # Pixie + Goat
+            },
+        },
+        {
+            "name": "Pooka + Cursed Gold (Heirloom)",
+            "types": {Action, Treasure, Heirloom},
+            "advTags": {
+                _Cost5,  # Pooka
+                _Curser,  # Cursed Gold
+                _Draw4,  # Pooka
+                _Money3,  # Cursed Gold
+                _Thinner,  # Pooka
+                _Thinner,  # Pooka
+            },
+        },
+        {
+            "name": "Raider",
+            "types": {Night, Duration, Attack},
+            "advTags": {
+                _Cost6,
+                _Discard,
+                _FutureMoney3,
+                _HandLimit,
+                _Reveal,
+            },
+        },
+        {
+            "name": "Sacred Grove",
+            "types": {Action, Fate},
+            "advTags": {_Buys, _Cost5, _Interactive, _Money3, _Terminal},
+        },
+        {
+            "name": "Secret Cave + Magic Lamp (Heirloom)",
+            "types": {Action, Duration, Treasure, Heirloom},
+            "advTags": {
+                _Cantrip,  # Secret Cave
+                _Cost3,  # Secret Cave
+                _Discard,  # Secret Cave
+                _Gainer6,  # Magic Lamp
+                _Money1,  # Magic Lamp
+                _Money3,
+                _NamesMatter,  # Magic Lamp
+                _TrashResponse,  # Magic Lamp
+                _Thinner,  # Magic Lamp
+                _Trasher,  # Magic Lamp
+                _Twin,
+            },
+        },
+        {
+            "name": "Shepherd + Pasture (Heirloom)",
+            "types": {Action, Treasure, Victory, Heirloom},
+            "advTags": {
+                _Chainer,  # Shepherd
+                _Cost4,  # Shepherd
+                _Discard,  # Shepherd
+                _Drawload,  # Shepherd
+                _Money1,  # Pasture
+                _Reveal,  # Shepherd
+            },
+        },
+        {
+            "name": "Skulk",
+            "types": {
+                Action,
+                Attack,
+                Doom,
+            },  # Doom gives _BadSifter, _BadThinner, _Curser, _Discard, _Junker, _Random, _Trasher
+            "advTags": {
+                _Buys,
+                _Cost4,
+                _FutureMoney2,
+                _GainResponse4,
+                _Junker,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Tormentor",
+            "types": {Action, Attack, Doom},
+            "advTags": {_Cost5, _Money2, _Terminal},
+        },
+        {
+            "name": "Tracker + Pouch (Heirloom)",
+            "types": {Action, Fate, Treasure, Heirloom},
+            "advTags": {
+                _Buys,
+                _Cost2,
+                _DeckSeeder,
+                # _GainResponse2, There's no _Gainer2, so doing GainResponse3
+                _GainResponse3,
+                _Money1,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Tragic Hero",
+            "types": {Action},
+            "advTags": {_Buys, _Cost5, _Draw3, _Gainer7, _Terminal, _Trasher},
+        },
+        {
+            "name": "Vampire",
+            "types": {Night, Attack, Doom},
+            "advTags": {
+                _Cost5,  # Vampire
+                _Exchange,  # Bat, Vampire
+                _Gainer5,  # Vampire
+                _Thinner,  # Bat
+                _Trasher,  # Bat
+            },
+        },
+        {
+            "name": "Werewolf",
+            "types": {Action, Night, Attack, Doom},
+            "advTags": {
+                _Cost5,
+                _Draw3,
+                _Terminal,
+            },
+        },
     ]
 )
 
 Renaissance = Set("Renaissance")
 Renaissance.AddCards(
     [
-        {"name": "Ducat", "extras": {"Coin Tokens", "Coffers/Villagers Mat"}},
-        "Scepter",
-        {"name": "Spices", "extras": {"Coin Tokens", "Coffers/Villagers Mat"}},
-        {"name": "Border Guard", "types": {Action}},
-        {
-            "name": "Lackeys",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
-        },
         {
             "name": "Acting Troupe",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
+            "advTags": {
+                _Cost3,
+                _FutureAction,
+                _StationaryLover3,
+                _Terminal,
+                _Trasher,
+                _TrashResponse,
+            },
         },
-        {"name": "Cargo Ship", "types": {Action}},
-        {"name": "Experiment", "types": {Action}},
-        {"name": "Improve", "types": {Action}},
-        {"name": "Flag Bearer", "types": {Action}},
-        {"name": "Hideout", "types": {Action}},
-        {"name": "Inventor", "types": {Action}},
-        {"name": "Mountain Village", "types": {Action}},
+        {
+            "name": "Border Guard",
+            "types": {Action},
+            "advTags": {
+                _Cantrip,
+                _Cost2,
+                _DeckSeeder,
+                _Discard,
+                _Reveal,
+                _Sifter,
+            },
+        },
+        {
+            "name": "Cargo Ship",
+            "types": {Action, Duration},
+            "advTags": {_Cost3, _Money2, _Saver, _Terminal},
+        },
+        {
+            "name": "Ducat",
+            "types": {Treasure},
+            "advTags": {
+                _Buys,
+                _Cost2,
+                _FutureMoney1,  # _GainResponse2, There is no Gainer2
+                _GainResponse3,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Experiment",
+            "types": {Action},
+            "advTags": {
+                _Cost3,
+                _GainResponse3,
+                _Lab,
+                _Piler,
+                _StationaryLover3,
+                _Thinner,
+            },
+        },
+        {
+            "name": "Flag Bearer",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _Drawload,
+                _Money2,
+                _Terminal,
+                _GainResponse4,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Hideout",
+            "types": {Action},
+            "advTags": {_Cost4, _Curser, _Thinner, _Trasher, _Village},
+        },
+        {
+            "name": "Improve",
+            "types": {Action},
+            "advTags": {_Cost3, _Money2, _Remodeler1, _Terminal, _Trasher},
+        },
+        {
+            "name": "Inventor",
+            "types": {Action},
+            "advTags": {_Cost4, _CostReducer, _Gainer4, _Terminal},
+        },
+        {
+            "name": "Lackeys",
+            "types": {Action},
+            "advTags": {
+                _Cost2,
+                _Draw2,
+                _FutureAction,
+                # _GainResponse2, There is no Gainer2 at this point.
+                _GainResponse3,
+                _Terminal,
+            },
+        },
+        {"name": "Mountain Village", "types": {Action}, "advTags": {_Cost4, _Village}},
+        {
+            "name": "Old Witch",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Curser, _Draw3, _Interactive, _Terminal, _Trasher},
+        },
         {
             "name": "Patron",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
+            "types": {Action, Reaction},
+            "advTags": {
+                _FutureAction,
+                _FutureMoney1,
+                _Money2,
+                _RevealResponse,
+                _Terminal,
+            },
         },
-        {"name": "Priest", "types": {Action}},
-        {"name": "Research", "types": {Action}},
         {
-            "name": "Silk Merchant",
+            "name": "Priest",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
+            "advTags": {_Cost4, _Payload, _Money2, _Terminal, _Thinner, _Trasher},
         },
-        {"name": "Old Witch", "types": {Action}},
         {
             "name": "Recruiter",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
+            "advTags": {
+                _Cost5,
+                _Draw1,
+                _Playload,
+                _Sifter,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
         },
-        {"name": "Scholar", "types": {Action}},
+        {
+            "name": "Research",
+            "types": {Action, Duration},
+            "advTags": {_Chainer, _Cost4, _Saver, _Thinner, _Trasher},
+        },
+        {
+            "name": "Scepter",
+            "types": {Treasure},
+            "advTags": {_ActionLover, _Choice, _Cost5, _Money2, _Splitter},
+        },
+        {
+            "name": "Scholar",
+            "types": {Action},
+            "advTags": {_Cost5, _Discard, _Draw7, _Terminal},
+        },
         {
             "name": "Sculptor",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
+            "advTags": {_Cantrip, _Cost5, _Gainer4},
         },
-        {"name": "Seer", "types": {Action}},
+        {
+            "name": "Seer",
+            "types": {Action},
+            "advTags": {_Cost5, _DeckSeeder, _Draw4, _Lab, _Reveal},
+        },
+        {
+            "name": "Silk Merchant",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Draw2,
+                _FutureAction,
+                _FutureMoney1,
+                _GainResponse4,
+                _Terminal,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Spices",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost5, _GainResponse5, _FutureMoney2, _Money2},
+        },
         {
             "name": "Swashbuckler",
             "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _Draw3,
+                _FutureMoney1,
+                _Payload,
+                _Terminal,
+            },
         },
-        {"name": "Treasurer", "types": {Action}},
+        {
+            "name": "Treasurer",
+            "types": {Action},
+            "advTags": {
+                _Cost5,
+                _Money3,
+                _Payload,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+                _TrashGainer,
+            },
+        },
         {
             "name": "Villain",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat"},
+            "types": {Action, Attack},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _FutureMoney2,
+                _Reveal,
+                _Terminal,
+            },
         },
-        {"name": "Cathedral", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "City Gate", "types": {Project}, "extras": {"Wooden Cubes"}},
+        # Project
+        {"name": "Academy", "types": {Project}, "advTags": {_Cost4, _Playload}},
+        {"name": "Barracks", "types": {Project}, "advTags": {_Cost6, _Village}},
+        {"name": "Capitalism", "types": {Project}, "advTags": {_Cost5, _PhaseBreaker}},
         {
-            "name": "Pageant",
+            "name": "Cathedral",
             "types": {Project},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat", "Wooden Cubes"},
+            "advTags": {_Cost3, _Thinner, _Trasher},
         },
-        {"name": "Sewers", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Star Chart", "types": {Project}, "extras": {"Wooden Cubes"}},
+        {"name": "Canal", "types": {Project}, "advTags": {_Cost7, _CostReducer}},
+        {"name": "Citadel", "types": {Project}, "advTags": {_Cost8, _Splitter}},
+        {
+            "name": "City Gate",
+            "types": {Project},
+            "advTags": {_Cost3, _DeckSeeder, _Sifter},
+        },
+        {
+            "name": "Crop Rotation",
+            "types": {Project},
+            "advTags": {_Cost6, _Discard, _Draw2},
+        },
         {
             "name": "Exploration",
             "types": {Project},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat", "Wooden Cubes"},
+            "advTags": {_Cost4, _FutureAction, _FutureMoney1},
         },
-        {"name": "Fair", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Silos", "types": {Project}, "extras": {"Wooden Cubes"}},
+        {"name": "Fair", "types": {Project}, "advTags": {_Buys, _Cost4}},
+        {"name": "Fleet", "types": {Project}, "advTags": {_Cost5, _Draw5}},
+        {"name": "Guildhall", "types": {Project}, "advTags": {_Cost5, _Payload}},
         {
-            "name": "Sinister Plot",
+            "name": "Innovation",
             "types": {Project},
-            "extras": {"Coin Tokens", "Wooden Cubes"},
+            "advTags": {_Cost6, _GainLover, _Playload},
+        },
+        {"name": "Pageant", "types": {Project}, "advTags": {_Cost3, _FutureMoney1}},
+        {
+            "name": "Piazza",
+            "types": {Project},
+            "advTags": {_FreeAction, _Cost5, _Reveal},
         },
         {
-            "name": "Academy",
+            "name": "Road Network",
             "types": {Project},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat", "Wooden Cubes"},
+            "advTags": {_Cost5, _Drawload, _VictoryResponse},
         },
-        {"name": "Capitalism", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Fleet", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {
-            "name": "Guildhall",
-            "types": {Project},
-            "extras": {"Coin Tokens", "Coffers/Villagers Mat", "Wooden Cubes"},
-        },
-        {"name": "Piazza", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Road Network", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Barracks", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Crop Rotation", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Innovation", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Canal", "types": {Project}, "extras": {"Wooden Cubes"}},
-        {"name": "Citadel", "types": {Project}, "extras": {"Wooden Cubes"}},
+        {"name": "Sewers", "types": {Project}, "advTags": {_Cost3, _Thinner, _Trasher}},
+        {"name": "Silos", "types": {Project}, "advTags": {_Cost4, _Discard, _Sifter}},
+        {"name": "Sinister Plot", "types": {Project}, "advTags": {_Cost4, _Drawload}},
+        {"name": "Star Chart", "types": {Project}, "advTags": {_Cost3, _DeckSeeder}},
     ]
 )
 
 Menagerie = Set("Menagerie")
 Menagerie.AddCards(
     [
-        {"name": "Stockpile", "extras": {"Exile Mat"}},
-        "Supplies",
-        {"name": "Animal Fair", "types": {Action}},
-        {"name": "Barge", "types": {Action}},
-        {"name": "Black Cat", "types": {Action}},
-        {"name": "Bounty Hunter", "types": {Action}, "extras": {"Exile Mat"}},
-        {"name": "Camel Train", "types": {Action}, "extras": {"Exile Mat"}},
-        {"name": "Cardinal", "types": {Action}, "extras": {"Exile Mat"}},
-        {"name": "Cavalry", "types": {Action}},
-        {"name": "Coven", "types": {Action}, "extras": {"Exile Mat"}},
-        {"name": "Destrier", "types": {Action}},
-        {"name": "Displace", "types": {Action}, "extras": {"Exile Mat"}},
-        {"name": "Falconer", "types": {Action}},
-        {"name": "Fisherman", "types": {Action}},
-        {"name": "Gatekeeper", "types": {Action}, "extras": {"Exile Mat"}},
-        {"name": "Goatherd", "types": {Action}},
-        {"name": "Groom", "types": {Action}},
-        {"name": "Hostelry", "types": {Action}},
-        {"name": "Hunting Lodge", "types": {Action}},
-        {"name": "Kiln", "types": {Action}},
-        {"name": "Livery", "types": {Action}},
-        {"name": "Mastermind", "types": {Action}},
-        {"name": "Paddock", "types": {Action}},
-        {"name": "Sanctuary", "types": {Action}, "extras": {"Exile Mat"}},
-        {"name": "Scrap", "types": {Action}},
-        {"name": "Sheepdog", "types": {Action}},
-        {"name": "Sleigh", "types": {Action}},
-        {"name": "Snowy Village", "types": {Action}},
-        {"name": "Village Green", "types": {Action}},
-        {"name": "Wayfarer", "types": {Action}},
-        {"name": "Alliance", "types": {Event}},
-        {"name": "Banish", "types": {Event}, "extras": {"Exile Mat"}},
-        {"name": "Bargain", "types": {Event}},
-        {"name": "Commerce", "types": {Event}},
-        {"name": "Delay", "types": {Event}},
-        {"name": "Demand", "types": {Event}},
-        {"name": "Desperation", "types": {Event}},
-        {"name": "Enclave", "types": {Event}, "extras": {"Exile Mat"}},
-        {"name": "Enhance", "types": {Event}},
-        {"name": "Gamble", "types": {Event}},
-        {"name": "Invest", "types": {Event}, "extras": {"Exile Mat"}},
-        {"name": "March", "types": {Event}},
-        {"name": "Populate", "types": {Event}},
-        {"name": "Pursue", "types": {Event}},
-        {"name": "Reap", "types": {Event}},
-        {"name": "Ride", "types": {Event}},
-        {"name": "Seize the Day", "types": {Event}},
-        {"name": "Stampede", "types": {Event}},
-        {"name": "Toil", "types": {Event}},
-        {"name": "Transport", "types": {Event}, "extras": {"Exile Mat"}},
-        {"name": "Way of the Butterfly", "types": {Way}},
-        {"name": "Way of the Camel", "types": {Way}, "extras": {"Exile Mat"}},
+        {
+            "name": "Animal Fair",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost7,
+                _CostVaries,
+                _Empty,
+                _Money4,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Barge",
+            "types": {Action, Duration},
+            "advTags": {_Buys, _Choice, _Cost5, _Draw3, _FutureDraw3, _Terminal},
+        },
+        {
+            "name": "Black Cat",
+            "types": {Action, Attack, Reaction},
+            "advTags": {
+                _Cost2,
+                _Curser,
+                _Draw2,
+                _FreeAction,
+                _Terminal,
+                _VictoryResponse,
+            },
+        },
+        {
+            "name": "Bounty Hunter",
+            "types": {Action},
+            "advTags": {_Chainer, _Cost4, _Money3, _NamesMatter, _Saver, _Thinner},
+        },
+        {
+            "name": "Camel Train",
+            "types": {Action},
+            "advTags": {_Cost3, _FutureMoney2, _GainResponse3, _Gainer6, _Terminal},
+        },
+        {
+            "name": "Cardinal",
+            "types": {Action, Attack},
+            "advTags": {
+                _BadThinner,
+                _Cost4,
+                _Discard,
+                _Money2,
+                _Reveal,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Cavalry",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost4,
+                _Draw2,
+                _FutureDraw2,
+                _GainResponse4,
+                _PhaseBreaker,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Coven",
+            "types": {Action, Attack},
+            "advTags": {_Chainer, _Cost5, _Curser, _Money2},
+        },
+        {
+            "name": "Destrier",
+            "types": {Action},
+            "advTags": {_Cost6, _CostVaries, _GainLover, _Lab},
+        },
+        {
+            "name": "Displace",
+            "types": {Action},
+            "advTags": {_Cost5, _Remodeler2, _Terminal},
+        },
+        {
+            "name": "Falconer",
+            "types": {Action, Reaction},
+            "advTags": {_Cost5, _FreeAction, _Gainer4, _MultiTypeLove, _Terminal},
+        },
+        {
+            "name": "Fisherman",
+            "types": {Action},
+            "advTags": {_Cost2, _Cost5, _CostVaries, _Peddler},
+        },
+        {
+            "name": "Gatekeeper",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _BadThinner,
+                _Cost5,
+                _GainLover,
+                _FutureMoney3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Goatherd",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost3,
+                _Drawload,
+                _Thinner,
+                _Trasher,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Groom",
+            "types": {Action},
+            "advTags": {
+                _Cantrip,
+                _Choice,
+                _Cost4,
+                _FutureDraw1,
+                _FutureMoney1,
+                _Gainer4,
+            },
+        },
+        {
+            "name": "Hostelry",
+            "types": {Action},
+            "advTags": {_Cost4, _Discard, _Drawload, _GainResponse4, _Village},
+        },
+        {
+            "name": "Hunting Lodge",
+            "types": {Action},
+            "advTags": {_Cost5, _Discard, _Draw5, _Village},
+        },
+        {
+            "name": "Kiln",
+            "types": {Action},
+            "advTags": {_Cost5, _Money2, _Gainer6, _PlatinumLover, _Terminal},
+        },
+        {
+            "name": "Livery",
+            "types": {Action},
+            "advTags": {_Cost5, _Drawload, _GainLover, _Money3, _Terminal},
+        },
+        {
+            "name": "Mastermind",
+            "types": {Action, Duration},
+            "advTags": {_Cost5, _Splitter, _Terminal},
+        },
+        {
+            "name": "Paddock",
+            "types": {Action},
+            "advTags": {_Cost5, _Draw2, _Empty, _Money2, _Village},
+        },
+        {
+            "name": "Sanctuary",
+            "types": {Action},
+            "advTags": {_Buys, _Cantrip, _Cost5, _Thinner},
+        },
+        {
+            "name": "Scrap",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cantrip,
+                _Choice,
+                _FutureDraw1,
+                _FutureMoney1,
+                _Money1,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Sheepdog",
+            "types": {Action, Reaction},
+            "advTags": {_Cost3, _Draw2, _FreeAction, _GainResponse8, _Terminal},
+        },
+        {
+            "name": "Sleigh",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cost2,
+                _DeckSeeder,
+                _Discard,
+                _Draw2,
+                # _GainResponse2, There's no support for _GainResponse2 (i.e., no _Gainer2)
+                _GainResponse3,
+                _Shuffler,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Snowy Village",
+            "types": {Action},
+            "advTags": {_Buys, _Cost3, _Village},
+        },
+        {
+            "name": "Stockpile",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost3, _GainResponse3, _Money3, _Thinner},
+        },
+        {
+            "name": "Supplies",
+            "types": {Treasure},
+            "advTags": {_Cost2, _DeckSeeder, _Draw1, _Money1},
+        },
+        {
+            "name": "Village Green",
+            "types": {Action, Duration, Reaction},
+            "advTags": {
+                _Cost4,
+                _DiscardResponse,
+                _FreeAction,
+                _Village,
+            },
+        },
+        {
+            "name": "Wayfarer",
+            "types": {Action},
+            "advTags": {_Cost6, _CostVaries, _Draw3, _FutureMoney1, _Terminal},
+        },
+        # Events
+        {
+            "name": "Alliance",
+            "types": {Event},
+            "advTags": {_Cost10, _FutureMoney3, _Junker, _VictoryGainer},
+        },
+        {"name": "Banish", "types": {Event}, "advTags": {_Cost4, _Saver, _Thinner}},
+        {
+            "name": "Bargain",
+            "types": {Event},
+            "advTags": {_Cost4, _Gainer5, _Interactive},
+        },
+        {
+            "name": "Commerce",
+            "types": {Event},
+            "advTags": {_Cost5, _GainLover, _NamesMatter, _Payload},
+        },
+        {"name": "Delay", "types": {Event}, "advTags": {_Cost0, _FutureAction, _Saver}},
+        {
+            "name": "Demand",
+            "types": {Event},
+            "advTags": {_Cost5, _DeckSeeder, _FutureDraw1, _Gainer4},
+        },
+        {
+            "name": "Desperation",
+            "types": {Event},
+            "advTags": {_Cost0, _Curser, _FreeEvent, _Money2},
+        },
+        {
+            "name": "Enclave",
+            "types": {Event},
+            "advTags": {_Cost8, _FutureMoney2, _VictoryGainer},
+        },
+        {
+            "name": "Enhance",
+            "types": {Event},
+            "advTags": {_Cost3, _Remodeler2, _Trasher},
+        },
+        {
+            "name": "Gamble",
+            "types": {Event},
+            "advTags": {_Chainer, _Cost2, _Discard, _FreeEvent, _PhaseBreaker, _Reveal},
+        },
+        {
+            "name": "Invest",
+            "types": {Event},
+            "advTags": {_Cost4, _Drawload, _GainResponse6, _Piler, _Saver},
+        },
+        {"name": "March", "types": {Event}, "advTags": {_Chainer, _Cost3}},
+        {"name": "Populate", "types": {Event}, "advTags": {_Cost10, _Gainer8}},
+        {
+            "name": "Pursue",
+            "types": {Event},
+            "advTags": {
+                _Cost2,
+                _DeckGuesser,
+                _DeckSeeder,
+                _Discard,
+                _FreeEvent,
+                _Reveal,
+                _Sifter,
+            },
+        },
+        {"name": "Reap", "types": {Event}, "advTags": {_Cost7, _FutureMoney3}},
+        {"name": "Ride", "types": {Event}, "advTags": {_Cost2, _Draw1}},
+        {
+            "name": "Seize the Day",
+            "types": {Event},
+            "advTags": {_Cost4, _Draw5, _PhaseBreaker},
+        },
+        {
+            "name": "Stampede",
+            "types": {Event},
+            "advTags": {_Cost5, _DeckSeeder, _FutureDraw5},
+        },
+        {
+            "name": "Toil",
+            "types": {Event},
+            "advTags": {_Chainer, _Cost2, _FreeEvent},
+        },
+        {
+            "name": "Transport",
+            "types": {Event},
+            "advTags": {_Cost3, _DeckSeeder, _Gainer6},
+        },
+        # Way
+        {
+            "name": "Way of the Butterfly",
+            "types": {Way},
+            "advTags": {_Piler, _Remodeler1},
+        },
+        {"name": "Way of the Camel", "types": {Way}, "advTags": {_FutureMoney2}},
         {"name": "Way of the Chameleon", "types": {Way}},
-        {"name": "Way of the Frog", "types": {Way}},
-        {"name": "Way of the Goat", "types": {Way}},
-        {"name": "Way of the Horse", "types": {Way}},
-        {"name": "Way of the Mole", "types": {Way}},
-        {"name": "Way of the Monkey", "types": {Way}},
-        {"name": "Way of the Mouse", "types": {Way}},
-        {"name": "Way of the Mule", "types": {Way}},
-        {"name": "Way of the Otter", "types": {Way}},
-        {"name": "Way of the Owl", "types": {Way}},
-        {"name": "Way of the Ox", "types": {Way}},
-        {"name": "Way of the Pig", "types": {Way}},
-        {"name": "Way of the Rat", "types": {Way}},
-        {"name": "Way of the Seal", "types": {Way}},
-        {"name": "Way of the Sheep", "types": {Way}},
-        {"name": "Way of the Squirrel", "types": {Way}},
-        {"name": "Way of the Turtle", "types": {Way}},
-        {"name": "Way of the Worm", "types": {Way}, "extras": {"Exile Mat"}},
+        {"name": "Way of the Frog", "types": {Way}, "advTags": {_Chainer, _DeckSeeder}},
+        {"name": "Way of the Goat", "types": {Way}, "advTags": {_Thinner}},
+        {
+            "name": "Way of the Horse",
+            "types": {Way},
+            "advTags": {_Draw2, _StationaryLover7, _Piler, _Thinner},
+        },
+        {
+            "name": "Way of the Mole",
+            "types": {Way},
+            "advTags": {_Chainer, _Discard, _Sifter},
+        },
+        {"name": "Way of the Monkey", "types": {Way}, "advTags": {_Buys, _Money1}},
+        {"name": "Way of the Mouse", "types": {Way}, "advTags": {_Command3, _Kingdom}},
+        {"name": "Way of the Mule", "types": {Way}, "advTags": {_Chainer, _Money1}},
+        {"name": "Way of the Otter", "types": {Way}, "advTags": {_Draw2}},
+        {"name": "Way of the Owl", "types": {Way}, "advTags": {_Filler}},
+        {"name": "Way of the Ox", "types": {Way}, "advTags": {_Village}},
+        {"name": "Way of the Pig", "types": {Way}, "advTags": {_Cantrip}},
+        {"name": "Way of the Rat", "types": {Way}, "advTags": {_Discard, _Gainer6}},
+        {"name": "Way of the Seal", "types": {Way}, "advTags": {_DeckSeeder, _Money1}},
+        {"name": "Way of the Sheep", "types": {Way}, "advTags": {_Money2}},
+        {"name": "Way of the Squirrel", "types": {Way}, "advTags": {_Draw2}},
+        {"name": "Way of the Turtle", "types": {Way}, "advTags": {_FreeAction}},
+        {"name": "Way of the Worm", "types": {Way}, "advTags": {_VictoryGainer}},
     ]
 )
 
 Allies = Set("Allies")
 Allies.AddCards(
     [
-        {"name": "Bauble", "extras": {"Coin Tokens", "Favors Mat"}},
-        {"name": "Contract", "extras": {"Coin Tokens", "Favors Mat"}},
-        {
-            "name": "Sycophant",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Favors Mat"},
-        },
-        {
-            "name": "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
-            "types": {Action},
-        },
         {
             "name": "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
+            "types": {Action, Attack, Augur},
+            "advTags": {
+                _BottomSeeder,  # Sibyl
+                _Buys,  # Herb Gatherer
+                _Cantrip,  # Sorceress
+                _Cost3,  # Herb Gatherer
+                _Cost4,  # Acolyte
+                _Cost5,  # Sorceress
+                _Cost6,  # Sibyl
+                _Curser,  # Sorceress
+                _DeckGuesser,  # Sorceress
+                _DeckSeeder,  # Sibyl
+                _FutureMoney2,  # Acolyte
+                _Gainer6,  # Acolyte
+                _Lab,  # Sibyl
+                _NoHandsPlay,  # Herb Gatherer
+                _PhaseBreaker,  # Herb Gatherer
+                _Reveal,  # Sorceress
+                _Sifter,  # Sibyl
+                _Shuffler,  # Herb Gatherer
+                _SplitPile,  # all
+                _Terminal,  # Acolyte, # Herb Gatherer
+                _Trasher,  # Acolyte
+                _TrashResponse,  # Acolyte
+            },
+        },
+        {
+            "name": "Barbarian",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Curser, _Downgrader, _Money2, _Terminal, _Trasher},
+        },
+        {
+            "name": "Bauble",
+            "types": {Treasure, Liaison},
+            "advTags": {_Buys, _Choice, _Cost2, _DeckSeeder, _Money1},
+        },
+        {
+            "name": "Broker",
+            "types": {Action, Liaison},
+            "advTags": {
+                _Choice,
+                _Cost4,
+                _Drawload,
+                _Payload,
+                _Thinner,
+                _Trasher,
+                _Village,
+            },
+        },
+        {
+            "name": "Capital City",
             "types": {Action},
+            "advTags": {_Cost5, _Discard, _DoubleDouble, _Draw3, _Money2},
+        },
+        {
+            "name": "Carpenter",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost4,
+                _Empty,
+                _Gainer4,
+                _Remodeler2,
+                _Trasher,
+            },
         },
         {
             "name": "Clashes: Battle Plan + Archer + Warlord + Territory",
-            "types": {Action},
+            "types": {Action, Attack, Duration, Victory, Clash},
+            "advTags": {
+                _AttackResponse,  # Battle Plan
+                _BadSifter,  # Archer
+                _Chainer,  # Warlord
+                _Cost3,  # Battle Plan
+                _Cost4,  # Archer
+                _Cost5,  # Warlord
+                _Cost6,  # Territory
+                _Discard,  # Archer
+                _Empty,  # Territory
+                _FutureDraw2,  # Warlord
+                _GainResponse6,  # Territory
+                _Lab,  # Battle Plan
+                _Money2,  # Archer
+                _NamesMatter,  # Territory
+                _Payload,  # Territory
+                _LimitsPlays,  # Warlord
+                _Reveal,  # Archer
+                _Terminal,  # Archer
+            },
         },
-        {"name": "Forts: Tent + Garrison + Hill Fort + Stronghold", "types": {Action}},
-        {"name": "Merchant Camp", "types": {Action}},
+        {
+            "name": "Contract",
+            "types": {Treasure, Duration, Liaison},
+            "advTags": {
+                _Chainer,
+                _Cost5,
+                _Money2,
+                _Saver,
+            },
+        },
+        {
+            "name": "Courier",
+            "types": {Action},
+            "advTags": {_Chainer, _Cost4, _Discard, _NoHandsPlay, _Money1},
+        },
+        {
+            "name": "Emissary",
+            "types": {Action, Liaison},
+            "advTags": {_Cost5, _Draw3, _Lab},
+        },
+        {
+            "name": "Forts: Tent + Garrison + Hill Fort + Stronghold",
+            "types": {Action, Victory, Duration, Fort},
+            "advTags": {
+                _Cantrip,  # Hill Fort
+                _Choice,  # Hill Fort, Stronghold
+                _Cost3,
+                _Cost4,  # Garrison
+                _Cost5,  # Hill Fort
+                _Cost6,  # Stronghold
+                _DeckSeeder,
+                _Drawload,  # Garrison
+                _FutureDraw3,  # Stronghold
+                _Gainer4,  # Hill Fort
+                _GainResponse4,  # Hill Fort
+                _GainResponse6,  # Stronghold
+                _Money2,  # Garrison
+                _Money3,  # Stronghold
+                # Garrison
+                _Shuffler,  # Hill Fort
+                _Terminal,  # Hill Fort, Stronghold, # Garrison
+            },
+        },
+        {
+            "name": "Galleria",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _Cost5,
+                _GainResponse3,
+                _GainResponse4,
+                _Money3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Guildmaster",
+            "types": {Action, Liaison},
+            "advTags": {_Cost5, _GainLover, _Money3, _Terminal},
+        },
+        {
+            "name": "Highwayman",
+            "types": {Action, Duration, Attack},
+            "advTags": {_Cost5, _FutureDraw3, _Terminal},
+        },
+        {
+            "name": "Hunter",
+            "types": {Action},
+            "advTags": {_Lab, _Cost5, _Discard, _Draw3, _Reveal},
+        },
         {
             "name": "Importer",
+            "types": {Action, Duration, Liaison},
+            "advTags": {
+                _Cost3,
+                _Gainer5,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Innkeeper",
             "types": {Action},
-            "extras": {"Coin Tokens", "Favors Mat"},
+            "advTags": {_Cantrip, _Choice, _Cost4, _Discard, _Sifter},
+        },
+        {
+            "name": "Marquis",
+            "types": {Action},
+            "advTags": {_Buys, _Cost6, _Discard, _Filler, _Sifter, _Terminal},
+        },
+        {
+            "name": "Merchant Camp",
+            "types": {Action},
+            "advTags": {_Cost3, _DeckSeeder, _Money1, _Village},
+        },
+        {
+            "name": "Modify",
+            "types": {Action},
+            "advTags": {_Cantrip, _Choice, _Cost5, _Remodeler2, _Thinner, _Trasher},
         },
         {
             "name": "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
-            "types": {Action},
+            "types": {Action, Duration, Odyssey, Treasure, Victory},
+            "advTags": {
+                _Cantrip,  # Old Map
+                _Chainer,  # Voyage
+                _Cost3,  # Old Map
+                _Cost4,  # Voyage
+                _Cost5,  # Sunken Treasure
+                _Cost6,  # Distant Shore
+                _Discard,  # Old Map
+                _Gainer7,  # Sunken Treasure
+                _Lab,  # Distant Shore
+                _LimitsPlays,  # Voyage
+                # Voyage, Distant Shore
+                _NamesMatter,  # Sunken Treasure
+                _PhaseBreaker,  # Voyage
+                _Sifter,  # Old Map
+                _SplitPile,  # all
+                _VictoryGainer,  # Distant Shore
+            },
         },
-        {"name": "Sentinel", "types": {Action}},
+        {
+            "name": "Royal Galley",
+            "types": {Action, Duration},
+            "advTags": {_Cantrip, _Cost4, _NoHandsPlay, _Saver, _Splitter},
+        },
+        {
+            "name": "Sentinel",
+            "types": {Action},
+            "advTags": {_Cost3, _Sifter, _Terminal, _Thinner},
+        },
+        {
+            "name": "Sycophant",
+            "types": {Action, Liaison},
+            "advTags": {
+                _Chainer,
+                _Cost2,
+                _Discard,
+                # _GainResponse2, At this point there's no support for _GainResponse2 (i.e., no Gainer2)
+                _GainResponse3,
+                _Money3,
+                _TrashResponse,
+            },
+        },
+        {
+            "name": "Skirmisher",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Discard, _GainLover, _HandLimit, _Peddler},
+        },
+        {
+            "name": "Specialist",
+            "types": {Action},
+            "advTags": {_Chainer, _Choice, _Cost5, _Gainer7, _Splitter},
+        },
+        {
+            "name": "Swap",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost5, _Gainer5, _Piler},
+        },
+        {
+            "name": "Town",
+            "types": {Action},
+            "advTags": {_Buys, _Choice, _Cost4, _Money2, _Village},
+        },
+        {
+            "name": "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
+            "types": {Action, Townsfolk},
+            "advTags": {
+                _Cantrip,  # Miller, Blacksmith, Town Crier
+                _Chainer,  # Elder
+                _Choice,  # Blacksmith, Town Crier
+                _Cost2,  # Town Crier
+                _Cost3,  # Blacksmith
+                _Cost4,  # Miller
+                _Cost5,  # Elder
+                _Discard,  # Miller
+                _Draw2,  # Blacksmith
+                _Filler,  # Blacksmith
+                _FutureMoney1,  # Town Crier
+                _Money2,  # Town Crier, Elder
+                _Sifter,  # Miller
+                _Terminal,  # Miller
+            },
+        },
         {
             "name": "Underling",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Favors Mat"},
+            "types": {Action, Liaison},
+            "advTags": {_Cantrip, _Cost3},
         },
         {
             "name": "Wizards: Student, Conjurer, Sorcerer, Lich",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Favors Mat"},
+            "types": {Action, Duration, Liaison, Attack, Wizard},
+            "advTags": {
+                _Cantrip,  # Sorcerer
+                _Chainer,  # Student
+                _Cost3,  # Student
+                _Cost4,  # Conjurer
+                _Cost5,  # Sorcerer
+                _Cost6,  # Lich
+                _Curser,  # Sorcerer
+                _DeckGuesser,  # Sorcerer
+                _DeckSeeder,  # Student
+                _Discard,  # Lich
+                _Draw6,  # Lich
+                _Gainer4,  # Conjurer
+                _Gainer5,  # Lich
+                _Reveal,  # Sorcerer
+                _Saver,  # Conjurer
+                _Thinner,  # Student
+                _Trasher,  # Student
+                _TrashGainer,  # Lich
+                _TrashResponse,  # Lich
+                _Village,  # Lich
+            },
         },
-        {"name": "Broker", "types": {Action}, "extras": {"Coin Tokens", "Favors Mat"}},
-        {"name": "Carpenter", "types": {Action}},
-        {"name": "Courier", "types": {Action}},
-        {"name": "Innkeeper", "types": {Action}},
-        {"name": "Royal Galley", "types": {Action}},
-        {"name": "Town", "types": {Action}},
-        {"name": "Barbarian", "types": {Action}},
-        {"name": "Capital City", "types": {Action}},
+        # Allies
+        {"name": "Architects' Guild", "types": {Ally}, "advTags": {_Gainer5}},
+        {"name": "Band of Nomads", "types": {Ally}, "advTags": {_Buys, _Choice}},
+        {"name": "Cave Dwellers", "types": {Ally}, "advTags": {_Sifter}},
+        {"name": "Circle of Witches", "types": {Ally}, "advTags": {_Curser}},
+        {"name": "City-state", "types": {Ally}, "advTags": {_Chainer}},
+        {"name": "Coastal Haven", "types": {Ally}, "advTags": {_Saver}},
         {
-            "name": "Emissary",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Favors Mat"},
+            "name": "Crafters' Guild",
+            "types": {Ally},
+            "advTags": {_DeckSeeder, _Gainer4},
         },
-        {"name": "Galleria", "types": {Action}},
         {
-            "name": "Guildmaster",
-            "types": {Action},
-            "extras": {"Coin Tokens", "Favors Mat"},
+            "name": "Desert Guides",
+            "types": {Ally},
+            "advTags": {_Discard, _Draw5, _Sifter},
         },
-        {"name": "Highwayman", "types": {Action}},
-        {"name": "Hunter", "types": {Action}},
-        {"name": "Modify", "types": {Action}},
-        {"name": "Skirmisher", "types": {Action}},
-        {"name": "Specialist", "types": {Action}},
-        {"name": "Swap", "types": {Action}},
-        {"name": "Marquis", "types": {Action}},
-        {"name": "Architects' Guild", "types": {Ally}},
-        {"name": "Band of Nomads", "types": {Ally}},
-        {"name": "Cave Dwellers", "types": {Ally}},
-        {"name": "Circle of Witches", "types": {Ally}},
-        {"name": "City-state", "types": {Ally}},
-        {"name": "Coastal Haven", "types": {Ally}},
-        {"name": "Crafters' Guild", "types": {Ally}},
-        {"name": "Desert Guides", "types": {Ally}},
-        {"name": "Family of Inventors", "types": {Ally}},
-        {"name": "Fellowship of Scribes", "types": {Ally}},
-        {"name": "Forest Dwellers", "types": {Ally}},
-        {"name": "Gang of Pickpockets", "types": {Ally}},
-        {"name": "Island Folk", "types": {Ally}},
-        {"name": "League of Bankers", "types": {Ally}},
-        {"name": "League of Shopkeepers", "types": {Ally}},
-        {"name": "Market Towns", "types": {Ally}},
-        {"name": "Mountain Folk", "types": {Ally}},
-        {"name": "Order of Astrologers", "types": {Ally}},
-        {"name": "Order of Masons", "types": {Ally}},
-        {"name": "Peaceful Cult", "types": {Ally}},
-        {"name": "Plateau Shepherds", "types": {Ally}, "extras": {"Victory Tokens"}},
-        {"name": "Trappers' Lodge", "types": {Ally}},
-        {"name": "Woodworkers' Guild", "types": {Ally}},
+        {"name": "Family of Inventors", "types": {Ally}, "advTags": {_CostReducer}},
+        {"name": "Fellowship of Scribes", "types": {Ally}, "advTags": {_Filler}},
+        {
+            "name": "Forest Dwellers",
+            "types": {Ally},
+            "advTags": {_DeckSeeder, _Discard, _Sifter},
+        },
+        {"name": "Gang of Pickpockets", "types": {Ally}, "advTags": {_Discard}},
+        {"name": "Island Folk", "types": {Ally}, "advTags": {_Draw5}},
+        {"name": "League of Bankers", "types": {Ally}, "advTags": {_Payload}},
+        {
+            "name": "League of Shopkeepers",
+            "types": {Ally},
+            "advTags": {_Buys, _Chainer, _Payload},
+        },
+        {"name": "Market Towns", "types": {Ally}, "advTags": {_Chainer}},
+        {"name": "Mountain Folk", "types": {Ally}, "advTags": {_Draw3}},
+        {"name": "Order of Astrologers", "types": {Ally}, "advTags": {_DeckSeeder}},
+        {"name": "Order of Masons", "types": {Ally}, "advTags": {_Discard}},
+        {"name": "Peaceful Cult", "types": {Ally}, "advTags": {_Thinner}},
+        {
+            "name": "Plateau Shepherds",
+            "types": {Ally},
+            "advTags": {_Cost2Response, _VictoryGainer},
+        },
+        {"name": "Trappers' Lodge", "types": {Ally}, "advTags": {_DeckSeeder}},
+        {
+            "name": "Woodworkers' Guild",
+            "types": {Ally},
+            "advTags": {_Trasher, _TrashGainer},
+        },
     ]
 )
 
 Plunder = Set("Plunder")
 Plunder.AddCards(
     [
-        "Abundance",
-        "Buried Treasure",
-        "Cage",
-        "Crucible",
-        "Figurine",
-        "Gondola",
-        "Grotto",
-        "Jewelled Egg",
-        "King's Cache",
-        "Pendant",
-        "Pickaxe",
-        "Rope",
-        "Sack of Loot",
-        "Silver Mine",
-        "Tools",
-        {"name": "Search", "types": {Action}},
-        {"name": "Shaman", "types": {Action}},
-        {"name": "Secluded Shrine", "types": {Action}},
-        {"name": "Siren", "types": {Action}},
-        {"name": "Stowaway", "types": {Action}},
-        {"name": "Taskmaster", "types": {Action}},
-        {"name": "Cabin Boy", "types": {Action}},
-        {"name": "Flagship", "types": {Action}},
-        {"name": "Fortune Hunter", "types": {Action}},
-        {"name": "Harbor Village", "types": {Action}},
-        {"name": "Landing Party", "types": {Action}},
-        {"name": "Mapmaker", "types": {Action}},
-        {"name": "Maroon", "types": {Action}},
-        {"name": "Swamp Shacks", "types": {Action}},
-        {"name": "Crew", "types": {Action}},
-        {"name": "Cutthroat", "types": {Action}},
-        {"name": "Enlarge", "types": {Action}},
-        {"name": "First Mate", "types": {Action}},
-        {"name": "Frigate", "types": {Action}},
-        {"name": "Longship", "types": {Action}},
-        {"name": "Mining Road", "types": {Action}},
-        {"name": "Pilgrim", "types": {Action}},
-        {"name": "Quartermaster", "types": {Action}},
-        {"name": "Trickster", "types": {Action}},
-        {"name": "Wealthy Village", "types": {Action}},
-        {"name": "Bury", "types": {Event}},
-        {"name": "Avoid", "types": {Event}},
-        {"name": "Deliver", "types": {Event}},
-        {"name": "Peril", "types": {Event}},
-        {"name": "Rush", "types": {Event}},
-        {"name": "Foray", "types": {Event}},
-        {"name": "Launch", "types": {Event}},
-        {"name": "Mirror", "types": {Event}},
-        {"name": "Prepare", "types": {Event}},
-        {"name": "Scrounge", "types": {Event}},
-        {"name": "Journey", "types": {Event}},
-        {"name": "Maelstrom", "types": {Event}},
-        {"name": "Looting", "types": {Event}},
-        {"name": "Invasion", "types": {Event}},
-        {"name": "Prosper", "types": {Event}},
-        {"name": "Cheap", "types": {Trait}},
-        {"name": "Cursed", "types": {Trait}},
-        {"name": "Fated", "types": {Trait}},
-        {"name": "Fawning", "types": {Trait}},
-        {"name": "Friendly", "types": {Trait}},
-        {"name": "Hasty", "types": {Trait}},
-        {"name": "Inherited", "types": {Trait}},
-        {"name": "Inspiring", "types": {Trait}},
-        {"name": "Nearby", "types": {Trait}},
-        {"name": "Patient", "types": {Trait}},
-        {"name": "Pious", "types": {Trait}},
-        {"name": "Reckless", "types": {Trait}},
-        {"name": "Rich", "types": {Trait}},
-        {"name": "Shy", "types": {Trait}},
-        {"name": "Tireless", "types": {Trait}},
+        {
+            "name": "Abundance",
+            "types": {Treasure, Duration},
+            "advTags": {_Buys, _Cost4, _FutureMoney3},
+        },
+        {
+            "name": "Buried Treasure",
+            "types": {Treasure, Duration},
+            "advTags": {
+                _Buys,
+                _Cost5,
+                _FreeAction,
+                _FutureMoney3,
+                _GainResponse5,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Cabin Boy",
+            "types": {Action, Duration},
+            "advTags": {_Cantrip, _FutureMoney2, _Gainer6, _Trasher},
+        },
+        {
+            "name": "Cage",
+            "types": {Treasure, Duration},
+            "advTags": {_Cost2, _Saver, _Thinner, _Trasher, _VictoryResponse},
+        },
+        {
+            "name": "Crew",
+            "types": {Action, Duration},
+            "advTags": {_Cost5, _Draw3, _DeckSeeder, _Terminal},
+        },
+        {
+            "name": "Crucible",
+            "types": {Treasure},
+            "advTags": {_Cost4, _Payload, _Thinner, _Trasher},
+        },
+        {
+            "name": "Cutthroat",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _GainResponse5,
+                _GainResponse6,
+                _GainResponse7,
+                _HandLimit,
+                _Prize,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Enlarge",
+            "types": {Action, Duration},
+            "advTags": {_Cost5, _Remodeler2, _Terminal, _Trasher},
+        },
+        {
+            "name": "Figurine",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost5, _Discard, _Draw2, _Money1},
+        },
+        {
+            "name": "First Mate",
+            "types": {Action},
+            "advTags": {_Cost5, _Filler, _Village},
+        },
+        {
+            "name": "Flagship",
+            "types": {Action, Duration, Command},
+            "advTags": {
+                _Cost4,
+                _Money2,
+                _Splitter,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Fortune Hunter",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost4,
+                _DeckSeeder,
+                _Money2,
+                _NoHandsPlay,
+                _PhaseBreaker,
+                _Sifter,
+            },
+        },
+        {
+            "name": "Frigate",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _HandLimit,
+                _Money3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Gondola",
+            "types": {Treasure, Duration},
+            "advTags": {
+                _Chainer,
+                _Choice,
+                _Cost4,
+                _FutureMoney2,
+                _GainResponse4,
+                _Money2,
+            },
+        },
+        {
+            "name": "Grotto",
+            "types": {Action, Duration},
+            "advTags": {_Chainer, _Cost2, _Discard, _Draw4},
+        },
+        {
+            "name": "Harbor Village",
+            "types": {Action},
+            "advTags": {_Cost4, _Peddler, _Village},
+        },
+        {
+            "name": "Jewelled Egg",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost2, _FutureMoney2, _Money1, _Prize, _TrashResponse},
+        },
+        {"name": "King's Cache", "types": {Treasure}, "advTags": {_Cost7, _Splitter}},
+        {
+            "name": "Landing Party",
+            "types": {Action, Duration},
+            "advTags": {_Cost4, _DeckSeeder, _DoubleDouble, _StationaryLover4},
+        },
+        {
+            "name": "Longship",
+            "types": {Action, Duration},
+            "advTags": {_Cost5, _FutureDraw2, _Village},
+        },
+        {
+            "name": "Mapmaker",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cost4,
+                _Discard,
+                _Draw2,
+                _FreeAction,
+                _Sifter,
+                _Terminal,
+                _VictoryResponse,
+            },
+        },
+        {
+            "name": "Maroon",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _Drawload,
+                _MultiTypeLove,
+                _Terminal,
+                _Thinner,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Mining Road",
+            "types": {Action},
+            "advTags": {_Buys, _Chainer, _GainLover, _Money2, _Payload, _PlatinumLover},
+        },
+        {
+            "name": "Pendant",
+            "types": {Treasure},
+            "advTags": {_Cost5, _NamesMatter, _Payload},
+        },
+        {
+            "name": "Pickaxe",
+            "types": {Treasure},
+            "advTags": {_Cost5, _Money1, _Prize, _Thinner, _Trasher},
+        },
+        {
+            "name": "Pilgrim",
+            "types": {Action},
+            "advTags": {_Cost5, _DeckSeeder, _Draw3, _Sifter, _Terminal},
+        },
+        {
+            "name": "Quartermaster",
+            "types": {Action, Duration},
+            "advTags": {_Choice, _Cost5, _Gainer4, _Saver, _Terminal},
+        },
+        {
+            "name": "Rope",
+            "types": {Treasure, Duration},
+            "advTags": {_Buys, _FutureDraw1, _Money1, _Thinner, _Trasher},
+        },
+        {
+            "name": "Sack of Loot",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost6, _Money1, _Prize},
+        },
+        {
+            "name": "Silver Mine",
+            "types": {Treasure},
+            "advTags": {_Cost5, _Gainer4, _Money2},
+        },
+        {
+            "name": "Search",
+            "types": {Action, Duration},
+            "advTags": {
+                _Cost2,
+                _Empty,
+                _FutureMoney2,
+                _PlayArea,
+                _Prize,
+                _Money2,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Shaman",
+            "types": {Action},
+            "advTags": {
+                _Chainer,
+                _Cost2,
+                _Gainer6,
+                _Money1,
+                _Thinner,
+                _Trasher,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Secluded Shrine",
+            "types": {Action, Duration},
+            "advTags": {_Cost3, _Money1, _Terminal, _Thinner, _Trasher},
+        },
+        {
+            "name": "Siren",
+            "types": {Action, Duration, Attack},
+            "advTags": {
+                _Cost3,
+                _Curser,
+                _Filler,
+                _GainResponse3,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Stowaway",
+            "types": {Action, Duration, Reaction},
+            "advTags": {
+                _Cost3,
+                _Draw2,
+                _FreeAction,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Swamp Shacks",
+            "types": {Action},
+            "advTags": {_Cost4, _CardLover, _Drawload, _DoubleDouble},
+        },
+        {
+            "name": "Taskmaster",
+            "types": {Action, Duration},
+            "advTags": {_Chainer, _Cost3, _FutureAction, _GainResponse5, _Payload},
+        },
+        {
+            "name": "Trickster",
+            "types": {Action, Attack},
+            "advTags": {_Cost5, _Curser, _Saver, _Terminal},
+        },
+        {"name": "Tools", "types": {Treasure}, "advTags": {_Cost4, _Gainer7}},
+        {
+            "name": "Wealthy Village",
+            "types": {Action},
+            "advTags": {_Cost5, _GainResponse5, _NamesMatter, _Prize, _Village},
+        },
+        # Events
+        {
+            "name": "Avoid",
+            "types": {Event},
+            "advTags": {_Cost2, _Discard, _FreeEvent, _Sifter},
+        },
+        {
+            "name": "Bury",
+            "types": {Event},
+            "advTags": {_BottomSeeder, _Cost1, _FreeEvent},
+        },
+        {
+            "name": "Deliver",
+            "types": {Event},
+            "advTags": {_Cost2, _FreeEvent, _Saver, _Shuffler},
+        },
+        {
+            "name": "Foray",
+            "types": {Event},
+            "advTags": {_Cost3, _Discard, _FutureMoney2},
+        },
+        {
+            "name": "Invasion",
+            "types": {Event},
+            "advTags": {
+                _AttackResponse,
+                _Cost10,
+                _DeckSeeder,
+                _FreeAction,
+                _Gainer7,
+                _Prize,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Journey",
+            "types": {Event},
+            "advTags": {_Cost4, _Draw5, _PhaseBreaker},
+        },
+        {"name": "Launch", "types": {Event}, "advTags": {_Cantrip, _Cost3, _FreeEvent}},
+        {"name": "Looting", "types": {Event}, "advTags": {_Cost6, _Prize}},
+        {
+            "name": "Maelstrom",
+            "types": {Event},
+            "advTags": {_Cost4, _Interactive, _Thinner, _Trasher},
+        },
+        {
+            "name": "Mirror",
+            "types": {Event},
+            "advTags": {_Cost3, _FreeEvent, _Gainer6, _GainResponse6},
+        },
+        {
+            "name": "Peril",
+            "types": {Event},
+            "advTags": {_Cost2, _FutureMoney2, _Prize, _Trasher},
+        },
+        {
+            "name": "Prepare",
+            "types": {Event},
+            "advTags": {_Cost3, _Discard, _Saver, _Village},
+        },
+        {
+            "name": "Prosper",
+            "types": {Event},
+            "advTags": {_Cost10, _Payload, _Prize},
+        },
+        {
+            "name": "Rush",
+            "types": {Event},
+            "advTags": {_Chainer, _Cost2, _FreeEvent, _PhaseBreaker},
+        },
+        {
+            "name": "Scrounge",
+            "types": {Event},
+            "advTags": {
+                _Choice,
+                _Cost3,
+                _Gainer5,
+                _Thinner,
+                _TrashGainer,
+                _VictoryGainer,
+            },
+        },
+        # Traits
+        {"name": "Cheap", "types": {Trait}, "advTags": {_CostReducer}},
+        {"name": "Cursed", "types": {Trait}, "advTags": {_Curser, _FutureMoney2}},
+        {"name": "Fated", "types": {Trait}, "advTags": {_BottomSeeder, _DeckSeeder}},
+        {"name": "Fawning", "types": {Trait}, "advTags": {_Gainer6}},
+        {"name": "Friendly", "types": {Trait}, "advTags": {_Discard, _Gainer6}},
+        {"name": "Hasty", "types": {Trait}, "advTags": {_Shuffler}},
+        {"name": "Inherited", "types": {Trait}, "advTags": {_Kingdom}},
+        {"name": "Inspiring", "types": {Trait}, "advTags": {_Chainer}},
+        {"name": "Nearby", "types": {Trait}, "advTags": {_Buys}},
+        {"name": "Patient", "types": {Trait}, "advTags": {_Saver}},
+        {"name": "Pious", "types": {Trait}, "advTags": {_Thinner, _Trasher}},
+        {"name": "Reckless", "types": {Trait}, "advTags": {_Splitter, _Thinner}},
+        {"name": "Rich", "types": {Trait}, "advTags": {_FutureMoney1}},
+        {"name": "Shy", "types": {Trait}, "advTags": {_Discard, _Draw2}},
+        {"name": "Tireless", "types": {Trait}, "advTags": {_DeckSeeder}},
+    ]
+)
+
+RisingSun = Set("Rising Sun")
+RisingSun.AddCards(
+    [
+        {
+            "name": "Alley",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Cost4, _Cantrip, _Discard},
+        },
+        {
+            "name": "Aristocrat",
+            "types": {Action},
+            "advTags": {_Buys, _Cost3, _Draw3, _Money3, _Terminal, _Village},
+        },
+        {
+            "name": "Artist",
+            "types": {Action},
+            "advTags": {_Cost0, _Cantrip, _Debt, _Drawload, _NamesMatter},
+        },
+        {
+            "name": "Change",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _Debt,
+                _Gainer8,
+                _Money3,
+                _PlatinumLover,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {
+            "name": "Craftsman",
+            "types": {Action},
+            "advTags": {_Cost3, _Debt, _Gainer5, _Terminal},
+        },
+        {
+            "name": "Daimyo",
+            "types": {Action, Command},
+            "advTags": {_Cost0, _Cantrip, _Debt, _ExtraCost, _Splitter},
+        },
+        {
+            "name": "Fishmonger",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Buys, _Cost2, _Money1},
+        },
+        {
+            "name": "Gold Mine",
+            "types": {Action},
+            "advTags": {_Buys, _Cantrip, _Cost5, _Debt, _FutureMoney2},
+        },
+        {
+            "name": "Imperial Envoy",
+            "types": {Action},
+            "advTags": {_Buys, _Cost5, _Debt, _Draw5, _Terminal},
+        },
+        {
+            "name": "Kitsune",
+            "types": {Action, Attack, Omen},
+            "advTags": {_Choice, _Cost5, _Curser, _DoubleChain, _FutureMoney1, _Money2},
+        },
+        {
+            "name": "Litter",
+            "types": {Action},
+            "advTags": {_Cost5, _Debt, _DoubleDouble},
+        },
+        {
+            "name": "Mountain Shrine",
+            "types": {Action, Omen},
+            "advTags": {_Cost0, _Debt, _Draw2, _Money2, _Thinner, _Trasher},
+        },
+        {
+            "name": "Ninja",
+            "types": {Action, Attack, Shadow},
+            "advTags": {_BottomSeeder, _Cost4, _Discard, _Draw1, _HandLimit, _Terminal},
+        },
+        {
+            "name": "Poet",
+            "types": {Action, Omen},
+            "advTags": {_Cost4, _Lab, _Reveal},
+        },
+        {
+            "name": "Rice",
+            "types": {Treasure},
+            "advTags": {_Buys, _Cost7, _MultiTypeLove, _Payload},
+        },
+        {
+            "name": "Rice Broker",
+            "types": {Action},
+            "advTags": {_Cost5, _Lab, _Draw5, _Thinner, _Trasher},
+        },
+        {
+            "name": "Riverboat",
+            "types": {Action, Duration},
+            "advTags": {_Cost3, _FutureAction, _Kingdom, _Terminal},
+        },
+        {
+            "name": "River Shrine",
+            "types": {Action, Omen},
+            "advTags": {_Cost4, _Gainer4, _Terminal, _Thinner, _Trasher},
+        },
+        {
+            "name": "Ronin",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Cost5, _Drawload, _Terminal},
+        },
+        {
+            "name": "Root Cellar",
+            "types": {Action, Omen},
+            "advTags": {_Cost3, _Debt, _Draw3, _Lab},
+        },
+        {
+            "name": "Rustic Village",
+            "types": {Action, Omen},
+            "advTags": {_Cost4, _Discard, _DoubleDouble, _Village},
+        },
+        {
+            "name": "Samurai",
+            "types": {Action, Attack, Duration},
+            "advTags": {_Cost6, _Discard, _HandLimit, _Payload, _Terminal},
+        },
+        {
+            "name": "Snake Witch",
+            "types": {Action, Attack},
+            "advTags": {_Cost2, _Curser, _NamesMatter, _Piler, _Thinner},
+        },
+        {
+            "name": "Tanuki",
+            "types": {Action, Shadow},
+            "advTags": {_BottomSeeder, _Cost5, _Remodeler2, _Terminal, _Trasher},
+        },
+        {
+            "name": "Tea House",
+            "types": {Action, Omen},
+            "advTags": {_Cost5, _Money2, _Peddler},
+        },
+        # Landscapes
+        {
+            "name": "Amass",
+            "types": {Event},
+            "advTags": {_Cost2, _Gainer5},
+        },
+        {
+            "name": "Asceticism",
+            "types": {Event},
+            "advTags": {_Cost2, _Thinner},
+        },
+        {
+            "name": "Continue",
+            "types": {Event},
+            "advTags": {
+                _Cost0,
+                _Chainer,
+                _Debt,
+                _FreeEvent,
+                _Gainer4,
+                _PhaseBreaker,
+            },
+        },
+        {
+            "name": "Credit",
+            "types": {Event},
+            "advTags": {_Cost2, _Debt, _Gainer8},
+        },
+        {
+            "name": "Foresight",
+            "types": {Event},
+            "advTags": {_Cost2, _Discard, _Reveal, _Saver},
+        },
+        {
+            "name": "Gather",
+            "types": {Event},
+            "advTags": {_Cost7, _ExactGainer3, _ExactGainer4, _ExactGainer5},
+        },
+        {
+            "name": "Kintsugi",
+            "types": {Event},
+            "advTags": {_Cost3, _Remodeler2, _Thinner, _Trasher},
+        },
+        {
+            "name": "Practice",
+            "types": {Event},
+            "advTags": {_Cost3, _FreeAction, _PhaseBreaker, _Splitter},
+        },
+        {
+            "name": "Receive Tribute",
+            "types": {Event},
+            "advTags": {_Cost5, _GainLover, _Gainer8, _NamesMatter},
+        },
+        {
+            "name": "Sea Trade",
+            "types": {Event},
+            "advTags": {_ActionLover, _Cost4, _Drawload, _Thinner},
+        },
+        {
+            "name": "Approaching Army",
+            "types": {Prophecy},
+            "advTags": {_AttackResponse, _Kingdom, _Payload},
+        },
+        {"name": "Biding Time", "types": {Prophecy}, "advTags": {_Saver}},
+        {"name": "Bureaucracy", "types": {Prophecy}, "advTags": {_Junker}},
+        {"name": "Divine Wind", "types": {Prophecy}, "advTags": {_Kingdom}},
+        {
+            "name": "Enlightenment",
+            "types": {Prophecy},
+            "advTags": {_PhaseBreaker, _Playload},
+        },
+        {
+            "name": "Flourishing Trade",
+            "types": {Prophecy},
+            "advTags": {_Buys, _CostReducer},
+        },
+        {
+            "name": "Good Harvest",
+            "types": {Prophecy},
+            "advTags": {_Buys, _NamesMatter, _Payload},
+        },
+        {"name": "Great Leader", "types": {Prophecy}, "advTags": {_Playload}},
+        {
+            "name": "Growth",
+            "types": {Prophecy},
+            "advTags": {_Gainer8, _GainLover, _PlatinumLover},
+        },
+        {"name": "Harsh Winter", "types": {Prophecy}, "advTags": {_Debt}},
+        {"name": "Kind Emperor", "types": {Prophecy}, "advTags": {_Gainer7}},
+        {"name": "Panic", "types": {Prophecy}, "advTags": {_Buys, _Piler}},
+        {"name": "Progress", "types": {Prophecy}, "advTags": {_DeckSeeder, _GainLover}},
+        {
+            "name": "Rapid Expansion",
+            "types": {Prophecy},
+            "advTags": {_FreeAction, _GainLover, _Saver},
+        },
+        {
+            "name": "Enlightenment",
+            "types": {Prophecy},
+            "advTags": {_PhaseBreaker, _Playload},
+        },
+        {"name": "Sickness", "types": {Prophecy}, "advTags": {_Curser, _Discard}},
     ]
 )
 
 Antiquities = Set("Antiquities")
 Antiquities.AddCards(
     [
-        "Curio",
-        "Discovery",
-        "Gamepiece",
-        {"name": "Inscription", "types": {Action}},
-        {"name": "Agora", "types": {Action}},
-        {"name": "Aquifer", "types": {Action}},
-        {"name": "Tomb Raider", "types": {Action}},
-        {"name": "Dig", "types": {Action}},
-        {"name": "Moundbuilder Village", "types": {Action}},
-        {"name": "Encroach", "types": {Action}},
-        {"name": "Stoneworks", "types": {Action}},
-        {"name": "Graveyard", "types": {Action}},
-        {"name": "Inspector", "types": {Action}},
-        {"name": "Archaeologist", "types": {Action}},
-        {"name": "Mission House", "types": {Action}},
-        {"name": "Mendicant", "types": {Action}},
-        {"name": "Profiteer", "types": {Action}},
-        {"name": "Miner", "types": {Action}},
-        {"name": "Pyramid", "types": {Action}},
-        {"name": "Mastermind", "types": {Action}},
-        {"name": "Mausoleum", "types": {Action}},
-        {"name": "Shipwreck", "types": {Action}},
-        {"name": "Collector", "types": {Action}},
-        {"name": "Pharaoh", "types": {Action}},
-        {"name": "Grave Watcher", "types": {Action}},
-        {"name": "Stronghold", "types": {Action}},
-        {"name": "Snake Charmer", "types": {Action}},
+        {
+            "name": "Agora",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cost5,
+                _Discard,
+                _FutureMoney1,
+                _Money2,
+                _Village,
+            },
+        },
+        {
+            "name": "Aquifer",
+            "types": {Action},
+            "advTags": {_Choice, _Cantrip, _Cost4, _Gainer4, _Money1, _Terminal},
+        },
+        {
+            "name": "Archaeologist",
+            "types": {Action},
+            "advTags": {
+                _Cost7,
+                _DeckSeeder,
+                _Discard,
+                _Draw3,
+                _Sifter,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Collector",
+            "types": {Action},
+            "advTags": {
+                _Cost4,
+                _DeckSeeder,
+                _Interactive,
+                _Remodeler3,
+                _Sifter,
+                _Terminal,
+                _Trasher,
+            },
+        },
+        {"name": "Curio", "types": {Treasure}, "advTags": {_Cost4, _Money1, _Payload}},
+        {
+            "name": "Dig",
+            "types": {Action},
+            "advTags": {_Cost8, _Discard, _Reveal, _VictoryGainer},
+        },
+        {
+            "name": "Discovery",
+            "types": {Treasure},
+            "advTags": {_Cost2, _FutureMoney2, _ShuffleIn, _Thinner},
+        },
+        {
+            "name": "Encroach",
+            "types": {Action},
+            "advTags": {
+                _Cost6,
+                _Discard,
+                _Filler,
+                _Remodeler2,
+                _Terminal,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Gamepiece",
+            "types": {Treasure, Reaction},
+            "advTags": {_Cost3, _Discard, _DiscardResponse, _Money1},
+        },
+        {
+            "name": "Graveyard",
+            "types": {Action},
+            "advTags": {_Cost1, _Gainer6, _TrashGainer, _Village},
+        },
+        {
+            "name": "Grave Watcher",
+            "types": {Action, Attack},
+            "advTags": {
+                _BadSifter,
+                _Chainer,
+                _Choice,
+                _Cost3,
+                _Curser,
+                _Discard,
+                _Junker,
+                _Money2,
+                _Money3,
+                _Terminal,
+            },
+        },
+        {
+            "name": "Inscription",
+            "types": {Action, Reaction},
+            "advTags": {
+                _Cost3,
+                _Discard,
+                _DiscardResponse,
+                _Filler,
+                _Sifter,
+            },
+        },
+        {
+            "name": "Inspector",
+            "types": {Action, Attack},
+            "advTags": {_BadSifter, _Cost3, _Discard, _Reveal, _Sifter},
+        },
+        {
+            "name": "Mastermind",
+            "types": {Action},
+            "advTags": {_BottomSeeder, _Cantrip, _Cost5, _Discard, _FreeAction},
+        },
+        {
+            "name": "Mausoleum",
+            "types": {Action},
+            "advTags": {_Choice, _Cost6, _Draw2, _Saver, _Village},
+        },
+        {
+            "name": "Mendicant",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost4, _Discard, _Junker, _VictoryGainer},
+        },
+        {
+            "name": "Miner",
+            "types": {Action},
+            "advTags": {_Cantrip, _Cost3, _Discard, _Remodeler1},
+        },
+        {
+            "name": "Mission House",
+            "types": {Action},
+            "advTags": {_Cost5, _Discard, _Draw2, _VictoryGainer, _Village},
+        },
+        {
+            "name": "Moundbuilder Village",
+            "types": {Action},
+            "advTags": {_Cost5, _Money3, _Peddler, _Thinner, _Village},
+        },
+        {
+            "name": "Pharaoh",
+            "types": {Action, Attack},
+            "advTags": {_Cost8, _Curser, _Payload, _Terminal, _Trasher},
+        },
+        {
+            "name": "Profiteer",
+            "types": {Action},
+            "advTags": {_Buys, _Chainer, _Cost3, _CostReducer},
+        },
+        {
+            "name": "Pyramid",
+            "types": {Action},
+            "advTags": {_Buys, _Cost5, _Terminal, _Thinner, _Trasher, _VictoryGainer},
+        },
+        {
+            "name": "Shipwreck",
+            "types": {Action},
+            "advTags": {
+                _BottomSeeder,
+                _Buys,
+                _Cost3,
+                _Draw2,
+                _FutureMoney1,
+                _FutureMoney2,
+                _Terminal,
+                _TrashGainer,
+            },
+        },
+        {
+            "name": "Stoneworks",
+            "types": {Action},
+            "advTags": {
+                _Buys,
+                _DeckSeeder,
+                _FutureMoney1,
+                _Trasher,
+                _TrashGainer,
+                _VictoryGainer,
+            },
+        },
+        {
+            "name": "Stronghold",
+            "types": {Action, Reaction},
+            "advTags": {
+                _AttackResponse,
+                _Cost5,
+                _Shuffler,
+                _Trasher,
+                _Terminal,
+                _Thinner,
+            },
+        },
+        {
+            "name": "Tomb Raider",
+            "types": {Action, Attack},
+            "advTags": {
+                _AttackResponse,
+                _Chainer,
+                _Cost3,
+                _Discard,
+                _Gainer6,
+            },
+        },
+        {
+            "name": "Snake Charmer",
+            "types": {Action, Attack},
+            "advTags": {
+                _BottomSeeder,
+                _Chainer,
+                _Cost4,
+                _Curser,
+                _Money1,
+                _Money4,
+                _Thinner,
+                _Trasher,
+            },
+        },
     ]
 )
+# Add additional, rule-based tags
+for cardSet in AllSets.values():
+    for card in cardSet.cards:
+        if len(card.types) > 2:
+            card.advTags.add(_MultiType)
+        if Doom in card.types:
+            card.advTags & set(
+                [_BadSifter, _BadThinner, _Curser, _Discard, _Junker, _Random, _Trasher]
+            )
+        if Fate in card.types:
+            card.advTags & set(
+                [
+                    _Buys,
+                    _Chainer,
+                    _DeckSeeder,
+                    _Discard,
+                    _Draw1,
+                    _FutureDraw1,
+                    _FutureMoney1,
+                    _FutureMoney2,
+                    _Gainer4,
+                    _Money1,
+                    _Random,
+                    _Sifter,
+                    _Thinner,
+                    _Trasher,
+                ]
+            )
+        card.advTags = list(set(card.advTags))
+
 
 # Define Landscape cards
-Events = Adventures.events | Empires.events | Menagerie.events | Plunder.events
+Events = (
+    Adventures.events
+    | Empires.events
+    | Menagerie.events
+    | Plunder.events
+    | RisingSun.events
+)
 Landmarks = Empires.landmarks
 Projects = Renaissance.projects
 Ways = Menagerie.ways
 Traits = Plunder.traits
+Prophecies = RisingSun.prophecies
 LandscapeCards = Events | Landmarks | Projects | Ways | Traits
 
 # Define action cards
@@ -1166,146 +5508,29 @@ AllyCards = Allies.allyCards
 
 # Define randomizer rules
 # PlatinumLove cards grant additional value to other cards or care about extra buys
-PlatinumLove = Prosperity.cards.union(
-    Base.cards("Artisan", "Council Room", "Merchant", "Mine"),
-    Intrigue.cards("Harem", "Nobles"),
-    Seaside.cards("Explorer", "Treasure Map", "Pirate"),
-    Alchemy.cards("Philosopher's Stone"),
-    Cornucopia.cards("Tournament"),
-    Hinterlands.cards(
-        "Border Village",
-        "Cache",
-        "Duchess",
-        "Embassy",
-        "Fool's Gold",
-        "Nomads",
-        "Cauldron",
-        "Souk",
-    ),
-    DarkAges.cards("Altar", "Counterfeit", "Hunting Grounds", "Poor House"),
-    Guilds.cards("Masterpiece", "Soothsayer"),
-    Adventures.cards(
-        "Hireling", "Lost City", "Page", "Treasure Trove", "Seaway", "Training"
-    ),
-    Empires.cards(
-        "Capital",
-        "Castles",
-        "Chariot Race",
-        "Crown",
-        "Encampment/Plunder",
-        "Farmers' Market",
-        "Gladiator/Fortune",
-        "Groundskeeper",
-        "Legionary",
-        "Patrician/Emporium",
-        "Sacrifice",
-        "Temple",
-        "Wild Hunt",
-        "Triumph",
-        "Delve",
-        "Wedding",
-        "Conquest",
-        "Dominate",
-        "Basilica",
-        "Keep",
-    ),
-    Nocturne.cards(
-        "Pooka + Cursed Gold (Heirloom)",
-        "Raider",
-        "Sacred Grove",
-        "Secret Cave + Magic Lamp (Heirloom)",
-        "Tragic Hero",
-    ),
-    Renaissance.cards("Ducat", "Scepter", "Spices", "Capitalism", "Guildhall"),
-    Menagerie.cards(
-        "Supplies",
-        "Camel Train",
-        "Stockpile",
-        "Livery",
-        "Animal Fair",
-        "Commerce",
-        "Enclave",
-        "Way of the Chameleon",
-    ),
-    Antiquities.cards(
-        "Agora",
-        "Archaeologist",
-        "Curio",
-        "Discovery",
-        "Encroach",
-        "Gamepiece",
-        "Moundbuilder Village",
-        "Pharaoh",
-        "Pyramid",
-        "Snake Charmer",
-        "Stoneworks",
-    ),
-    Allies.cards("Town", "Galleria", "Marquis"),
-    Plunder.cards(
-        "Search",
-        "Fortune Hunter",
-        "Harbor Village",
-        "Mining Road",
-        "Pendant",
-        "King's Cache",
-        "Deliver",
-        "Prosper",
-    ),
-)
+PlatinumLove = set()
+for cardSet in AllSets.values():
+    if cardSet.name == "Prosperity":
+        PlatinumLove.update(cardSet.cards)
+    else:
+        for card in cardSet.cards:
+            if (
+                _Cost6 in card.advTags
+                or _Cost7 in card.advTags
+                or _PlatinumLover in card.advTags
+                or any([tag for tag in card.advTags if _Buys in tag.bonusToTags])
+            ):
+                PlatinumLove.add(card)
 
 # ShelterLove cards are cards that trash for benefit, or gain victory cards.
-# Hypothetically, ShelterLove could also include terminal cards, which would
-# mean adding a ShelterHate for villages and reducing the chances for each
-# ShelterHate.
-ShelterLove = DarkAges.cards.union(
-    Base.cards("Remodel", "Mine"),
-    Intrigue.cards("Replace", "Upgrade"),
-    Seaside.cards("Salvager", "Sailor"),
-    Alchemy.cards("Apprentice", "Scrying Pool"),
-    Prosperity.cards(
-        "Bishop",
-        "Expand",
-        "Forge",
-        "Investment",
-        "Crystal Ball",
-    ),
-    Cornucopia.cards("Remake"),
-    Hinterlands.cards("Develop", "Farmland", "Trader", "Souk"),
-    Adventures.cards("Raze", "Transmogrify", "Trade"),
-    Empires.cards(
-        "Catapult/Rocks", "Sacrifice", "Fountain", "Labyrinth", "Museum", "Tomb"
-    ),
-    Guilds.cards("Butcher", "Journeyman", "Stonemason", "Taxman"),
-    Nocturne.cards(
-        "Cemetary + Haunted Mirror (Heirloom)", "Exorcist", "Necromancer + Zombies"
-    ),
-    Renaissance.cards("Priest", "Pageant"),
-    Menagerie.cards(
-        "Camel Train", "Scrap", "Displace", "Enhance", "Way of the Butterfly"
-    ),
-    Antiquities.cards(
-        "Collector",
-        "Graveyard",
-        "Mendicant",
-        "Pharaoh",
-        "Profiteer",
-        "Shipwreck",
-        "Snake Charmer",
-        "Stoneworks",
-    ),
-    Allies.cards("Broker", "Carpenter", "Modify"),
-    Plunder.cards(
-        "Cage",
-        "Jewelled Egg",
-        "Search",
-        "Shaman",
-        "Enlarge",
-        "Peril",
-        "Scrounge",
-        "Invasion",
-        "Inherited",
-    ),
-)
+ShelterLove = set()
+for cardSet in AllSets.values():
+    if cardSet.name == "Dark Ages":
+        ShelterLove.update(cardSet.cards)
+    else:
+        for card in cardSet.cards:
+            if _TrashResponse in card.advTags or _VictoryGainer in card.advTags:
+                ShelterLove.add(card)
 
 LooterCards = DarkAges.cards("Death Cart", "Marauder", "Cultist")
 
@@ -1375,364 +5600,334 @@ LootCards = Plunder.cards(
 
 # TrapLove: cards that care about discarding, sifting, extra kingdom pile
 # gains, and value for multiple gains
-TrapLove = Antiquities.cards.union(
-    Base.cards("Vassal", "Remodel", "Workshop", "Mine", "Library", "Artisan"),
-    Intrigue.cards(
-        "Courtyard",
-        "Lurker",
-        "Masquerade",
-        "Swindler",
-        "Ironworks",
-        "Minion",
-        "Replace",
-        "Upgrade",
-    ),
-    Seaside.cards(
-        "Lookout",
-        "Warehouse",
-        "Navigator",
-        "Salvager",
-        "Monkey",
-        "Sailor",
-        "Sea Witch",
-    ),
-    Alchemy.cards("University"),
-    Prosperity.cards(
-        "Loan",
-        "Watchtower",
-        "Bishop",
-        "Vault",
-        "Venture",
-        "Goons",
-        "Expand",
-        "Forge",
-        "Tiara",
-        "Crystal Ball",
-    ),
-    Cornucopia.cards(
-        "Fortune Teller",
-        "Menagerie",
-        "Farming Village",
-        "Remake",
-        "Young Witch",
-        "Harvest",
-        "Hunting Party",
-    ),
-    Hinterlands.cards(
-        "Develop",
-        "Oracle",
-        "Trader",
-        "Cartographer",
-        "Embassy",
-        "Haggler",
-        "Margrave",
-        "Border Village",
-        "Farmland",
-        "Wheelwright",
-    ),
-    DarkAges.cards(
-        "Hermit",
-        "Storeroom",
-        "Urchin",
-        "Feodum",
-        "Rats",
-        "Wandering Minstrel",
-        "Catacombs",
-        "Rebuild",
-        "Rogue",
-    ),
-    Guilds.cards("Stonemason", "Butcher"),
-    Adventures.cards(
-        "Raze",
-        "Guide",
-        "Duplicate",
-        "Magpie",
-        "Messenger",
-        "Transmogrify",
-        "Scouting Party",
-    ),
-    Empires.cards(
-        "Engineer",
-        "Farmers' Market",
-        "Catapult/Rocks",
-        "Gladiator/Fortune",
-        "Temple",
-        "Forum",
-        "Legionary",
-        "Triumph",
-        "Ritual",
-        "Conquest",
-        "Labyrinth",
-        "Museum",
-    ),
-    Nocturne.cards(
-        "Monastery",
-        "Changeling",
-        "Secret Cave + Magic Lamp (Heirloom)",
-        "Devil's Workshop",
-        "Exorcist",
-        "Cobbler",
-        "Vampire",
-        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
-    ),
-    Renaissance.cards(
-        "Experiment",
-        "Inventor",
-        "Research",
-        "Recruiter",
-        "Scholar",
-        "Sculptor",
-        "Villain",
-    ),
-    Menagerie.cards(
-        "Camel Train",
-        "Scrap",
-        "Bounty Hunter",
-        "Groom",
-        "Hunting Lodge",
-        "Displace",
-        "Kiln",
-        "Livery",
-        "Destrier",
-        "Enhance",
-        "Commerce",
-        "Populate",
-        "Way of the Mole",
-    ),
-    Allies.cards(
-        "Sycophant",
-        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
-        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
-        {
-            "name": "Forts: Tent + Garrison + Hill Fort + Stronghold",
-            "extras": {"Coin Tokens"},
-        },
-        "Importer",
-        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
-        "Sentinel",
-        "Broker",
-        "Carpenter",
-        "Courier",
-        "Innkeeper",
-        "Capital City",
-        "Galleria",
-        "Guildmaster",
-        "Hunter",
-        "Specialist",
-        "Swap",
-        "Marquis",
-        "Architect's Guild",
-        "Coastal Haven",
-        "Desert Guides",
-    ),
-    Plunder.cards(
-        "Cage",
-        "Grotto",
-        "Mapmaker",
-        "Pickaxe",
-        "Quartermaster",
-        "Avoid",
-        "Foray",
-        "Prepare",
-    ),
-)
+TrapLove = set()
+for cardSet in AllSets.values():
+    if cardSet.name == "Antiquities":
+        TrapLove.update(cardSet.cards)
+    else:
+        for card in cardSet.cards:
+            if (
+                _Discard in card.advTags
+                or _Sifter in card.advTags
+                or _Kingdom in card.advTags
+                or _GainLover in card.advTags
+            ):
+                TrapLove.add(card)
 
-BaneCards = set().union(
-    Adventures.cards(
-        "Amulet",
-        "Caravan Guard",
-        "Coin of the Realm",
-        "Dungeon",
-        "Gear",
-        "Guide",
-        "Page",
-        "Peasant",
-        "Ratcatcher",
-        "Raze",
-    ),
-    Alchemy.cards("Herbalist"),
-    Allies.cards(
-        "Bauble",
-        "Sycophant",
-        "Townsfolk: Town Crier + Blacksmith + Miller + Elder",
-        "Augers: Herb Gatherer + Acolyte + Sorceress + Sibyl",
-        "Clashes: Battle Plan + Archer + Warlord + Territory",
-        "Forts: Tent + Garrison + Hill Fort + Stronghold",
-        "Merchant Camp",
-        "Importer",
-        "Odysseys: Old Map, Voyage, Sunken Treasure, Distant Shore",
-        "Sentinel",
-        "Underling",
-        "Wizards: Student, Conjurer, Sorcerer, Lich",
-    ),
-    Antiquities.cards(
-        "Discovery",
-        "Gamepiece",
-        "Grave Watcher",
-        "Inscription",
-        "Inspector",
-        "Profiteer",
-        "Shipwreck",
-        "Tomb Raider",
-        "Miner",
-    ),
-    Base.cards(
-        "Cellar",
-        "Chancellor",
-        "Chapel",
-        "Harbinger",
-        "Merchant",
-        "Moat",
-        "Vassal",
-        "Village",
-        "Woodcutter",
-        "Workshop",
-    ),
-    Cornucopia.cards("Fortune Teller", "Hamlet", "Menagerie"),
-    DarkAges.cards(
-        "Beggar",
-        "Forager",
-        "Hermit",
-        "Market Square",
-        "Sage",
-        "Squire",
-        "Storeroom",
-        "Urchin",
-        "Vagrant",
-    ),
-    Empires.cards(
-        "Castles",
-        "Catapult/Rocks",
-        "Chariot Race",
-        "Encampment/Plunder",
-        "Enchantress",
-        "Farmers' Market",
-        "Gladiator/Fortune",
-        "Patrician/Emporium",
-        "Settlers/Bustling Village",
-    ),
-    Guilds.cards("Candlestick Maker", "Doctor", "Masterpiece", "Stonemason"),
-    Hinterlands.cards(
-        "Crossroads",
-        "Develop",
-        "Duchess",
-        "Fool's Gold",
-        "Oasis",
-        "Scheme",
-        "Tunnel",
-        "Guard Dog",
-    ),
-    Intrigue.cards(
-        "Courtyard",
-        "Great Hall",
-        "Lurker",
-        "Masquerade",
-        "Pawn",
-        "Secret Chamber",
-        "Shanty Town",
-        "Steward",
-        "Swindler",
-        "Wishing Well",
-    ),
-    Menagerie.cards(
-        "Black Cat",
-        "Camel Train",
-        "Goatherd",
-        "Scrap",
-        "Sheepdog",
-        "Sleigh",
-        "Snowy Village",
-        "Stockpile",
-        "Supplies",
-    ),
-    Nocturne.cards(
-        "Changeling",
-        "Druid",
-        "Faithful Hound",
-        "Fool + Lucky Coin (Heirloom) + Lost In the Woods (State)",
-        "Ghost Town",
-        "Guardian",
-        "Leprechaun",
-        "Monastery",
-        "Night Watchman",
-        "Pixie + Goat (Heirloom)",
-        "Secret Cave + Magic Lamp (Heirloom)",
-        "Tracker + Pouch (Heirloom)",
-    ),
-    Prosperity.cards(
-        "Anvil",
-        "Loan",
-        "Trade Route",
-        "Watchtower",
-    ),
-    Renaissance.cards(
-        "Acting Troupe",
-        "Border Guard",
-        "Cargo Ship",
-        "Ducat",
-        "Experiment",
-        "Improve",
-        "Lackeys",
-    ),
-    Seaside.cards(
-        "Ambassador",
-        "Astrolabe",
-        "Embargo",
-        "Fishing Village",
-        "Haven",
-        "Lighthouse",
-        "Lookout",
-        "Monkey",
-        "Native Village",
-        "Pearl Diver",
-        "Sea Chart",
-        "Smugglers",
-        "Warehouse",
-    ),
-    Plunder.cards(
-        "Cage",
-        "Grotto",
-        "Jewelled Egg",
-        "Search",
-        "Shaman",
-        "Secluded Shrine",
-        "Siren",
-        "Stowaway",
-        "Taskmaster",
-    ),
-)
+BaneCards = set()
+for cardSet in AllSets.values():
+    for card in cardSet.cards:
+        if card.IsKingdomPile() and _Cost2 in card.advTags or _Cost3 in card.advTags:
+            BaneCards.add(card)
 
-CannotHaveTraits = set().union(
-    Base.cards("Gardens"),
-    Seaside.cards("Astrolabe"),
-    Alchemy.cards("Vineyard"),
-    Cornucopia.cards("Fairgrounds"),
-    Hinterlands.cards(
-        "Tunnel",
-        "Silk Road",
-    ),
-    DarkAges.cards("Feodum"),
-    Empires.cards("Castles"),
-    Nocturne.cards(
-        "Guardian",
-        "Monastery",
-        "Changeling",
-        "Ghost Town",
-        "Night Watchman",
-        "Cemetary",
-        "Devil's Workshop",
-        "Exorcist",
-        "Cobbler",
-        "Crypt",
-        "Den of Sin",
-        "Vampire",
-        "Raider",
-    ),
-)
+CannotHaveTraits = set()
+for cardSet in AllSets.values():
+    for card in cardSet.cards:
+        if Action not in card.types and Treasure not in card.types:
+            CannotHaveTraits.add(card)
+
+
+def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=set()):
+    """Sketch some thoughts here:
+    1. Get all the Card tags and put them in a dict.
+    2. Weight each of the card tags based on two things:
+        a.  1 if 5 or more examples in pool
+        b.  0.2 * # if 4 or less in pool
+    3. Randomly pull a Card Tag.
+    4. Randomly select a card with that Card Tag.
+    5. Remove that Card Tag from the list of Card tags so we cannot get it again.
+    6. Rebalance the weight of each Card Tag:
+        a.  If it's already in the Results, -0.1 for each card with that type in the Results.
+        b.  For each Card Tag in the Results that synnergizes with this card, increase
+            the weight by +0.2, unless there is another example of this Card Tag in the
+            Results.
+        c.  For each Card Tag in the Results that wants this card, increase the weight by +1
+        d.  "badTags" stop any synnergies from being applied to this type if they are present
+    7. Repeat steps 3-6 until results are done. Do the same for landscapes.
+    """
+    resultSet = set()
+    waySet = set()
+    tagSet = set()
+    prophecySet = set()
+    for card in completeSet:
+        tagSet = tagSet | set(card.advTags)
+    advTagDict = {}
+    selectedTags = set()
+    includedTags = set()
+    # set the initial card type weights
+    for cardTag in tagSet:
+        advTagDict[cardTag] = (
+            min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
+        )
+    counter = 0
+    includeProphecy = False
+    prophecyCard = None
+    while len(resultSet) < 10:
+        # choose a card type:
+        if sum(advTagDict.values()) == 0:
+            # reset the weights
+            for card in completeSet:
+                tagSet = tagSet | set(card.advTags)
+            for cardTag in tagSet:
+                advTagDict[cardTag] = (
+                    min(
+                        5,
+                        len([card for card in completeSet if cardTag in card.advTags]),
+                    )
+                    * 1
+                )
+        cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
+        cardsWithTag = [card for card in completeSet if cardTag in card.advTags]
+        if cardsWithTag:
+            cardDict = {}
+            for cardWithTag in reversed(cardsWithTag):
+                tagsForCardWithTag = [
+                    advTagDict[cardsTag]
+                    for cardsTag in cardWithTag.advTags
+                    if cardsTag in advTagDict and cardsTag != cardTag
+                ]
+                if tagsForCardWithTag:
+                    cardDict[cardWithTag] = int(
+                        round(sum(tagsForCardWithTag) / len(tagsForCardWithTag), 0)
+                    )
+                else:
+                    cardDict[cardWithTag] = 5
+            selectedTags.add(cardTag)
+            advTagDict.pop(cardTag)
+        else:
+            advTagDict.pop(cardTag)
+            continue
+        if sum(cardDict.values()) == 0:
+            continue
+        card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
+        # Categorize the card from the shuffled pile
+        if card.types & {Way}:
+            waySet.add(card)
+        elif card.types & {Event, Landmark, Project, Trait}:
+            landscapeSet.add(card)
+        elif card.types & {Prophecy}:
+            prophecySet.add(card)
+        else:
+            resultSet.add(card)
+
+        counter += 1
+        # Rebalance the card type weights
+        badTags = set()
+        bonusedTags = []
+        wantedTags = []
+        for cardTag in card.advTags:
+            includedTags.add(cardTag)
+        for cardTag in card.advTags:
+            if cardTag in advTagDict:
+                advTagDict[cardTag] = max(0, advTagDict[cardTag] - 1)
+                for selectedTag in selectedTags:
+                    badTags.add(badTag for badTag in selectedTag.badTags)
+                for bonusTag in cardTag.bonusToTags:
+                    if (
+                        bonusTag in advTagDict
+                        and bonusTag not in bonusedTags
+                        and bonusTag not in badTags
+                    ):
+                        advTagDict[bonusTag] = advTagDict[bonusTag] + 6
+                        bonusedTags.append(bonusTag)
+                for wantedTag in cardTag.wantsTags:
+                    if (
+                        wantedTag in advTagDict
+                        and wantedTag not in includedTags
+                        and wantedTag not in wantedTags
+                        and wantedTag not in badTags
+                    ):
+                        advTagDict[wantedTag] = advTagDict[wantedTag] + 50
+                        wantedTags.append(wantedTag)
+                # Pick the prophecy immediately if there is an omen in the results
+        omenTag = [tag for tag in includedTags if tag.name == "_Omen"]
+        if omenTag and not includeProphecy:
+            includeProphecy = True
+            if prophecySet:
+                prophecyCard = random.sample(prophecySet, 1)[0]
+            else:
+                prophecies = [card for card in completeSet if Prophecy in card.types]
+                if prophecies:
+                    prophecyCard = random.sample(prophecies, 1)[0]
+            if prophecyCard:
+                for cardTag in prophecyCard.advTags:
+                    includedTags.add(cardTag)
+                for cardTag in prophecyCard.advTags:
+                    if cardTag in advTagDict:
+                        advTagDict[cardTag] = max(0, advTagDict[cardTag] - 1)
+                        for selectedTag in selectedTags:
+                            badTags.add(badTag for badTag in selectedTag.badTags)
+                        for bonusTag in cardTag.bonusToTags:
+                            if (
+                                bonusTag in advTagDict
+                                and bonusTag not in bonusedTags
+                                and bonusTag not in badTags
+                            ):
+                                advTagDict[bonusTag] = advTagDict[bonusTag] + 6
+                                bonusedTags.append(bonusTag)
+                        for wantedTag in cardTag.wantsTags:
+                            if (
+                                wantedTag in advTagDict
+                                and wantedTag not in includedTags
+                                and wantedTag not in wantedTags
+                                and wantedTag not in badTags
+                            ):
+                                advTagDict[wantedTag] = advTagDict[wantedTag] + 50
+                                wantedTags.append(wantedTag)
+    if landscapeSet:
+        # Get final list of landscape cards
+        if options and options.get("limit-landscapes"):
+            landscapeList = random.sample([way for way in waySet], len(waySet))[:1]
+            if prophecyCard:
+                landscapeList.extend([prophecyCard])
+            landscapeList.extend(
+                random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
+            )
+        else:
+            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+            landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+            if prophecyCard:
+                landscapeList.extend([prophecyCard])
+        return advTagDict, landscapeList, resultSet, waySet
+    else:
+        return advTagDict, [], resultSet, set()
+
+
+def AdvancedSample(advTagDict, cardSet, completeSet, num):
+    resultSet = set()
+    tagSet = set()
+    for card in cardSet:
+        tagSet = tagSet | set(card.advTags)
+    selectedTags = set()
+    includedTags = set()
+    # set the initial card type weights
+    for cardTag in tagSet:
+        advTagDict[cardTag] = (
+            min(5, len([card for card in cardSet if cardTag in card.advTags])) * 1
+        )
+    counter = 0
+    while len(resultSet) < num:
+        # choose a card type:
+        if sum(advTagDict.values()) == 0:
+            # reset card type weights
+            for card in cardSet:
+                tagSet = tagSet | card.advTags
+            for cardTag in tagSet:
+                advTagDict[cardTag] = (
+                    min(
+                        5,
+                        len([card for card in completeSet if cardTag in card.advTags]),
+                    )
+                    * 1
+                )
+        cardTag = random.choices(list(advTagDict.keys()), list(advTagDict.values()))[0]
+        cardsWithTag = [card for card in cardSet if cardTag in card.advTags]
+        if cardsWithTag:
+            cardDict = {}
+            for cardWithTag in reversed(cardsWithTag):
+                tagsForCardWithTag = [
+                    advTagDict[cardsType]
+                    for cardsType in cardWithTag.advTags
+                    if cardsType in advTagDict and cardsType != cardTag
+                ]
+                if tagsForCardWithTag:
+                    cardDict[cardWithTag] = math.ceil(
+                        sum(tagsForCardWithTag) / len(tagsForCardWithTag)
+                    )
+                else:
+                    cardDict[cardWithTag] = 5
+            selectedTags.add(cardTag)
+            advTagDict.pop(cardTag)
+        else:
+            advTagDict.pop(cardTag)
+            continue
+        card = random.choices(list(cardDict.keys()), list(cardDict.values()))[0]
+        resultSet.add(card)
+        counter += 1
+        # Rebalance the card type weights
+        badTags = set()
+        bonusedTags = []
+        wantedTags = []
+        for cardTag in card.advTags:
+            includedTags.add(cardTag)
+        for cardTag in card.advTags:
+            if cardTag in advTagDict:
+                advTagDict[cardTag] = max(0, advTagDict[cardTag] - 1)
+                for selectedTag in selectedTags:
+                    badTags.add(badTag for badTag in selectedTag.badTags)
+                for bonusTag in cardTag.bonusToTags:
+                    if (
+                        bonusTag in advTagDict
+                        and bonusTag not in bonusedTags
+                        and bonusTag not in badTags
+                    ):
+                        advTagDict[bonusTag] = advTagDict[bonusTag] + 6
+                        bonusedTags.append(bonusTag)
+                for wantedTag in cardTag.wantsTags:
+                    if (
+                        wantedTag in advTagDict
+                        and wantedTag not in includedTags
+                        and wantedTag not in wantedTags
+                        and wantedTag not in badTags
+                    ):
+                        advTagDict[wantedTag] = advTagDict[wantedTag] + 50
+                        wantedTags.append(wantedTag)
+
+    return list(resultSet)
+
+
+def BasicRandomize(options, advTagDict, completeSet, landscapes=False):
+    if landscapes:
+        resultSet = set()
+        waySet = set()
+        landscapeSet = set()
+        prophecySet = set()
+        counter = 0
+        while not landscapeSet and counter < 3:
+            # Shuffle all cards
+            cards = iter(random.sample(completeSet, len(completeSet)))
+
+            # Categorize cards from the shuffled pile
+            while len(resultSet) < 10:
+                card = next(cards)
+                if card.types & {Way}:
+                    waySet.add(card)
+                elif card.types & {Event, Landmark, Project, Trait}:
+                    landscapeSet.add(card)
+                elif card.types & {Prophecy}:
+                    prophecySet.add(card)
+                else:
+                    resultSet.add(card)
+
+            counter += 1
+
+        # Get final list of landscape cards
+        if options and options.get("limit-landscapes"):
+            landscapeList = random.sample(waySet, len(waySet))[:1]
+            if prophecySet:
+                prophecyCard = random.sample(prophecySet, 1)[0]
+                landscapeList.extend([prophecyCard])
+            landscapeList.extend(
+                random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
+            )
+        else:
+            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
+            if prophecySet:
+                prophecyCard = random.sample(prophecySet, 1)[0]
+                landscapeList.extend([prophecyCard])
+            landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+        return advTagDict, landscapeList, resultSet, waySet
+    else:
+        resultSet = set(random.sample(completeSet, 10))
+        return advTagDict, [], resultSet, set()
+
+
+def BasicSample(cardSet, num):
+    return random.sample(list(cardSet), num)
 
 
 def RandomizeDominion(setNames=None, options=None):
-    # Make full list + Events + Landmarks to determine landmarks
+    # Make full list + landscape cards to determine landscape cards
     sets = set()
     if setNames is None:
         sets.update(AllSets.values())
@@ -1752,6 +5947,28 @@ def RandomizeDominion(setNames=None, options=None):
                 Base.RemoveCards(Base.secondEdition)
             else:
                 Base.AddCards(Base.secondEdition)
+
+        if Cornucopia in sets:
+            if options.get("cornucopia-first-edition"):
+                Cornucopia.AddCards(Cornucopia.firstEdition)
+            else:
+                Cornucopia.RemoveCards(Cornucopia.firstEdition)
+
+            if not options.get("cornucopia-second-edition", True):
+                Cornucopia.RemoveCards(Cornucopia.secondEdition)
+            else:
+                Cornucopia.AddCards(Cornucopia.secondEdition)
+
+        if Guilds in sets:
+            if options.get("guilds-first-edition"):
+                Guilds.AddCards(Guilds.firstEdition)
+            else:
+                Guilds.RemoveCards(Guilds.firstEdition)
+
+            if not options.get("guilds-second-edition", True):
+                Guilds.RemoveCards(Guilds.secondEdition)
+            else:
+                Guilds.AddCards(Guilds.secondEdition)
 
         if Intrigue in sets:
             if options.get("intrigue-first-edition"):
@@ -1801,77 +6018,115 @@ def RandomizeDominion(setNames=None, options=None):
     # Allies are not randomized
     completeSet = completeSet - AllyCards
     landscapeSet = set()
+    advTagDict = {}
+    allChosenCardsSet = set()
 
     if completeSet & LandscapeCards:
         # Handle sets that include landscape cards
         kingdomSet = completeSet - LandscapeCards
+        landscapeSet = completeSet & LandscapeCards
 
         resultSet = set()
         waySet = set()
-        counter = 0
-        while not landscapeSet and counter < 3:
-            # Shuffle all cards
-            cards = iter(random.sample(completeSet, len(completeSet)))
 
-            # Categorize cards from the shuffled pile
-            while len(resultSet) < 10:
-                card = next(cards)
-                if card.types & {Way}:
-                    waySet.add(card)
-                elif card.types & {Event, Landmark, Project, Trait}:
-                    landscapeSet.add(card)
-                else:
-                    resultSet.add(card)
-
-            counter += 1
-
-        # Get final list of landscape cards
-        if options and options.get("limit-landscapes"):
-            landscapeList = random.sample(waySet, len(waySet))[:1]
-            landscapeList.extend(
-                random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
+        if options and options.get("advanced-randomization"):
+            advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+                options, advTagDict, completeSet, landscapeSet
             )
         else:
-            landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
-            landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+            advTagDict, landscapeList, resultSet, waySet = BasicRandomize(
+                options, advTagDict, completeSet, landscapeSet
+            )
     else:
         kingdomSet = completeSet
         landscapeList = []
 
-        resultSet = set(random.sample(kingdomSet, 10))
+        if options and options.get("advanced-randomization"):
+            advTagDict, landscapeList, resultSet, waySet = AdvancedRandomize(
+                options, advTagDict, completeSet
+            )
+        else:
+            advTagDict, landscapeList, resultSet, waySet = BasicRandomize(
+                options, advTagDict, completeSet
+            )
+
+    # Get card for Approaching Army. These are attacks. The card chosen for Approaching
+    # Army should be largely indistinguishable from other kingdom cards, so add it to
+    # resultSet
+    includeApproachingArmy = RisingSun.cards("Approaching Army").intersection(
+        landscapeList
+    )
+    approachingArmySet = set()
+    if includeApproachingArmy:
+        attackCards = set(
+            kingdomPile for kingdomPile in kingdomSet if Attack in kingdomPile.types
+        )
+        eligibleApproachingArmies = attackCards - resultSet
+        if not eligibleApproachingArmies:
+            # All eligible Approaching Armies are already part of the randomized set!
+            # (This is nearly impossible.) Get an Approaching Army from the randomized
+            # cards, add a new card to the set, and remove the Approaching Army from the
+            # set.
+            eligibleApproachingArmies = resultSet & attackCards
+            approachingArmyCard = random.sample(eligibleApproachingArmies, 1)[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - resultSet, completeSet, 1
+                )
+            )
+        else:
+            approachingArmyCard = random.sample(eligibleApproachingArmies, 1)[0]
+        approachingArmySet.add(approachingArmyCard)
+    allChosenCardsSet = resultSet | waySet | approachingArmySet | landscapeSet
 
     # Enforce Alchemy rule
     if (options or {}).get("enforce-alchemy-rule", True):
-        alchemyCards = Alchemy.cards & resultSet
-        if not alchemyCards:
-            kingdomSet -= Alchemy.cards
-        elif len(alchemyCards) == 1:
+        alchemyCards = Alchemy.cards & allChosenCardsSet
+        if len(alchemyCards) == 1:
             # If there's only 1 Alchemy card, remove Alchemy from the options
             # and draw an addtional Kingdom card
             resultSet -= alchemyCards
-            kingdomSet -= Alchemy.cards
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
+                )
+            )
         elif len(alchemyCards) == 2:
             # If there are only 2 Alchemy cards, pull an additional Alchemy
             # card and randomly remove one non-Alchemy card
             resultSet -= alchemyCards
-            alchemyCards.update(random.sample(Alchemy.cards - alchemyCards, 1))
-            resultSet = alchemyCards.union(random.sample(resultSet, 7))
+            alchemyCards.update(
+                SampleDominion(
+                    options, advTagDict, Alchemy.cards - alchemyCards, completeSet, 1
+                )
+            )
+            resultSet = alchemyCards.union(random.sample(allChosenCardsSet, 7))
         # If there are 3 or more Alchemy cards, let it lie.
 
     # Young Witch support
-    includeBane = resultSet & Cornucopia.cards("Young Witch")
+    includeBane = allChosenCardsSet & Cornucopia.cards("Young Witch")
+    baneSet = set()
     if includeBane:
-        eligibleBanes = (kingdomSet & BaneCards) - resultSet
+        eligibleBanes = (kingdomSet & BaneCards) - allChosenCardsSet
         if not eligibleBanes:
             # All eligible Bane cards are already part of the randomized set!
             # Add a new card to the set and pull a Bane from the randomized
             # cards.
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
-            baneCard = random.sample(resultSet & BaneCards, 1)[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
+                )
+            )
+            baneCard = SampleDominion(
+                options, advTagDict, allChosenCardsSet & BaneCards, completeSet, 1
+            )[0]
+            resultSet.remove(baneCard)
         else:
-            baneCard = random.sample(eligibleBanes, 1)[0]
-            resultSet.add(baneCard)
+            baneCard = SampleDominion(
+                options, advTagDict, eligibleBanes, completeSet, 1
+            )[0]
+        baneSet.add(baneCard)
+    allChosenCardsSet.update(baneSet)
 
     # Get card for Way of the Mouse. This uses similar rules to Young Witch, so
     # select a card from the Bane Cards. The card chosen for Way of the Mouse
@@ -1879,76 +6134,191 @@ def RandomizeDominion(setNames=None, options=None):
     includeMouse = Menagerie.cards("Way of the Mouse").intersection(landscapeList)
     mouseSet = set()
     if includeMouse:
-        eligibleMice = (kingdomSet & BaneCards) - resultSet
+        eligibleMice = (kingdomSet & BaneCards) - allChosenCardsSet
         if not eligibleMice:
             # All eligible Mouse cards are already part of the randomized set!
             # (This is nearly impossible.) Get a Mouse from the randomized
             # cards, add a new card to the set, and remove the mouse from the
             # set.
-            eligibleMice = resultSet & BaneCards
+            eligibleMice = allChosenCardsSet & BaneCards
             if includeBane:
                 eligibleMice.remove(baneCard)
 
-            mouseCard = random.sample(eligibleMice, 1)[0]
-            resultSet.update(random.sample(kingdomSet - resultSet, 1))
+            mouseCard = SampleDominion(
+                options, advTagDict, eligibleMice, completeSet, 1
+            )[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
+                )
+            )
             resultSet.remove(mouseCard)
         else:
-            mouseCard = random.sample(eligibleMice, 1)[0]
+            mouseCard = SampleDominion(
+                options, advTagDict, eligibleMice, completeSet, 1
+            )[0]
         mouseSet.add(mouseCard)
+    allChosenCardsSet.update(mouseSet)
+
+    # Get card for Ferryman. These are 3 or 4 cost kingdom cards. The card chosen for
+    # Ferryman should not be used when determining most additional card rules.
+    # at this point, the Ferryman could be the bane or the mouse card
+    includeFerryman = Cornucopia.cards("Ferryman").intersection(allChosenCardsSet)
+    ferrymanSet = set()
+    if includeFerryman:
+        cost3or4Cards = set(
+            kingdomPile
+            for kingdomPile in kingdomSet
+            if any(
+                tag for tag in kingdomPile.advTags if tag.name in ("_Cost3", "_Cost4")
+            )
+        )
+        eligibleFerrymen = cost3or4Cards - (allChosenCardsSet)
+        if not eligibleFerrymen:
+            # All eligible Ferrymen are already part of the randomized set!
+            # (This is nearly impossible.) Get a Ferryman from the randomized
+            # cards, add a new card to the set, and remove the Ferryman from the
+            # set.
+            eligibleFerrymen = allChosenCardsSet & cost3or4Cards
+            ferrymanCard = random.sample(eligibleFerrymen, 1)[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
+                )
+            )
+            resultSet.remove(ferrymanCard)
+        else:
+            ferrymanCard = random.sample(eligibleFerrymen, 1)[0]
+        ferrymanSet.add(ferrymanCard)
+    allChosenCardsSet.update(ferrymanSet)
+
+    # Guess what? The ferryman bonus card could be a young witch again. Yay!
+    if not includeBane:
+        includeBane = allChosenCardsSet & Cornucopia.cards("Young Witch")
+        if includeBane:
+            eligibleBanes = (kingdomSet & BaneCards) - allChosenCardsSet
+            if not eligibleBanes:
+                # All eligible Bane cards are already part of the randomized set!
+                # Add a new card to the set and pull a Bane from the randomized
+                # cards.
+                resultSet.update(
+                    SampleDominion(
+                        options,
+                        advTagDict,
+                        kingdomSet - allChosenCardsSet,
+                        completeSet,
+                        1,
+                    )
+                )
+                baneCard = SampleDominion(
+                    options, advTagDict, allChosenCardsSet & BaneCards, completeSet, 1
+                )[0]
+                resultSet.remove(baneCard)
+            else:
+                baneCard = SampleDominion(
+                    options, advTagDict, eligibleBanes, completeSet, 1
+                )[0]
+            baneSet.add(baneCard)
+    allChosenCardsSet.update(baneSet)
+
+    # Get card for Riverboat. These are 5-cost non-duration actions. The card chosen for
+    # Riverboat should not be used when determining most additional card rules.
+    includeRiverboat = RisingSun.cards("Riverboat").intersection(allChosenCardsSet)
+    riverboatSet = set()
+    if includeRiverboat:
+        cost5NonDurationActions = set(
+            kingdomPile
+            for kingdomPile in kingdomSet
+            if (
+                any(tag for tag in kingdomPile.advTags if tag.name == "_Cost5")
+                and Action in kingdomPile.types
+                and Duration not in kingdomPile.types
+            )
+        )
+        eligibleRiverboats = cost5NonDurationActions - allChosenCardsSet
+        if not eligibleRiverboats:
+            # All eligible Riverboats are already part of the randomized set!
+            # (This is nearly impossible.) Get a Riverboat from the randomized
+            # cards, add a new card to the set, and remove the Riverboat from the
+            # set.
+            eligibleRiverboats = allChosenCardsSet & cost5NonDurationActions
+            riverboatCard = random.sample(eligibleRiverboats, 1)[0]
+            resultSet.update(
+                SampleDominion(
+                    options, advTagDict, kingdomSet - allChosenCardsSet, completeSet, 1
+                )
+            )
+            resultSet.remove(riverboatCard)
+        else:
+            riverboatCard = random.sample(eligibleRiverboats, 1)[0]
+        riverboatSet.add(riverboatCard)
+    allChosenCardsSet.update(riverboatSet)
 
     fullResults = resultSet.union(landscapeList)
 
     # Check for Colonies and Platinums
     includeColoniesAndPlatinum = Prosperity in sets and PlatinumLove.intersection(
-        random.sample(fullResults, 2)
+        random.sample(fullResults, 1)
     )
 
     # Check for Potions
     includePotions = Alchemy.potionCards & resultSet
 
     # Check for Prizes
-    includePrizes = Cornucopia.cards("Tournament") & resultSet
+    includePrizes = Cornucopia.cards("Tournament") & (resultSet | ferrymanSet)
+    includeRewards = Cornucopia.cards("Joust") & (resultSet | riverboatSet)
 
     # Check for Shelters
     includeShelters = DarkAges in sets and ShelterLove.intersection(
-        random.sample(fullResults, 2)
+        random.sample(fullResults, 1)
+    )
+    extraKingdomSet = (
+        approachingArmySet | baneSet | ferrymanSet | mouseSet | riverboatSet
     )
     # Check for Ruins
-    includeRuins = LooterCards & resultSet
+    includeRuins = LooterCards & (resultSet | extraKingdomSet)
     # Check for Madman
-    includeMadman = DarkAges.cards("Hermit") & resultSet
+    # mice and riverboat cards can't be exchanged for madman
+    includeMadman = DarkAges.cards("Hermit") & (resultSet | ferrymanSet)
     # Check for Mercenary
-    includeMercenary = DarkAges.cards("Urchin") & resultSet
+    # mice and riverboat cards can't be exchanged for mercenary
+    includeMercenary = DarkAges.cards("Urchin") & (resultSet | ferrymanSet)
     # Check for Spoils
-    includeSpoils = SpoilsCards & resultSet
+    # Spoils are only gained by 4 or 5 cost cards
+    includeSpoils = SpoilsCards & (resultSet | extraKingdomSet)
 
     # Check for special Nocturne cards
-    includeGhost = resultSet & Nocturne.cards(
+    includeGhost = (resultSet | extraKingdomSet) & Nocturne.cards(
         "Cemetary + Haunted Mirror (Heirloom)", "Exorcist"
     )
 
-    includeBoons = BoonCards & (resultSet | mouseSet)
+    includeBoons = BoonCards & (resultSet | extraKingdomSet)
 
-    includeHexes = HexCards & (resultSet | mouseSet)
+    includeHexes = HexCards & (resultSet | extraKingdomSet)
 
-    includeWisp = includeBoons or (Nocturne.cards("Exorcist") & resultSet)
+    includeWisp = includeBoons or (
+        Nocturne.cards("Exorcist") & (resultSet | extraKingdomSet)
+    )
 
+    # Vampires cannot be exchanged if they are the riverboat card
     includeBat = Nocturne.cards("Vampire") & resultSet
 
-    includeImp = resultSet & Nocturne.cards("Devil's Workshop", "Exorcist", "Tormentor")
+    includeImp = (resultSet | extraKingdomSet) & Nocturne.cards(
+        "Devil's Workshop", "Exorcist", "Tormentor"
+    )
 
-    includeWish = resultSet & Nocturne.cards(
+    includeWish = (resultSet | extraKingdomSet) & Nocturne.cards(
         "Leprechaun", "Secret Cave + Magic Lamp (Heirloom)"
     )
 
     # Check for Horses
-    includeHorse = HorseCards & (fullResults | mouseSet)
+    includeHorse = HorseCards & (fullResults | extraKingdomSet)
 
     # Check for Liaisons (for a random Ally Card)
-    includeAlly = LiaisonCards & (fullResults | mouseSet)
+    includeAlly = LiaisonCards & (fullResults | extraKingdomSet)
 
     # Check for Loot cards
-    includeLoot = LootCards & (fullResults | mouseSet)
+    includeLoot = LootCards & (fullResults | extraKingdomSet)
 
     # Check for Boulder traps
     includeBoulderTraps = Antiquities in sets and TrapLove.intersection(
@@ -1984,6 +6354,17 @@ def RandomizeDominion(setNames=None, options=None):
                 "Cornucopia: Followers",
                 "Cornucopia: Princess",
                 "Cornucopia: Trusty Steed",
+            )
+        )
+    if includeRewards:
+        additionalCards.update(
+            (
+                "Cornucopia: Coronet",
+                "Cornucopia: Courser",
+                "Cornucopia: Demesne",
+                "Cornucopia: Housecarl",
+                "Cornucopia: Huge Turnip",
+                "Cornucopia: Renown",
             )
         )
     if includeGhost:
@@ -2033,14 +6414,18 @@ def RandomizeDominion(setNames=None, options=None):
     extras = set().union(*(card.extras for card in resultSet))
 
     # Create final card list
+
+    # remove the bane and re-add it.
+    finalResult = []
+    finalResult = sorted(resultSet | additionalCards)
+    if includeApproachingArmy:
+        finalResult.append(f"Approaching Army is {approachingArmyCard}")
     if includeBane:
-        # Append Bane Card to end of list
-        resultSet.remove(baneCard)
-        extras.update(baneCard.extras)
-        finalResult = sorted(resultSet | additionalCards)
         finalResult.append("Bane is {}".format(baneCard))
-    else:
-        finalResult = sorted(resultSet | additionalCards)
+    if includeFerryman:
+        finalResult.append("Ferryman is {}".format(ferrymanCard))
+    if includeRiverboat:
+        finalResult.append("Riverboat is {}".format(riverboatCard))
 
     # Add non-kingdom cards
     if includeAlly:
@@ -2061,6 +6446,15 @@ def RandomizeDominion(setNames=None, options=None):
         finalResult.extend(sorted(extras))
 
     return [str(card) for card in finalResult]
+
+
+def SampleDominion(options, advTagDict, cardSet, completeSet, num):
+    # Temporary for testing
+    return AdvancedSample(advTagDict, cardSet, completeSet, num)
+    # if options and options.get("advanced-randomization"):
+    #     return AdvancedSample(advTagDict, cardSet, num)
+    # else:
+    #     return BasicSample(cardSet, num)
 
 
 if __name__ == "__main__":
