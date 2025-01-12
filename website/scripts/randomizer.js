@@ -2,6 +2,24 @@ document.addEventListener("DOMContentLoaded", function (event) {
     const form = document.forms[0];
     const cards = document.getElementById("cards");
 
+    // Load options from local storage and check corresponding checkboxes
+    function loadOptionsFromLocalStorage() {
+        const storedOptions = localStorage.getItem('dominionOptions');
+        if (storedOptions) {
+            const options = JSON.parse(storedOptions);
+            for (const [name, checked] of Object.entries(options)) {
+                const checkbox = form.querySelector(`input[name="${name}"]`);
+                if (checkbox) {
+                    checkbox.checked = checked;
+                }
+            }
+        }
+    }
+
+    // Call the function to load options
+    loadOptionsFromLocalStorage();
+
+
     form.addEventListener(
         "submit",
         async (event) => {
@@ -35,6 +53,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             self.sets = data.sets;
             self.options = data.options;
+
+            // Store data.options in local storage
+            localStorage.setItem('dominionOptions', JSON.stringify(data.options));
 
             let proxy = await pyodide.runPythonAsync(`
                 import randomizer
