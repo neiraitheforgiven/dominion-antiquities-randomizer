@@ -6150,7 +6150,7 @@ def RandomizeDominion(setNames=None, options=None):
 
     # Get card for Ferryman. These are 3 or 4 cost kingdom cards. The card chosen for
     # Ferryman should not be used when determining most additional card rules.
-    includeFerryman = RisingSun.cards("Ferryman").intersection(resultSet)
+    includeFerryman = Cornucopia.cards("Ferryman").intersection(resultSet)
     ferrymanSet = set()
     if includeFerryman:
         cost3or4Cards = set(
