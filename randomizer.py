@@ -5440,11 +5440,11 @@ for cardSet in AllSets.values():
         if len(card.types) > 2:
             card.advTags.add(_MultiType)
         if Doom in card.types:
-            card.advTags.extend(
+            card.advTags & set(
                 [_BadSifter, _BadThinner, _Curser, _Discard, _Junker, _Random, _Trasher]
             )
         if Fate in card.types:
-            card.advTags.extend(
+            card.advTags & set(
                 [
                     _Buys,
                     _Chainer,
@@ -5494,7 +5494,7 @@ for cardSet in AllSets.values():
                 _Cost6 in card.advTags
                 or _Cost7 in card.advTags
                 or _PlatinumLover in card.advTags
-                or _Buys in card.advTags.bonusToTags
+                or any([tag for tag in card.advTags if _Buys in tag.bonusToTags])
             ):
                 PlatinumLove.add(card)
 
@@ -5626,7 +5626,7 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
     tagSet = set()
     prophecySet = set()
     for card in completeSet:
-        tagSet = tagSet | card.advTags
+        tagSet = tagSet | set(card.advTags)
     advTagDict = {}
     selectedTags = set()
     includedTags = set()
@@ -5636,13 +5636,15 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
             min(5, len([card for card in completeSet if cardTag in card.advTags])) * 1
         )
     counter = 0
+    includeProphecy = False
+    prophecyCard = None
     while len(resultSet) < 10:
         # choose a card type:
         if sum(advTagDict.values()) == 0:
             print("no matching tags...")
             # reset the weights
             for card in completeSet:
-                tagSet = tagSet | card.advTags
+                tagSet = tagSet | set(card.advTags)
             for cardTag in tagSet:
                 advTagDict[cardTag] = (
                     min(
@@ -5682,7 +5684,7 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
             waySet.add(card)
         elif card.types & {Event, Landmark, Project, Trait}:
             landscapeSet.add(card)
-        elif card.type & {Prophecy}:
+        elif card.types & {Prophecy}:
             prophecySet.add(card)
         else:
             resultSet.add(card)
@@ -5692,7 +5694,9 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
         badTags = set()
         bonusedTags = []
         wantedTags = []
+        print(card.name)
         for cardTag in card.advTags:
+            print(cardTag.name)
             includedTags.add(cardTag)
         for cardTag in card.advTags:
             if cardTag in advTagDict:
@@ -5717,17 +5721,18 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
                         advTagDict[wantedTag] = advTagDict[wantedTag] + 50
                         wantedTags.append(wantedTag)
                 # Pick the prophecy immediately if there is an omen in the results
-        if "_Omen" in includedTags and "_Prophecy" not in includedTags:
+        print([tag.name for tag in includedTags])
+        omenTag = [tag for tag in includedTags if tag.name == "_Omen"]
+        if omenTag and not includeProphecy:
+            includeProphecy = True
             if prophecySet:
-                prophecyCard = resultSet.add(random.sample(prophecySet, 1)[0])
+                prophecyCard = random.sample(prophecySet, 1)[0]
             else:
-                prophecies = [
-                    card for card in completeSet if "_Prophecy" in card.advTags
-                ]
+                prophecies = [card for card in completeSet if Prophecy in card.types]
                 if prophecies:
-                    prophecyCard = resultSet.add(random.sample(prophecies, 1)[0])
+                    print("Prophecies exist.")
+                    prophecyCard = random.sample(prophecies, 1)[0]
             if prophecyCard:
-                resultSet.add(prophecyCard)
                 for cardTag in prophecyCard.advTags:
                     includedTags.add(cardTag)
                 for cardTag in prophecyCard.advTags:
@@ -5756,12 +5761,16 @@ def AdvancedRandomize(options, advTagDict, completeSet, landscapeSet=[]):
         # Get final list of landscape cards
         if options and options.get("limit-landscapes"):
             landscapeList = random.sample([way for way in waySet], len(waySet))[:1]
+            if prophecyCard:
+                landscapeList.extend([prophecyCard])
             landscapeList.extend(
                 random.sample(landscapeSet, len(landscapeSet))[: 2 - len(landscapeList)]
             )
         else:
             landscapeList = random.sample(landscapeSet, len(landscapeSet))[:3]
             landscapeList.extend(random.sample(waySet, len(waySet))[:1])
+            if prophecyCard:
+                landscapeList.extend([prophecyCard])
         return advTagDict, landscapeList, resultSet, waySet
     else:
         return advTagDict, [], resultSet, set()
@@ -5771,7 +5780,7 @@ def AdvancedSample(advTagDict, cardSet, completeSet, num):
     resultSet = set()
     tagSet = set()
     for card in cardSet:
-        tagSet = tagSet | card.advTags
+        tagSet = tagSet | set(card.advTags)
     selectedTags = set()
     includedTags = set()
     # set the initial card type weights
@@ -6251,10 +6260,6 @@ def RandomizeDominion(setNames=None, options=None):
         random.sample(fullResults, 1)
     )
 
-    includeProphecy = any(
-        result for result in (resultSet | extraKingdomSet) if "Omen" in result.types
-    )
-
     # Create final list
     additionalCards = set()
 
@@ -6315,10 +6320,6 @@ def RandomizeDominion(setNames=None, options=None):
         additionalCards.add("Menagerie: Horse")
     if includeLoot:
         landscapeList.append("(Plunder: Loot Deck)")
-    if includeProphecy and not (resultSet & Prophecy):
-        resultSet.update(
-            SampleDominion(options, advTagDict, resultSet & Prophecy, completeSet, 1)[0]
-        )
 
     # Assign Traits to selected cards
     selectedTraits = Traits.intersection(landscapeList)
