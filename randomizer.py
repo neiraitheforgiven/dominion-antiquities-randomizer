@@ -91,6 +91,23 @@ class Card(object):
             formatStr = "{}: {}"
         return formatStr.format(self.set.name, self.name)
 
+    def IsKingdomPile(self):
+        if Event in self.types:
+            return False
+        if Landmark in self.types:
+            return False
+        if Project in self.types:
+            return False
+        if Way in self.types:
+            return False
+        if Ally in self.types:
+            return False
+        if Trait in self.types:
+            return False
+        if Prophecy in self.types:
+            return False
+        return True
+
 
 class Set(object):
     def __init__(self, name):
@@ -5593,7 +5610,7 @@ for cardSet in AllSets.values():
 BaneCards = set()
 for cardSet in AllSets.values():
     for card in cardSet.cards:
-        if _Cost2 in card.advTags or _Cost3 in card.advTags:
+        if card.IsKingdomPile() and _Cost2 in card.advTags or _Cost3 in card.advTags:
             BaneCards.add(card)
 
 CannotHaveTraits = set()
